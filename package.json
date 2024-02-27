@@ -11,6 +11,10 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write ."
   },
+  "dependencies": {
+    "chess.js": "^1.0.0-beta.8",
+    "cm-chessboard": "^8.5.0"
+  },
   "devDependencies": {
     "@skeletonlabs/skeleton": "2.8.0",
     "@skeletonlabs/tw-plugin": "0.3.1",
@@ -22,8 +26,6 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "autoprefixer": "10.4.17",
-    "@chrisoakman/chessboardjs": "^1.0.0",
-    "chess.js": "^1.0.0-beta.8",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-svelte": "^2.35.1",
