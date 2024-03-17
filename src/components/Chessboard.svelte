@@ -14,4 +14,4 @@
   });
 </script>
 
-<div class="w-96" bind:this={boardElement}></div>
+<div class="w-full" bind:this={boardElement}></div>
