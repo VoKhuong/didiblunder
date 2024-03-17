@@ -1,5 +1,7 @@
 <script lang="ts">
   import { TabGroup, Tab } from '@skeletonlabs/skeleton';
+  import Load from './tabs/Load.svelte';
+  import ButtonFooter from './ButtonFooter.svelte';
 
   let currentTab: string = "load";
 </script>
@@ -14,8 +16,8 @@
       <Tab bind:group={currentTab} name="report" value="report">📊 Report</Tab>
       <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
       <svelte:fragment slot="panel">
-          (tab panel 1 contents)
         {#if currentTab === "load"}
+          <Load />
         {:else if currentTab === "report"}
           (tab panel 2 contents)
         {:else if currentTab === "settings"}
@@ -24,4 +26,11 @@
       </svelte:fragment>
     </TabGroup>
   </section>
+  <footer class="card-footer">
+    {#if currentTab === "load" || currentTab === "settings"}
+      <ButtonFooter />
+    {:else if currentTab === "report"}
+      (tab panel 2 footer)
+    {/if}
+  </footer>
 </div>
