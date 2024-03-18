@@ -1,7 +1,33 @@
 <script lang="ts">
+  import { getContext } from 'svelte';
   import { FileButton } from '@skeletonlabs/skeleton';
+  import type { Chess } from 'chess.js';
+
+  const engine: Chess = getContext('engine');
+  export function load(): void {
+    if (loader === "pgn") {
+      engine.loadPgn(strPgn);
+    }
+  }
 
   let loader: string = 'pgn';
+
+  // PGN fields
+  let strPgn: string;
+  let disabled: boolean = false;
+  let filename: string = '';
+  let filesPgn: FileList;
+
+  $: {
+    if (filesPgn && filesPgn.length > 0) {
+      filesPgn.item(0)?.text()
+        .then(txt => {
+          strPgn = txt;
+          filename = filesPgn.item(0)?.name ?? '';
+          disabled = true;
+        });
+    }
+  }
 
   $: console.log(loader);
 </script>
@@ -18,12 +44,24 @@
 <div class="my-8">
   {#if loader === 'pgn'}
     <textarea
+      bind:value={strPgn}
       class="textarea"
       rows="4"
       placeholder="1. e4 Nc6 2. Bc4 Nf6 3. Nc3 e6 4. Nf3 d5 5. e5 Nd7..."
+      disabled={disabled}
     />
     <hr class="my-4" />
-    <FileButton name="pgnfile" button="btn variant-ghost">Import PGN file</FileButton>
+    <div class="flex items-center	gap-2">
+      <FileButton
+        bind:files={filesPgn}
+        accept=".pgn, .txt"
+        name="pgnfile"
+        button="btn variant-ghost"
+      >
+        Import PGN file
+      </FileButton>
+      <p class="truncate">{filename}</p>
+    </div>
   {:else if loader === 'chesscom'}
     chess.com
   {:else if loader === 'lichess'}

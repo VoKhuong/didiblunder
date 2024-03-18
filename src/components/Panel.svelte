@@ -4,6 +4,8 @@
   import ButtonFooter from './ButtonFooter.svelte';
 
   let currentTab: string = "load";
+
+  let load: () => void;
 </script>
 
 <div class="card p-4 h-full flex flex-col">
@@ -17,7 +19,7 @@
       <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
       <svelte:fragment slot="panel">
         {#if currentTab === "load"}
-          <Load />
+          <Load bind:load />
         {:else if currentTab === "report"}
           (tab panel 2 contents)
         {:else if currentTab === "settings"}
@@ -28,7 +30,7 @@
   </section>
   <footer class="card-footer">
     {#if currentTab === "load" || currentTab === "settings"}
-      <ButtonFooter />
+      <ButtonFooter onClick={load} />
     {:else if currentTab === "report"}
       (tab panel 2 footer)
     {/if}
