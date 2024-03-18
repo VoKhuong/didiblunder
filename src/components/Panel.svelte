@@ -2,6 +2,7 @@
   import { TabGroup, Tab } from '@skeletonlabs/skeleton';
   import Load from './tabs/Load.svelte';
   import ButtonFooter from './ButtonFooter.svelte';
+  import NavigationFooter from './NavigationFooter.svelte';
 
   let currentTab: string = "load";
 
@@ -32,7 +33,7 @@
     {#if currentTab === "load" || currentTab === "settings"}
       <ButtonFooter onClick={load} />
     {:else if currentTab === "report"}
-      (tab panel 2 footer)
+      <NavigationFooter />
     {/if}
   </footer>
 </div>
