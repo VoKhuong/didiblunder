@@ -1,8 +1,13 @@
 <script lang="ts">
+  import { setContext } from 'svelte';
+  import { Chess } from 'chess.js'
+
   import { RangeSlider } from "@skeletonlabs/skeleton";
   import Chessboard from "../components/Chessboard.svelte";
   import EvaluationBar from "../components/EvaluationBar.svelte";
   import Panel from "../components/Panel.svelte";
+
+  setContext('engine', new Chess());
 
   let value = 0;
 </script>
