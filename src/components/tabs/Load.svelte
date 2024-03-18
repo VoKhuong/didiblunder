@@ -1,14 +1,18 @@
 <script lang="ts">
   import { getContext } from 'svelte';
+  import type { Writable } from 'svelte/store';
+  import { DEFAULT_POSITION, type Chess } from 'chess.js';
   import { FileButton } from '@skeletonlabs/skeleton';
-  import type { Chess } from 'chess.js';
 
-  const engine: Chess = getContext('engine');
   export function load(): void {
-    if (loader === "pgn") {
+    if (loader === 'pgn') {
       engine.loadPgn(strPgn);
+      position.set(DEFAULT_POSITION);
     }
   }
+
+  const engine: Chess = getContext('engine');
+  const position: Writable<string> = getContext('position');
 
   let loader: string = 'pgn';
 
@@ -20,8 +24,10 @@
 
   $: {
     if (filesPgn && filesPgn.length > 0) {
-      filesPgn.item(0)?.text()
-        .then(txt => {
+      filesPgn
+        .item(0)
+        ?.text()
+        .then((txt) => {
           strPgn = txt;
           filename = filesPgn.item(0)?.name ?? '';
           disabled = true;
@@ -48,10 +54,10 @@
       class="textarea"
       rows="4"
       placeholder="1. e4 Nc6 2. Bc4 Nf6 3. Nc3 e6 4. Nf3 d5 5. e5 Nd7..."
-      disabled={disabled}
+      {disabled}
     />
     <hr class="my-4" />
-    <div class="flex items-center	gap-2">
+    <div class="flex items-center gap-2">
       <FileButton
         bind:files={filesPgn}
         accept=".pgn, .txt"

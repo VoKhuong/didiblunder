@@ -4,9 +4,9 @@
   import ButtonFooter from './ButtonFooter.svelte';
   import NavigationFooter from './NavigationFooter.svelte';
 
-  let currentTab: string = "load";
+  let currentTab: string = 'load';
 
-  let load: () => void;
+  let load: () => void = () => {};
 </script>
 
 <div class="card p-4 h-full flex flex-col">
@@ -19,20 +19,20 @@
       <Tab bind:group={currentTab} name="report" value="report">📊 Report</Tab>
       <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
       <svelte:fragment slot="panel">
-        {#if currentTab === "load"}
+        {#if currentTab === 'load'}
           <Load bind:load />
-        {:else if currentTab === "report"}
+        {:else if currentTab === 'report'}
           (tab panel 2 contents)
-        {:else if currentTab === "settings"}
+        {:else if currentTab === 'settings'}
           (tab panel 3 contents)
         {/if}
       </svelte:fragment>
     </TabGroup>
   </section>
   <footer class="card-footer">
-    {#if currentTab === "load" || currentTab === "settings"}
+    {#if currentTab === 'load' || currentTab === 'settings'}
       <ButtonFooter onClick={load} />
-    {:else if currentTab === "report"}
+    {:else if currentTab === 'report'}
       <NavigationFooter />
     {/if}
   </footer>
