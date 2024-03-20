@@ -9,6 +9,7 @@
   import { writable } from 'svelte/store';
 
   setContext('engine', new Chess());
+  setContext('move', writable());
   const position = writable(DEFAULT_POSITION);
   setContext('position', position);
 

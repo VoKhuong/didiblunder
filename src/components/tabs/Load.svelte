@@ -1,18 +1,22 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
-  import { DEFAULT_POSITION, type Chess } from 'chess.js';
+  import type { Chess } from 'chess.js';
   import { FileButton } from '@skeletonlabs/skeleton';
+  import type { Move } from '../../types';
 
   export function load(): void {
     if (loader === 'pgn') {
       engine.loadPgn(strPgn);
-      position.set(DEFAULT_POSITION);
+      const firstMove: Move = { ...engine.history({verbose: true})[0], index: 0};
+      position.set(firstMove.before);
+      move.set(firstMove);
     }
   }
 
   const engine: Chess = getContext('engine');
   const position: Writable<string> = getContext('position');
+  const move: Writable<Move> = getContext('move');
 
   let loader: string = 'pgn';
 

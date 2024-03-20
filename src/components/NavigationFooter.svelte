@@ -2,23 +2,24 @@
   import type { Chess } from 'chess.js';
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
+  import type { Move } from '../types';
 
   const engine: Chess = getContext('engine');
+  const move: Writable<Move> = getContext('move');
   const position: Writable<string> = getContext('position');
 
   const history = engine.history({ verbose: true });
   const nbMoves = history.length;
 
-  let move = 0;
 
   const clickNext = () => {
-    position.set(history[move].after);
-    move = move + 1;
+    position.set($move.after);
+    move.set({ ...history[$move.index + 1], index: $move.index + 1});
   };
 
   const clickPrevious = () => {
-    move = move - 1;
-    position.set(history[move].before);
+    move.set({ ...history[$move.index - 1], index: $move.index - 1});
+    position.set($move.before);
   };
 </script>
 
@@ -44,7 +45,7 @@
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
     on:click={clickPrevious}
-    disabled={move <= 0}
+    disabled={!$move || $move.index <= 0}
   >
     <svg
       class="w-6 h-6"
@@ -68,7 +69,7 @@
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
     on:click={clickNext}
-    disabled={move >= nbMoves}
+    disabled={!$move || $move.index >= nbMoves}
   >
     <svg
       class="w-6 h-6"
