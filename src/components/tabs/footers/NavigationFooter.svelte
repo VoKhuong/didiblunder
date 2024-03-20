@@ -1,30 +1,42 @@
 <script lang="ts">
-  import type { Chess } from 'chess.js';
+  import type { Move } from 'chess.js';
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
-  import type { Move } from '../types';
 
-  const engine: Chess = getContext('engine');
-  const move: Writable<Move> = getContext('move');
+  const move: Writable<number> = getContext('move');
   const position: Writable<string> = getContext('position');
 
-  const history = engine.history({ verbose: true });
-  const nbMoves = history.length;
+  const history: Writable<Move[]> = getContext('history');
+  const nbMoves = $history.length;
 
-
-  const clickNext = () => {
-    position.set($move.after);
-    move.set({ ...history[$move.index + 1], index: $move.index + 1});
-  };
+  const clickBackward = () => {
+    move.set(0);
+    position.set($history[$move].before);
+  }
 
   const clickPrevious = () => {
-    move.set({ ...history[$move.index - 1], index: $move.index - 1});
-    position.set($move.before);
+    move.set($move - 1);
+    position.set($history[$move].before);
   };
+
+  const clickNext = () => {
+    position.set($history[$move].after);
+    move.set($move + 1);
+  };
+
+  const clickForward = () => {
+    position.set($history[nbMoves - 1].after);
+    move.set(nbMoves);
+  }
 </script>
 
 <div class="flex gap-2">
-  <button type="button" class="btn-icon btn-icon-lg variant-filled rounded-md grow">
+  <button
+    type="button"
+    class="btn-icon btn-icon-lg variant-filled rounded-md grow"
+    on:click={clickBackward}
+    disabled={$move === 0}
+  >
     <svg
       class="w-6 h-6"
       aria-hidden="true"
@@ -45,7 +57,7 @@
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
     on:click={clickPrevious}
-    disabled={!$move || $move.index <= 0}
+    disabled={$move <= 0}
   >
     <svg
       class="w-6 h-6"
@@ -69,7 +81,7 @@
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
     on:click={clickNext}
-    disabled={!$move || $move.index >= nbMoves}
+    disabled={$move >= nbMoves}
   >
     <svg
       class="w-6 h-6"
@@ -89,7 +101,12 @@
       />
     </svg>
   </button>
-  <button type="button" class="btn-icon btn-icon-lg variant-filled rounded-md grow">
+  <button
+    type="button"
+    class="btn-icon btn-icon-lg variant-filled rounded-md grow"
+    on:click={clickForward}
+    disabled={$move === nbMoves}
+  >
     <svg
       class="w-6 h-6"
       aria-hidden="true"

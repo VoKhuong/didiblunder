@@ -9,15 +9,17 @@
   import { writable } from 'svelte/store';
 
   setContext('engine', new Chess());
-  setContext('move', writable());
+  setContext('history', writable([]));
   const position = writable(DEFAULT_POSITION);
   setContext('position', position);
+  setContext('move', writable(0));
+  
 
   let value = 0;
 </script>
 
 <div class="flex flex-wrap justify-center my-6 gap-6">
-  <div class="size-4/5 md:size-1/2 flex gap-x-4">
+  <div class="size-4/5 md:size-3/5 lg:size-2/5 flex gap-x-4">
     <EvaluationBar score={value} />
     <div class="grow">
       <Chessboard />

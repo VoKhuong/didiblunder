@@ -3,20 +3,21 @@
   import type { Writable } from 'svelte/store';
   import type { Chess } from 'chess.js';
   import { FileButton } from '@skeletonlabs/skeleton';
-  import type { Move } from '../../types';
+  import { type Move } from 'chess.js';
 
   export function load(): void {
     if (loader === 'pgn') {
       engine.loadPgn(strPgn);
-      const firstMove: Move = { ...engine.history({verbose: true})[0], index: 0};
-      position.set(firstMove.before);
-      move.set(firstMove);
+      history.set(engine.history({verbose: true}));
+      move.set(0);
+      position.set($history[0].before);
     }
   }
 
   const engine: Chess = getContext('engine');
   const position: Writable<string> = getContext('position');
-  const move: Writable<Move> = getContext('move');
+  const move: Writable<number> = getContext('move');
+  const history: Writable<Move[]> = getContext('history');
 
   let loader: string = 'pgn';
 

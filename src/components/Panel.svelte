@@ -1,8 +1,9 @@
 <script lang="ts">
   import { TabGroup, Tab } from '@skeletonlabs/skeleton';
   import Load from './tabs/Load.svelte';
-  import ButtonFooter from './ButtonFooter.svelte';
-  import NavigationFooter from './NavigationFooter.svelte';
+  import ButtonFooter from './tabs/footers/ButtonFooter.svelte';
+  import NavigationFooter from './tabs/footers/NavigationFooter.svelte';
+  import Report from './tabs/Report.svelte';
 
   let currentTab: string = 'load';
 
@@ -10,10 +11,7 @@
 </script>
 
 <div class="card p-4 h-full flex flex-col">
-  <header class="card-header">
-    <h3 class="h3 text-center">🔎 Analysis</h3>
-  </header>
-  <section class="my-4 grow">
+  <section class="mb-4 grow">
     <TabGroup justify="justify-center">
       <Tab bind:group={currentTab} name="load" value="load">💾 Load</Tab>
       <Tab bind:group={currentTab} name="report" value="report">📊 Report</Tab>
@@ -22,7 +20,7 @@
         {#if currentTab === 'load'}
           <Load bind:load />
         {:else if currentTab === 'report'}
-          (tab panel 2 contents)
+          <Report />
         {:else if currentTab === 'settings'}
           (tab panel 3 contents)
         {/if}
