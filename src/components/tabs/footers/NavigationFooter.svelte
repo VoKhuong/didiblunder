@@ -10,23 +10,23 @@
   const nbMoves = $history.length;
 
   const clickBackward = () => {
-    move.set(0);
-    position.set($history[$move].before);
+    position.set($history[0].before);
+    move.set(-1);
   }
 
   const clickPrevious = () => {
-    move.set($move - 1);
     position.set($history[$move].before);
+    move.set($move - 1);
   };
 
   const clickNext = () => {
-    position.set($history[$move].after);
     move.set($move + 1);
+    position.set($history[$move].after);
   };
 
   const clickForward = () => {
-    position.set($history[nbMoves - 1].after);
-    move.set(nbMoves);
+    move.set(nbMoves - 1);
+    position.set($history[$move].after);
   }
 </script>
 
@@ -35,7 +35,7 @@
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
     on:click={clickBackward}
-    disabled={$move === 0}
+    disabled={$move < 0}
   >
     <svg
       class="w-6 h-6"
@@ -57,7 +57,7 @@
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
     on:click={clickPrevious}
-    disabled={$move <= 0}
+    disabled={$move < 0}
   >
     <svg
       class="w-6 h-6"
@@ -81,7 +81,7 @@
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
     on:click={clickNext}
-    disabled={$move >= nbMoves}
+    disabled={$move >= nbMoves - 1}
   >
     <svg
       class="w-6 h-6"
@@ -105,7 +105,7 @@
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
     on:click={clickForward}
-    disabled={$move === nbMoves}
+    disabled={$move >= nbMoves - 1}
   >
     <svg
       class="w-6 h-6"
