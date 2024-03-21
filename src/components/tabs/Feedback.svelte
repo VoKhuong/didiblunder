@@ -7,6 +7,6 @@
 </script>
 
 <div class="flex text-xl items-center">
-  <EvaluationIcon evaluation={evaluation} />
+  <EvaluationIcon {evaluation} />
   {san}
 </div>

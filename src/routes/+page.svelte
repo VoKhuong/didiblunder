@@ -13,7 +13,6 @@
   const position = writable(DEFAULT_POSITION);
   setContext('position', position);
   setContext('move', writable(0));
-  
 
   let value = 0;
 </script>

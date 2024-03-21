@@ -1,5 +1,5 @@
 <script lang="ts">
-  // @ts-ignore
+  // @ts-expect-error
   import { Chessboard } from 'cm-chessboard/src/Chessboard';
   import { DEFAULT_POSITION } from 'chess.js';
 

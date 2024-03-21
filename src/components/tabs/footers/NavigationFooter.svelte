@@ -12,7 +12,7 @@
   const clickBackward = () => {
     position.set($history[0].before);
     move.set(-1);
-  }
+  };
 
   const clickPrevious = () => {
     position.set($history[$move].before);
@@ -27,7 +27,7 @@
   const clickForward = () => {
     move.set(nbMoves - 1);
     position.set($history[$move].after);
-  }
+  };
 </script>
 
 <div class="flex gap-2">
