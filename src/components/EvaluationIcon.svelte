@@ -1,0 +1,181 @@
+<script lang="ts">
+  import Evaluation from '$models/Evaluation';
+
+  export let evaluation: Evaluation;
+  let className: string = 'w-6 h-6';
+  export { className as class };
+</script>
+
+{#if evaluation === Evaluation.BRILLIANT}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M7.05 4.05A7 7 0 0 1 19 9c0 2.407-1.197 3.874-2.186 5.084l-.04.048C15.77 15.362 15 16.34 15 18a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1c0-1.612-.77-2.613-1.78-3.875l-.045-.056C6.193 12.842 5 11.352 5 9a7 7 0 0 1 2.05-4.95ZM9 21a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2h-4a1 1 0 0 1-1-1Zm1.586-13.414A2 2 0 0 1 12 7a1 1 0 1 0 0-2 4 4 0 0 0-4 4 1 1 0 0 0 2 0 2 2 0 0 1 .586-1.414Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{:else if evaluation === Evaluation.GREAT}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v5a1 1 0 1 0 2 0V8Zm-1 7a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H12Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{:else if evaluation === Evaluation.BEST}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
+    />
+  </svg>
+{:else if evaluation === Evaluation.EXCELLENT}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M15.03 9.684h3.965c.322 0 .64.08.925.232.286.153.532.374.717.645a2.109 2.109 0 0 1 .242 1.883l-2.36 7.201c-.288.814-.48 1.355-1.884 1.355-2.072 0-4.276-.677-6.157-1.256-.472-.145-.924-.284-1.348-.404h-.115V9.478a25.485 25.485 0 0 0 4.238-5.514 1.8 1.8 0 0 1 .901-.83 1.74 1.74 0 0 1 1.21-.048c.396.13.736.397.96.757.225.36.32.788.269 1.211l-1.562 4.63ZM4.177 10H7v8a2 2 0 1 1-4 0v-6.823C3 10.527 3.527 10 4.176 10Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{:else if evaluation === Evaluation.GOOD}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{:else if evaluation === Evaluation.BOOK}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M11 4.717c-2.286-.58-4.16-.756-7.045-.71A1.99 1.99 0 0 0 2 6v11c0 1.133.934 2.022 2.044 2.007 2.759-.038 4.5.16 6.956.791V4.717Zm2 15.081c2.456-.631 4.198-.829 6.956-.791A2.013 2.013 0 0 0 22 16.999V6a1.99 1.99 0 0 0-1.955-1.993c-2.885-.046-4.76.13-7.045.71v15.081Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{:else if evaluation === Evaluation.INACCURACY}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm9.008-3.018a1.502 1.502 0 0 1 2.522 1.159v.024a1.44 1.44 0 0 1-1.493 1.418 1 1 0 0 0-1.037.999V14a1 1 0 1 0 2 0v-.539a3.44 3.44 0 0 0 2.529-3.256 3.502 3.502 0 0 0-7-.255 1 1 0 0 0 2 .076c.014-.398.187-.774.48-1.044Zm.982 7.026a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2h-.01Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{:else if evaluation === Evaluation.MISTAKE}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M8.97 14.316H5.004c-.322 0-.64-.08-.925-.232a2.022 2.022 0 0 1-.717-.645 2.108 2.108 0 0 1-.242-1.883l2.36-7.201C5.769 3.54 5.96 3 7.365 3c2.072 0 4.276.678 6.156 1.256.473.145.925.284 1.35.404h.114v9.862a25.485 25.485 0 0 0-4.238 5.514c-.197.376-.516.67-.901.83a1.74 1.74 0 0 1-1.21.048 1.79 1.79 0 0 1-.96-.757 1.867 1.867 0 0 1-.269-1.211l1.562-4.63ZM19.822 14H17V6a2 2 0 1 1 4 0v6.823c0 .65-.527 1.177-1.177 1.177Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{:else if evaluation === Evaluation.MISSED}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{:else if evaluation === Evaluation.BLUNDER}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M8.597 3.2A1 1 0 0 0 7.04 4.289a3.49 3.49 0 0 1 .057 1.795 3.448 3.448 0 0 1-.84 1.575.999.999 0 0 0-.077.094c-.596.817-3.96 5.6-.941 10.762l.03.049a7.73 7.73 0 0 0 2.917 2.602 7.617 7.617 0 0 0 3.772.829 8.06 8.06 0 0 0 3.986-.975 8.185 8.185 0 0 0 3.04-2.864c1.301-2.2 1.184-4.556.588-6.441-.583-1.848-1.68-3.414-2.607-4.102a1 1 0 0 0-1.594.757c-.067 1.431-.363 2.551-.794 3.431-.222-2.407-1.127-4.196-2.224-5.524-1.147-1.39-2.564-2.3-3.323-2.788a8.487 8.487 0 0 1-.432-.287Z"
+    />
+  </svg>
+{:else if evaluation === Evaluation.FORCED}
+  <svg
+    class={className}
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M5.5 3a1 1 0 0 0 0 2H7v2.333a3 3 0 0 0 .556 1.74l1.57 2.814A1.1 1.1 0 0 0 9.2 12a.998.998 0 0 0-.073.113l-1.57 2.814A3 3 0 0 0 7 16.667V19H5.5a1 1 0 1 0 0 2h13a1 1 0 1 0 0-2H17v-2.333a3 3 0 0 0-.56-1.745l-1.616-2.82a1 1 0 0 0-.067-.102 1 1 0 0 0 .067-.103l1.616-2.819A3 3 0 0 0 17 7.333V5h1.5a1 1 0 1 0 0-2h-13Z"
+      clip-rule="evenodd"
+    />
+  </svg>
+{/if}
