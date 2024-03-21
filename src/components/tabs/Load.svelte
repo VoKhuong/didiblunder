@@ -9,7 +9,7 @@
     if (loader === 'pgn') {
       engine.loadPgn(strPgn);
       history.set(engine.history({ verbose: true }));
-      move.set(0);
+      move.set(-1);
       position.set($history[0].before);
     }
   }

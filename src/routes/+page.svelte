@@ -12,7 +12,7 @@
   setContext('history', writable([]));
   const position = writable(DEFAULT_POSITION);
   setContext('position', position);
-  setContext('move', writable(0));
+  setContext('move', writable(-1));
 
   let value = 0;
 </script>
