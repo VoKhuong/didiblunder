@@ -1,5 +1,5 @@
-import type { TableSource } from "@skeletonlabs/skeleton";
-import type { Move } from "chess.js";
+import type { TableSource } from '@skeletonlabs/skeleton';
+import type { Move } from 'chess.js';
 
 export function toTableSource(history: Move[]): TableSource {
   const source: TableSource = {
@@ -17,4 +17,8 @@ export function toTableSource(history: Move[]): TableSource {
   }
 
   return source;
+}
+
+export function getMoveNumber(tabIndex: string) {
+  return (parseInt(tabIndex.substring(0, tabIndex.length - 1)) - 1) * 2;
 }
