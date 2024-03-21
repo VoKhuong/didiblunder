@@ -5,14 +5,9 @@
   import { getContext } from "svelte";
   import type { Writable } from "svelte/store";
 
-  let data: TableSource = {
-    head: [],
-    body: []
-  };
-
   const history: Writable<Move[]> = getContext('history');
 
-  history.subscribe(x => data = toTableSource(x));
+  let data: TableSource = toTableSource($history);
 </script>
 
 <div class="h-28 md:h-32 lg:h-56 overflow-y-auto">
