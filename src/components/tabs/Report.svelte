@@ -25,4 +25,4 @@
 <div class="h-28 md:h-32 lg:h-56 mb-2 overflow-y-auto">
   <Table source={data} interactive on:selected={onSelected} />
 </div>
-<Feedback {san} evaluation={Object.values(Evaluation)[$move % Object.keys(Evaluation).length]} />
+<Feedback {san} score={'+0.28'} evaluation={Object.values(Evaluation)[$move % Object.keys(Evaluation).length]} />
