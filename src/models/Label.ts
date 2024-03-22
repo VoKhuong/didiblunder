@@ -9,7 +9,8 @@ export enum Label {
   MISTAKE = 'Mistake',
   MISSED = 'Missed',
   BLUNDER = 'Blunder',
-  FORCED = 'Forced'
+  FORCED = 'Forced',
+  UNDEFINED = 'Undefined'
 }
 
 export default Label;
