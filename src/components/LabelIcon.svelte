@@ -1,12 +1,12 @@
 <script lang="ts">
-  import Evaluation from '$models/Evaluation';
+  import Label from '$models/Label';
 
-  export let evaluation: Evaluation;
+  export let label: Label;
   let className: string = 'w-6 h-6';
   export { className as class };
 </script>
 
-{#if evaluation === Evaluation.BRILLIANT}
+{#if label === Label.BRILLIANT}
   <svg
     class={className}
     aria-hidden="true"
@@ -22,7 +22,7 @@
       clip-rule="evenodd"
     />
   </svg>
-{:else if evaluation === Evaluation.GREAT}
+{:else if label === Label.GREAT}
   <svg
     class={className}
     aria-hidden="true"
@@ -38,7 +38,7 @@
       clip-rule="evenodd"
     />
   </svg>
-{:else if evaluation === Evaluation.BEST}
+{:else if label === Label.BEST}
   <svg
     class={className}
     aria-hidden="true"
@@ -52,7 +52,7 @@
       d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"
     />
   </svg>
-{:else if evaluation === Evaluation.EXCELLENT}
+{:else if label === Label.EXCELLENT}
   <svg
     class={className}
     aria-hidden="true"
@@ -68,7 +68,7 @@
       clip-rule="evenodd"
     />
   </svg>
-{:else if evaluation === Evaluation.GOOD}
+{:else if label === Label.GOOD}
   <svg
     class={className}
     aria-hidden="true"
@@ -84,7 +84,7 @@
       clip-rule="evenodd"
     />
   </svg>
-{:else if evaluation === Evaluation.BOOK}
+{:else if label === Label.BOOK}
   <svg
     class={className}
     aria-hidden="true"
@@ -100,7 +100,7 @@
       clip-rule="evenodd"
     />
   </svg>
-{:else if evaluation === Evaluation.INACCURACY}
+{:else if label === Label.INACCURACY}
   <svg
     class={className}
     aria-hidden="true"
@@ -116,7 +116,7 @@
       clip-rule="evenodd"
     />
   </svg>
-{:else if evaluation === Evaluation.MISTAKE}
+{:else if label === Label.MISTAKE}
   <svg
     class={className}
     aria-hidden="true"
@@ -132,7 +132,7 @@
       clip-rule="evenodd"
     />
   </svg>
-{:else if evaluation === Evaluation.MISSED}
+{:else if label === Label.MISSED}
   <svg
     class={className}
     aria-hidden="true"
@@ -148,7 +148,7 @@
       clip-rule="evenodd"
     />
   </svg>
-{:else if evaluation === Evaluation.BLUNDER}
+{:else if label === Label.BLUNDER}
   <svg
     class={className}
     aria-hidden="true"
@@ -162,7 +162,7 @@
       d="M8.597 3.2A1 1 0 0 0 7.04 4.289a3.49 3.49 0 0 1 .057 1.795 3.448 3.448 0 0 1-.84 1.575.999.999 0 0 0-.077.094c-.596.817-3.96 5.6-.941 10.762l.03.049a7.73 7.73 0 0 0 2.917 2.602 7.617 7.617 0 0 0 3.772.829 8.06 8.06 0 0 0 3.986-.975 8.185 8.185 0 0 0 3.04-2.864c1.301-2.2 1.184-4.556.588-6.441-.583-1.848-1.68-3.414-2.607-4.102a1 1 0 0 0-1.594.757c-.067 1.431-.363 2.551-.794 3.431-.222-2.407-1.127-4.196-2.224-5.524-1.147-1.39-2.564-2.3-3.323-2.788a8.487 8.487 0 0 1-.432-.287Z"
     />
   </svg>
-{:else if evaluation === Evaluation.FORCED}
+{:else if label === Label.FORCED}
   <svg
     class={className}
     aria-hidden="true"

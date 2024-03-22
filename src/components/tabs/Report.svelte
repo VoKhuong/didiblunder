@@ -5,7 +5,7 @@
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
   import Feedback from './Feedback.svelte';
-  import Evaluation from '$models/Evaluation';
+  import Label from '$models/Label';
 
   const history: Writable<Move[]> = getContext('history');
   const move: Writable<number> = getContext('move');
@@ -25,4 +25,4 @@
 <div class="h-28 md:h-32 lg:h-56 mb-2 overflow-y-auto">
   <Table source={data} interactive on:selected={onSelected} />
 </div>
-<Feedback {san} score={'+0.28'} evaluation={Object.values(Evaluation)[$move % Object.keys(Evaluation).length]} />
+<Feedback {san} score={'+0.28'} label={Object.values(Label)[$move % Object.keys(Label).length]} />
