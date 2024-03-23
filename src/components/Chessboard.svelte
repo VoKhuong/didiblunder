@@ -26,7 +26,7 @@
     });
   });
 
-  position.subscribe((x) => board?.setPosition(x, true));
+  $: board?.setPosition($position, true);
 </script>
 
 <div class="w-full" bind:this={boardElement}></div>

@@ -19,12 +19,10 @@
   const evaluation: Writable<Evaluation> = writable({ label: Label.UNDEFINED, score: 0 });
   setContext('evaluation', evaluation);
 
-  move.subscribe((x) =>
-    evaluation.set({
-      label: Object.values(Label)[$move % Object.keys(Label).length],
-      score: Math.random() * 10
-    })
-  );
+  $: evaluation.set({
+    label: Object.values(Label)[$move % Object.keys(Label).length],
+    score: Math.random() * 10
+  });
 </script>
 
 <div class="flex flex-wrap justify-center my-6 gap-6">
