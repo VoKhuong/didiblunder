@@ -1,4 +1,4 @@
-import type Label from "./Label";
+import type Label from './Label';
 
 export type Evaluation = {
   label: Label;

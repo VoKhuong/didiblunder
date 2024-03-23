@@ -9,7 +9,7 @@
 </script>
 
 <div class="flex justify-center items-center {getLabelClassColor(label)}">
-  <LabelIcon label={label} class="w-8 h-8" />
+  <LabelIcon {label} class="w-8 h-8" />
   <strong class="h3 font-semibold ml-2 mr-8">{san}</strong>
   <span class="chip variant-filled cursor-default">{score}</span>
 </div>
