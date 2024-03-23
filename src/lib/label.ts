@@ -28,3 +28,32 @@ export function getLabelClassColor(label: Label): string {
       return '';
   }
 }
+
+export function getLabelHexColor(label: Label): string {
+  switch (label) {
+    case Label.BRILLIANT:
+      return '#2dd4bf';
+    case Label.GREAT:
+      return '#0ea5e9';
+    case Label.BEST:
+      return '#10b981';
+    case Label.EXCELLENT:
+      return '#84cc16';
+    case Label.GOOD:
+      return '#639911';
+    case Label.BOOK:
+      return '#78716c';
+    case Label.INACCURACY:
+      return '#f0ca52';
+    case Label.MISTAKE:
+      return '#fb923c';
+    case Label.MISSED:
+      return '#d41976';
+    case Label.BLUNDER:
+      return '#dc2626';
+    case Label.FORCED:
+      return '#737373';
+    default:
+      return 'none';
+  }
+}
