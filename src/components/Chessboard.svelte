@@ -5,17 +5,24 @@
 
   import { getContext, onMount } from 'svelte';
   import type { Writable } from 'svelte/store';
+  import type { Evaluation } from '$models/Evaluation';
+  import { EvaluationMarkerExtension } from '$lib/extension';
 
   let boardElement: HTMLDivElement;
+
   let board: Chessboard;
 
   const position: Writable<string> = getContext('position');
+  const evaluation: Writable<Evaluation> = getContext('evaluation');
 
   onMount(async () => {
     board = new Chessboard(boardElement, {
       position: DEFAULT_POSITION,
       assetsUrl: '../../node_modules/cm-chessboard/assets/',
-      animationDuration: 50
+      animationDuration: 50,
+      extensions: [{
+        class: EvaluationMarkerExtension
+      }]
     });
   });
 
