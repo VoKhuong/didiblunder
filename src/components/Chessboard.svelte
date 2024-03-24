@@ -8,6 +8,8 @@
   import type { Evaluation } from '$models/Evaluation';
   import { EvaluationMarkerExtension } from '$lib/extension';
   import type { Settings } from '$models/Settings';
+  import { playMoveTypeSound } from '$lib/media';
+  import { getMoveType } from '$lib/chess';
 
   let boardElement: HTMLDivElement;
 
@@ -46,6 +48,7 @@
   $: board?.setPosition($position, true);
   $: {
     if ($history.length > 0 && $move >= 0) {
+      playMoveTypeSound(getMoveType($history[$move].san));
       board?.setMarkers([
         {
           square: $history[$move].from,
