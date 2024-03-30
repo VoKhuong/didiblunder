@@ -9,7 +9,7 @@
   import type { Evaluation } from '$models/Evaluation';
   import Label from '$models/Label';
 
-  setContext('engine', new Chess());
+  setContext('chess', new Chess());
   const history = writable([]);
   setContext('history', history);
   const position = writable(DEFAULT_POSITION);

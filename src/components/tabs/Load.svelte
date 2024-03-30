@@ -7,14 +7,14 @@
 
   export function load(): void {
     if (loader === 'pgn') {
-      engine.loadPgn(strPgn);
-      history.set(engine.history({ verbose: true }));
+      chess.loadPgn(strPgn);
+      history.set(chess.history({ verbose: true }));
       move.set(-1);
       position.set($history[0].before);
     }
   }
 
-  const engine: Chess = getContext('engine');
+  const chess: Chess = getContext('chess');
   const position: Writable<string> = getContext('position');
   const move: Writable<number> = getContext('move');
   const history: Writable<Move[]> = getContext('history');
