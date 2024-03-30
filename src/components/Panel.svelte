@@ -4,10 +4,30 @@
   import ButtonFooter from './tabs/footers/ButtonFooter.svelte';
   import NavigationFooter from './tabs/footers/NavigationFooter.svelte';
   import Report from './tabs/Report.svelte';
+  import { getContext } from 'svelte';
+  import type { Chess, Move } from 'chess.js';
+  import type { Writable } from 'svelte/store';
 
   let currentTab: string = 'load';
 
-  let load: () => void = () => {};
+  // Load
+  let strPgn: string = '';
+
+  const onChangeStrPgn = (newPgn: string) => {
+    strPgn = newPgn;
+  }
+
+  const load = () => {
+    chess.loadPgn(strPgn);
+    history.set(chess.history({ verbose: true }));
+    move.set(-1);
+    position.set($history[0].before);
+  }
+
+  const chess: Chess = getContext('chess');
+  const position: Writable<string> = getContext('position');
+  const move: Writable<number> = getContext('move');
+  const history: Writable<Move[]> = getContext('history');
 </script>
 
 <div class="card p-4 h-full flex flex-col">
@@ -18,7 +38,7 @@
       <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
       <svelte:fragment slot="panel">
         {#if currentTab === 'load'}
-          <Load bind:load />
+          <Load onChange={onChangeStrPgn} />
         {:else if currentTab === 'report'}
           <Report />
         {:else if currentTab === 'settings'}

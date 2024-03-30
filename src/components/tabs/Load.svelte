@@ -1,28 +1,12 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
-  import type { Writable } from 'svelte/store';
-  import type { Chess } from 'chess.js';
   import { FileButton } from '@skeletonlabs/skeleton';
-  import { type Move } from 'chess.js';
 
-  export function load(): void {
-    if (loader === 'pgn') {
-      chess.loadPgn(strPgn);
-      history.set(chess.history({ verbose: true }));
-      move.set(-1);
-      position.set($history[0].before);
-    }
-  }
-
-  const chess: Chess = getContext('chess');
-  const position: Writable<string> = getContext('position');
-  const move: Writable<number> = getContext('move');
-  const history: Writable<Move[]> = getContext('history');
+  export let onChange: (pgn: string) => void = (pgn) => console.log('pgn => ', pgn);
 
   let loader: string = 'pgn';
+  let strPgn: string = '';
 
   // PGN fields
-  let strPgn: string;
   let disabled: boolean = false;
   let filename: string = '';
   let filesPgn: FileList;
@@ -40,7 +24,7 @@
     }
   }
 
-  $: console.log(loader);
+  $: onChange(strPgn);
 </script>
 
 <div class="flex items-center">
