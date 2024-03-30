@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "chess.js": "^1.0.0-beta.8",
-    "cm-chessboard": "^8.5.0"
+    "cm-chessboard": "^8.5.0",
+    "stockfish": "^16.0.0"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "2.8.0",
