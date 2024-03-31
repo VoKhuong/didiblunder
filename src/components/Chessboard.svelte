@@ -20,8 +20,13 @@
   onMount(async () => {
     board = new Chessboard(boardElement, {
       position: DEFAULT_POSITION,
-      assetsUrl: '../../node_modules/cm-chessboard/assets/',
+      assetsUrl: '/',
       animationDuration: 50,
+      style: {
+        pieces: {
+          file: 'standard.svg'
+        }
+      },
       extensions: [
         {
           class: EvaluationMarkerExtension
