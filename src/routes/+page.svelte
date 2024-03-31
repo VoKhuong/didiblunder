@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext } from 'svelte';
+  import { onMount, setContext } from 'svelte';
   import { Chess, DEFAULT_POSITION } from 'chess.js';
 
   import Chessboard from '../components/Chessboard.svelte';
@@ -8,7 +8,18 @@
   import { writable, type Writable } from 'svelte/store';
   import type { Evaluation } from '$models/Evaluation';
   import Label from '$models/Label';
+  import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
 
+
+  let worker: Worker | undefined = undefined;
+
+
+  onMount(() => {
+    worker = new Stockfish();
+    worker.onmessage = ({ data }) => console.log(`page got message: ${data}`);
+    worker.postMessage('isready');
+    worker.onerror = (ev) => console.log(`page got error: ${ev.message}`);
+  });
   setContext('chess', new Chess());
   const history = writable([]);
   setContext('history', history);

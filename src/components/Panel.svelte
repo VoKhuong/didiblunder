@@ -15,14 +15,16 @@
 
   const onChangeStrPgn = (newPgn: string) => {
     strPgn = newPgn;
-  }
+  };
 
   const load = () => {
     chess.loadPgn(strPgn);
     history.set(chess.history({ verbose: true }));
     move.set(-1);
     position.set($history[0].before);
-  }
+    // analyze
+    currentTab = 'report';
+  };
 
   const chess: Chess = getContext('chess');
   const position: Writable<string> = getContext('position');
