@@ -1,6 +1,6 @@
+import type { RawEval } from './Engine';
 import type Label from './Label';
 
-export type Evaluation = {
+export type Evaluation = RawEval & {
   label: Label;
-  score: number;
 };
