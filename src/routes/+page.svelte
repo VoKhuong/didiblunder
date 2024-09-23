@@ -8,7 +8,7 @@
   import { writable, type Writable } from 'svelte/store';
   import type { Evaluation } from '$models/Evaluation';
   import Label from '$models/Label';
-  import { init, analyze } from '$lib/engine';
+  import { init, analyze_move } from '$lib/engine';
 
   let worker: Worker | undefined = undefined;
 
@@ -23,12 +23,14 @@
   setContext('position', position);
   const move = writable(-1);
   setContext('move', move);
-  const evaluation: Writable<Evaluation> = writable({ label: Label.UNDEFINED, score: 0 });
+  const evaluation: Writable<Evaluation> = writable({ label: Label.UNDEFINED, score: 0, type: "cp", pv: "" });
   setContext('evaluation', evaluation);
 
   $: evaluation.set({
     label: Object.values(Label)[$move % Object.keys(Label).length],
-    score: Math.random() * 10
+    score: Math.random() * 10,
+    type: "cp",
+    pv: ""
   });
 
   let command = '';
@@ -49,4 +51,4 @@
 <input class="input" type="text" bind:value={command} />
 <button class="btn" type="button" on:click={() => worker?.postMessage(command)}>RUN COMMAND</button>
 
-<button class="btn" type="button" on:click={() => worker ? analyze(worker, $position, 15) : null}>GO</button>
+<button class="btn" type="button" on:click={() => worker ? analyze_move(worker, $position, 15) : null}>GO</button>
