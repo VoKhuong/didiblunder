@@ -6,7 +6,8 @@
   import Report from './tabs/Report.svelte';
   import { getContext } from 'svelte';
   import type { Chess, Move } from 'chess.js';
-  import type { Writable } from 'svelte/store';
+  import type { Readable, Writable } from 'svelte/store';
+  import { analyze_game } from '$lib/engine';
 
   let currentTab: string = 'load';
 
@@ -17,12 +18,13 @@
     strPgn = newPgn;
   };
 
-  const load = () => {
+  const load = async () => {
     chess.loadPgn(strPgn);
     history.set(chess.history({ verbose: true }));
     move.set(-1);
     position.set($history[0].before);
-    // analyze
+    const report = await analyze_game($engine, $history, 15);
+    console.log(report);
     currentTab = 'report';
   };
 
@@ -30,6 +32,8 @@
   const position: Writable<string> = getContext('position');
   const move: Writable<number> = getContext('move');
   const history: Writable<Move[]> = getContext('history');
+  const engine: Readable<Worker> = getContext('engine');
+
 </script>
 
 <div class="card p-4 h-full flex flex-col">

@@ -20,10 +20,14 @@ export function init() {
   return worker;
 }
 
-export async function analyze_game(worker: Worker, history: Move[], depth: number) {
-  for (const move in history) {
-    // TODO
+export async function analyze_game(worker: Worker, history: Move[], depth: number): Promise<Evaluation[]> {
+  const evaluations: Evaluation[] = [];
+  console.log('analyze => ', worker);
+
+  for (const move of history) {
+    evaluations.push(await analyze_move(worker, move.after, depth));
   }
+  return evaluations;
 }
 
 export async function analyze_move(worker: Worker, fen: string, depth: number): Promise<Evaluation> {
@@ -49,7 +53,6 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
       // Info best line
       if (regexInfo.test(data)) {
         const match = data.match(/score (\w+) (-?\d+).*pv (.*)/);
-        console.log('data => ', data);
         result = {
           type: match?.at(1)! as "cp" | "mate",
           score: parseInt(match?.at(2)!),

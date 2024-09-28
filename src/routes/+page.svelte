@@ -5,17 +5,14 @@
   import Chessboard from '../components/Chessboard.svelte';
   import EvaluationBar from '../components/EvaluationBar.svelte';
   import Panel from '../components/Panel.svelte';
-  import { writable, type Writable } from 'svelte/store';
+  import { readonly, writable, type Writable } from 'svelte/store';
   import type { Evaluation } from '$models/Evaluation';
   import Label from '$models/Label';
   import { init, analyze_move } from '$lib/engine';
 
-  let worker: Worker | undefined = undefined;
-
   onMount(() => {
-    worker = init();
+    engine.set(init());
   });
-  setContext('engine', worker);
   setContext('chess', new Chess());
   const history: Writable<Move[]> = writable([]);
   setContext('history', history);
@@ -25,6 +22,9 @@
   setContext('move', move);
   const evaluation: Writable<Evaluation> = writable({ label: Label.UNDEFINED, score: 0, type: "cp", pv: "" });
   setContext('evaluation', evaluation);
+  const engine: Writable<Worker> = writable();
+  const exposedEngine = readonly(engine);
+  setContext('engine', exposedEngine);
 
   $: evaluation.set({
     label: Object.values(Label)[$move % Object.keys(Label).length],
@@ -49,6 +49,6 @@
 </div>
 <p>{$position}</p>
 <input class="input" type="text" bind:value={command} />
-<button class="btn" type="button" on:click={() => worker?.postMessage(command)}>RUN COMMAND</button>
+<button class="btn" type="button" on:click={() => $exposedEngine?.postMessage(command)}>RUN COMMAND</button>
 
-<button class="btn" type="button" on:click={() => worker ? analyze_move(worker, $position, 15) : null}>GO</button>
+<button class="btn" type="button" on:click={() => $exposedEngine ? analyze_move($exposedEngine, $position, 15) : null}>GO</button>
