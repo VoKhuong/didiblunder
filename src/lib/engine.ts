@@ -48,8 +48,8 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
 
       // Info best line
       if (regexInfo.test(data)) {
-        const match = data.match(/score (\w+) (\d+).*pv (.*)/);
-
+        const match = data.match(/score (\w+) (-?\d+).*pv (.*)/);
+        console.log('data => ', data);
         result = {
           type: match?.at(1)! as "cp" | "mate",
           score: parseInt(match?.at(2)!),
