@@ -32,7 +32,7 @@
       type: "cp",
       pv: "",
       label: Label.UNDEFINED
-    };
+    } as Evaluation;
   });
   setContext('evaluation', evaluation);
 
@@ -41,7 +41,7 @@
 
 <div class="flex flex-wrap justify-center my-6 gap-6">
   <div class="size-4/5 md:size-3/5 lg:size-2/5 flex gap-x-4">
-    <EvaluationBar score={$evaluation.score / 100} />
+    <EvaluationBar evaluation={$evaluation} />
     <div class="grow">
       <Chessboard />
     </div>

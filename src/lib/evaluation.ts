@@ -1,7 +1,6 @@
 import type { Evaluation } from "$models/Evaluation";
 
 export function formatScore(evaluation: Evaluation) {
-    console.log('format => ', evaluation);
     if (evaluation.type === "mate") {
         return `M${Math.abs(evaluation.score)}`;
     } else {
@@ -9,6 +8,6 @@ export function formatScore(evaluation: Evaluation) {
             signDisplay: 'always',
             minimumFractionDigits: 0,
             maximumFractionDigits: 2
-        })
+        });
     }
 }
