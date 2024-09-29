@@ -6,6 +6,7 @@
   import type { Writable } from 'svelte/store';
   import Feedback from './Feedback.svelte';
   import type { Evaluation } from '$models/Evaluation';
+  import { formatScore } from '$lib/evaluation';
 
   const history: Writable<Move[]> = getContext('history');
   const move: Writable<number> = getContext('move');
@@ -15,15 +16,18 @@
   let data: TableSource = toTableSource($history);
   let san: string = $history[$move]?.san;
 
+  let score: string;
+
   const onSelected = (meta: CustomEvent) => {
     move.set(getMoveNumber(meta.detail[0]));
     position.set($history[$move].after);
   };
 
   $: san = $history[$move]?.san;
+  $: score = formatScore($evaluation);
 </script>
 
 <div class="h-28 md:h-32 lg:h-56 mb-2 overflow-y-auto">
   <Table source={data} interactive on:selected={onSelected} />
 </div>
-<Feedback {san} score={'+' + $evaluation.score.toFixed(2)} label={$evaluation.label} />
+<Feedback {san} {score} label={$evaluation.label} />

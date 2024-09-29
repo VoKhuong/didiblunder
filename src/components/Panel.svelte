@@ -8,6 +8,7 @@
   import type { Chess, Move } from 'chess.js';
   import type { Readable, Writable } from 'svelte/store';
   import { analyze_game } from '$lib/engine';
+  import type { Evaluation } from '$models/Evaluation';
 
   let currentTab: string = 'load';
 
@@ -25,6 +26,7 @@
     position.set($history[0].before);
     const report = await analyze_game($engine, $history, 15);
     console.log(report);
+    evaluations.set(report);
     currentTab = 'report';
   };
 
@@ -33,6 +35,7 @@
   const move: Writable<number> = getContext('move');
   const history: Writable<Move[]> = getContext('history');
   const engine: Readable<Worker> = getContext('engine');
+  const evaluations: Writable<Evaluation[]> = getContext('evaluations');
 
 </script>
 
