@@ -1,4 +1,5 @@
 import type { Evaluation } from "$models/Evaluation";
+import type { Move } from "chess.js";
 
 export function formatScore(evaluation: Evaluation) {
   if (evaluation.type === "mate") {
@@ -27,4 +28,12 @@ export function toEvaluationHeight(evaluation: Evaluation) {
     : Math.sign(evaluation.score) > 0
       ? 1
       : 0;
+}
+
+export function isBestMove(move: Move, evaluation?: Evaluation): boolean {
+  if (evaluation?.pv.split(' ').at(0) === move.lan) {
+    return true
+  } else {
+    return false;
+  }
 }

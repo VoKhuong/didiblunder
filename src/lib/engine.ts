@@ -3,6 +3,7 @@ import type { Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
+import { isBestMove } from './evaluation';
 
 export function init() {
   const worker = new Stockfish();
@@ -24,23 +25,29 @@ export async function analyze_game(worker: Worker, history: Move[], chess: Chess
   const evaluations: Evaluation[] = [];
 
   for (const move of history) {
-    evaluations.push(await analyze_move(worker, move.after, chess, depth));
+    evaluations.push(await analyze_move(worker, move, chess, evaluations.at(-1), depth));
   }
   return evaluations;
 }
 
-export async function analyze_move(worker: Worker, fen: string, chess: Chess, depth: number): Promise<Evaluation> {
-  let result = await evaluate(worker, fen, depth);
-  chess.load(fen);
+export async function analyze_move(worker: Worker, move: Move, chess: Chess, previousEval: Evaluation | undefined, depth: number): Promise<Evaluation> {
+  let result = await evaluate(worker, move.after, depth);
+  chess.load(move.after);
   const turn = chess.turn();
+  
+  let label = Label.BOOK;
+  
+  // Compute label
+  if (isBestMove(move, previousEval)) {
+    label = Label.BEST;
+  }
 
-  // TODO
   return {
     ...result,
     score: result.type === "mate" && turn === 'w'
       ? result.score
       : -result.score,
-    label: Label.BOOK
+    label
   };
 }
 
