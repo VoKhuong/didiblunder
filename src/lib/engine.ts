@@ -22,7 +22,6 @@ export function init() {
 
 export async function analyze_game(worker: Worker, history: Move[], depth: number): Promise<Evaluation[]> {
   const evaluations: Evaluation[] = [];
-  console.log('analyze => ', worker);
 
   for (const move of history) {
     evaluations.push(await analyze_move(worker, move.after, depth));
@@ -32,8 +31,8 @@ export async function analyze_game(worker: Worker, history: Move[], depth: numbe
 
 export async function analyze_move(worker: Worker, fen: string, depth: number): Promise<Evaluation> {
   let result = await evaluate(worker, fen, depth);
-  console.log('result => ', result);
 
+  // TODO
   return {
     ...result,
     label: Label.BOOK
@@ -42,13 +41,10 @@ export async function analyze_move(worker: Worker, fen: string, depth: number): 
 
 export async function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
   return new Promise((resolve) => {
-    const messages: string[] = [];
-
     const regexInfo = new RegExp(`^info depth ${depth} .* multipv 1`);
     let result: RawEval;
 
     worker.onmessage = ({ data }: { data: string }) => {
-      messages.push(data);
 
       // Info best line
       if (regexInfo.test(data)) {
@@ -62,8 +58,6 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
 
       // Last message
       if (data.startsWith('bestmove')) {
-        console.log(messages);
-
         resolve(result);
       }
     };
