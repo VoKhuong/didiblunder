@@ -5,7 +5,7 @@ export function formatScore(evaluation: Evaluation) {
         return `M${Math.abs(evaluation.score)}`;
     } else {
         return (evaluation.score / 100).toLocaleString(undefined, {
-            signDisplay: 'always',
+            signDisplay: 'exceptZero',
             minimumFractionDigits: 0,
             maximumFractionDigits: 2
         });
