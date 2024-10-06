@@ -8,7 +8,7 @@
   import { derived, readonly, writable, type Writable } from 'svelte/store';
   import type { Evaluation } from '$models/Evaluation';
   import Label from '$models/Label';
-  import { init, analyze_move } from '$lib/engine';
+  import { init } from '$lib/engine';
 
   onMount(() => {
     engine.set(init());
@@ -35,8 +35,6 @@
     } as Evaluation;
   });
   setContext('evaluation', evaluation);
-
-  let command = '';
 </script>
 
 <div class="flex flex-wrap justify-center my-6 gap-6">
@@ -52,7 +50,3 @@
 </div>
 <p>{$evaluation.type} {$evaluation.score} {$evaluation.pv}</p>
 <p>{$position}</p>
-<input class="input" type="text" bind:value={command} />
-<button class="btn" type="button" on:click={() => $exposedEngine?.postMessage(command)}>RUN COMMAND</button>
-
-<button class="btn" type="button" on:click={() => $exposedEngine ? analyze_move($exposedEngine, $position, 15) : null}>GO</button>
