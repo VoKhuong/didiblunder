@@ -14,12 +14,14 @@
 
   // Load
   let strPgn: string = '';
+  let isLoading: boolean = false;
 
   const onChangeStrPgn = (newPgn: string) => {
     strPgn = newPgn;
   };
 
   const load = async () => {
+    isLoading = true;
     chess.loadPgn(strPgn);
     history.set(chess.history({ verbose: true }));
     move.set(-1);
@@ -28,6 +30,7 @@
     console.log(report);
     evaluations.set(report);
     currentTab = 'report';
+    isLoading = false;
   };
 
   const chess: Chess = getContext('chess');
@@ -58,7 +61,7 @@
   </section>
   <footer class="card-footer">
     {#if currentTab === 'load' || currentTab === 'settings'}
-      <ButtonFooter onClick={load} />
+      <ButtonFooter onClick={load} isLoading={isLoading} />
     {:else if currentTab === 'report'}
       <NavigationFooter />
     {/if}
