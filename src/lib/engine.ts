@@ -44,7 +44,7 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
 
   return {
     ...result,
-    score: result.type === "mate" && turn === 'w'
+    score: turn === 'w'
       ? result.score
       : -result.score,
     label
