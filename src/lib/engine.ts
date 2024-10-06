@@ -1,7 +1,7 @@
 import type { RawEval } from '$models/Engine';
 import type { Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
-import type { Move } from 'chess.js';
+import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
 
 export function init() {
@@ -20,21 +20,26 @@ export function init() {
   return worker;
 }
 
-export async function analyze_game(worker: Worker, history: Move[], depth: number): Promise<Evaluation[]> {
+export async function analyze_game(worker: Worker, history: Move[], chess: Chess, depth: number): Promise<Evaluation[]> {
   const evaluations: Evaluation[] = [];
 
   for (const move of history) {
-    evaluations.push(await analyze_move(worker, move.after, depth));
+    evaluations.push(await analyze_move(worker, move.after, chess, depth));
   }
   return evaluations;
 }
 
-export async function analyze_move(worker: Worker, fen: string, depth: number): Promise<Evaluation> {
+export async function analyze_move(worker: Worker, fen: string, chess: Chess, depth: number): Promise<Evaluation> {
   let result = await evaluate(worker, fen, depth);
+  chess.load(fen);
+  const turn = chess.turn();
 
   // TODO
   return {
     ...result,
+    score: result.type === "mate" && turn === 'w'
+      ? result.score
+      : -result.score,
     label: Label.BOOK
   };
 }

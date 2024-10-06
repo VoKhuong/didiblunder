@@ -24,7 +24,7 @@
     history.set(chess.history({ verbose: true }));
     move.set(-1);
     position.set($history[0].before);
-    const report = await analyze_game($engine, $history, 15);
+    const report = await analyze_game($engine, $history, chess, 5);
     console.log(report);
     evaluations.set(report);
     currentTab = 'report';
