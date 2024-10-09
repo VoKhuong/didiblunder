@@ -48,5 +48,8 @@
     <Panel />
   </div>
 </div>
-<p>{$evaluation.type} {$evaluation.score} {$evaluation.pv}</p>
+<p>type: {$evaluation.type}</p>
+<p>score: {$evaluation.score}</p>
+<p>winChanceLost: {$evaluation.winChance}</p>
+<p>{$evaluation.pv}</p>
 <p>{$position}</p>

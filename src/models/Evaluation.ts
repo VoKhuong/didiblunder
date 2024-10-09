@@ -3,4 +3,5 @@ import type Label from './Label';
 
 export type Evaluation = RawEval & {
   label: Label;
+  winChance?: number;
 };
