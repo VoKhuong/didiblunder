@@ -3,7 +3,7 @@ import type { Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
-import { isBestMove } from './evaluation';
+import { computeWinChanceLost, isBestMove } from './evaluation';
 
 export function init() {
   const worker = new Stockfish();
@@ -34,7 +34,7 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   let result = await evaluate(worker, move.after, depth);
   chess.load(move.after);
   const turn = chess.turn();
-  
+
   // Reverse when black
   result.score = turn === 'w'
     ? result.score
@@ -45,14 +45,24 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
     : [result.wdl.l, result.wdl.w];
   
   let label;
+  let winChanceLost = 0;
+  
   // Compute label
   if (isBestMove(move, previousEval)) {
     label = Label.BEST;
   }
+  if (!previousEval) {
+    label = Label.BOOK;
+  } else {
+    winChanceLost = computeWinChanceLost(previousEval, result);
+    label = Label.BLUNDER;
+  }
+  
 
   return {
     ...result,
     label,
+    winChance: winChanceLost
   };
 }
 

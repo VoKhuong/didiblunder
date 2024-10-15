@@ -1,3 +1,4 @@
+import type { RawEval } from "$models/Engine";
 import type { Evaluation } from "$models/Evaluation";
 import type { Move } from "chess.js";
 
@@ -36,4 +37,25 @@ export function isBestMove(move: Move, evaluation?: Evaluation): boolean {
   } else {
     return false;
   }
+}
+
+/**
+ * 
+ * WTF algo
+ * @link https://github.com/franciscoBSalgueiro/en-croissant/blob/master/src/utils/score.ts
+ */
+export function getWinChance(centipawns: number) {
+  return 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * centipawns)) - 1);
+}
+
+export function computeWinChance(evaluation: RawEval) {
+  return evaluation.type === "cp" ?
+    Math.max(0, Math.min(getWinChance(evaluation.score), 100))
+    : (Math.sign(evaluation.score) > 0
+      ? 100
+      : 0);
+}
+
+export function computeWinChanceLost(previousEval: RawEval, currentEval: RawEval) {
+  return computeWinChance(previousEval) - computeWinChance(currentEval);
 }
