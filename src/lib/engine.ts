@@ -35,8 +35,16 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   chess.load(move.after);
   const turn = chess.turn();
   
-  let label = Label.BOOK;
+  // Reverse when black
+  result.score = turn === 'w'
+    ? result.score
+    : -result.score;
   
+  [result.wdl.w, result.wdl.l] = turn === 'w'
+    ? [result.wdl.w, result.wdl.l]
+    : [result.wdl.l, result.wdl.w];
+  
+  let label;
   // Compute label
   if (isBestMove(move, previousEval)) {
     label = Label.BEST;
@@ -44,10 +52,7 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
 
   return {
     ...result,
-    score: turn === 'w'
-      ? result.score
-      : -result.score,
-    label
+    label,
   };
 }
 
@@ -57,14 +62,19 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
     let result: RawEval;
 
     worker.onmessage = ({ data }: { data: string }) => {
-
       // Info best line
       if (regexInfo.test(data)) {
-        const match = data.match(/score (\w+) (-?\d+).*pv (.*)/);
+        const match = data.match(/score (\w+) (-?\d+).*wdl (\d+) (\d+) (\d+).*pv (.*)/);
         result = {
           type: match?.at(1)! as "cp" | "mate",
           score: parseInt(match?.at(2)!),
-          pv: match?.at(3)!
+          pv: match?.at(6)!,
+          wdl: {
+            w: parseInt(match?.at(3)!),
+            d: parseInt(match?.at(4)!),
+            l: parseInt(match?.at(5)!)
+          },
+          data
         };
       }
 
