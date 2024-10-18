@@ -48,6 +48,7 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   let winChanceLost = 0;
   
   // Compute label
+  // Check for BEST and BOOK
   if (isBestMove(move, previousEval)) {
     label = Label.BEST;
   }
@@ -57,9 +58,22 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
     winChanceLost = turn === 'b'
       ? computeWinChanceLost(previousEval, result)
       : -computeWinChanceLost(previousEval, result);
-    label = Label.BLUNDER;
   }
-  
+
+  // Check for EXCELLENT, GOOD, INACCURACY, MISTAKE or BLUNDER
+  if (label === undefined) {
+    if (winChanceLost <= 2) {
+      label = Label.EXCELLENT;
+    } else if (winChanceLost <= 5) {
+      label = Label.GOOD;
+    } else if (winChanceLost <= 10) {
+      label = Label.INACCURACY;
+    } else if (winChanceLost <= 20) {
+      label = Label.MISTAKE;
+    } else {
+      label = Label.BLUNDER;
+    }
+  }
 
   return {
     ...result,
