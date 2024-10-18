@@ -54,7 +54,9 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   if (!previousEval) {
     label = Label.BOOK;
   } else {
-    winChanceLost = computeWinChanceLost(previousEval, result);
+    winChanceLost = turn === 'b'
+      ? computeWinChanceLost(previousEval, result)
+      : -computeWinChanceLost(previousEval, result);
     label = Label.BLUNDER;
   }
   
