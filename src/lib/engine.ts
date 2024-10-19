@@ -5,13 +5,15 @@ import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
 import { computeWinChanceLost, isBestMove } from './evaluation';
 
+const NB_LINES = 3;
+
 export function init() {
   const worker = new Stockfish();
   worker.onmessage = ({ data }) => console.log(`page got message: ${data}`);
   worker.onerror = (ev) => console.log(`page got error: ${ev.message}`);
 
   worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
-  // worker.postMessage('setoption name MultiPV value 3');
+  worker.postMessage(`setoption name MultiPV value ${NB_LINES}`);
   worker.postMessage('setoption name UCI_ShowWDL value true');
 
   worker.postMessage('isready');
@@ -39,14 +41,15 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   result.score = turn === 'w'
     ? result.score
     : -result.score;
-  
+  result.altLines = result.altLines.map(x => ({ ...x, score: turn === 'w' ? x.score : -x.score }));
+
   [result.wdl.w, result.wdl.l] = turn === 'w'
     ? [result.wdl.w, result.wdl.l]
     : [result.wdl.l, result.wdl.w];
-  
+
   let label;
   let winChanceLost = 0;
-  
+
   // Compute label
   // Check for BEST and BOOK
   if (isBestMove(move, previousEval)) {
@@ -84,24 +87,39 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
 
 export async function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
   return new Promise((resolve) => {
-    const regexInfo = new RegExp(`^info depth ${depth} .* multipv 1`);
-    let result: RawEval;
+    const regexInfo = new RegExp(`^info depth ${depth} .* multipv`);
+    let result: any = {
+      altLines: Array(NB_LINES - 1)
+    };
 
     worker.onmessage = ({ data }: { data: string }) => {
-      // Info best line
+
       if (regexInfo.test(data)) {
-        const match = data.match(/score (\w+) (-?\d+).*wdl (\d+) (\d+) (\d+).*pv (.*)/);
-        result = {
-          type: match?.at(1)! as "cp" | "mate",
-          score: parseInt(match?.at(2)!),
-          pv: match?.at(6)!,
-          wdl: {
-            w: parseInt(match?.at(3)!),
-            d: parseInt(match?.at(4)!),
-            l: parseInt(match?.at(5)!)
-          },
-          data
-        };
+        const match = data.match(/multipv (\d+) score (\w+) (-?\d+).*wdl (\d+) (\d+) (\d+).*pv (.*)/);
+        const line = parseInt(match?.at(1)!);
+
+        // Info best line
+        if (line === 1) {
+          result = {
+            ...result,
+            type: match?.at(2)!,
+            score: parseInt(match?.at(3)!),
+            pv: match?.at(7)!,
+            wdl: {
+              w: parseInt(match?.at(4)!),
+              d: parseInt(match?.at(5)!),
+              l: parseInt(match?.at(6)!)
+            },
+            data
+          };
+        } else {
+          // Alt lines
+          result.altLines[line - 2] = {
+            score: parseInt(match?.at(3)!),
+            type: match?.at(2)!,
+            pv: match?.at(7)!,
+          };
+        }
       }
 
       // Last message
