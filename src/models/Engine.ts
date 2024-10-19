@@ -4,15 +4,17 @@ export type RawEval = {
   pv: string;
   wdl: Wdl;
   data?: string;
-  altLines: {
-    score: number;
-    type: "cp" | "mate";
-    pv: string;
-  }[];
+  altLines: AltEval[];
 }
 
 export type Wdl = {
   w: number;
   d: number;
   l: number;
+}
+
+export type AltEval = {
+  score: number;
+  type: "cp" | "mate";
+  pv: string;
 }
