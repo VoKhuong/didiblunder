@@ -3,7 +3,7 @@ import type { Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
-import { computeWinChanceLost, isBestMove } from './evaluation';
+import { computeWinChanceLost, isBestMove, isForced, isTheOnlyGoodMove } from './evaluation';
 
 const NB_LINES = 3;
 
@@ -78,6 +78,15 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
     }
   }
 
+  // Check for FORCED, GREAT or BRILLIANT
+  if (label === Label.BEST) {
+    if (isForced(previousEval!)) {
+      label = Label.FORCED;
+    } else if (isTheOnlyGoodMove(turn, previousEval!)) {
+      label = Label.GREAT;
+    }
+  }
+
   return {
     ...result,
     label,
@@ -89,7 +98,7 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
   return new Promise((resolve) => {
     const regexInfo = new RegExp(`^info depth ${depth} .* multipv`);
     let result: any = {
-      altLines: Array(NB_LINES - 1)
+      altLines: []
     };
 
     worker.onmessage = ({ data }: { data: string }) => {
@@ -114,11 +123,11 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
           };
         } else {
           // Alt lines
-          result.altLines[line - 2] = {
+          result.altLines.push({
             score: parseInt(match?.at(3)!),
             type: match?.at(2)!,
             pv: match?.at(7)!,
-          };
+          });
         }
       }
 

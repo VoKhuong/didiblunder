@@ -1,6 +1,6 @@
-import type { RawEval } from "$models/Engine";
+import type { AltEval, RawEval } from "$models/Engine";
 import type { Evaluation } from "$models/Evaluation";
-import type { Move } from "chess.js";
+import type { Color, Move } from "chess.js";
 
 export function formatScore(evaluation: Evaluation) {
   if (evaluation.type === "mate") {
@@ -37,6 +37,19 @@ export function isBestMove(move: Move, evaluation?: Evaluation): boolean {
   } else {
     return false;
   }
+}
+
+export function isForced(evaluation: Evaluation): boolean {
+  return !evaluation.altLines.length;
+}
+
+export function isTheOnlyGoodMove(turn: Color, evaluation: Evaluation): boolean {
+  const bestMoveIsWinning = isWinningAfterThisMove(turn, evaluation);
+  return bestMoveIsWinning && evaluation.altLines.reduce((result, x) => result && !isWinningAfterThisMove(turn, x), true);
+}
+
+function isWinningAfterThisMove(turn: Color, alt: AltEval) {
+  return turn === 'b' ? alt.score > 0 : alt.score < 0;
 }
 
 /**
