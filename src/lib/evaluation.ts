@@ -17,6 +17,9 @@ export function formatScore(evaluation: Evaluation) {
 // score is in centipawns
 const LIMIT: number = 1000;
 
+// Minimum centipawns diff for a move to be considered GREAT
+const GREAT_THRESHOLD = 150;
+
 function computeHeightForCP(value: number) {
   const rootValue = Math.sign(value) * Math.pow(Math.abs(value), 0.6);
   const rootLimit = Math.pow(LIMIT, 0.6);
@@ -50,6 +53,14 @@ export function isTheOnlyGoodMove(turn: Color, evaluation: Evaluation): boolean 
 
 function isWinningAfterThisMove(turn: Color, alt: AltEval) {
   return turn === 'b' ? alt.score > 0 : alt.score < 0;
+}
+
+export function isNextMoveCrucial(turn: Color, before?: Evaluation, current?: Evaluation) {
+  if (!before || !current) return false;
+  const isFlip = turn === 'w'
+    ? before.score <= 0 && current.score > 0
+    : before.score >= 0 && current.score < 0;
+  return isFlip && Math.abs(before.score - current.score) > GREAT_THRESHOLD;
 }
 
 /**

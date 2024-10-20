@@ -3,7 +3,7 @@ import type { Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
-import { computeWinChanceLost, isBestMove, isForced, isTheOnlyGoodMove } from './evaluation';
+import { computeWinChanceLost, isBestMove, isForced, isNextMoveCrucial, isTheOnlyGoodMove } from './evaluation';
 
 const NB_LINES = 3;
 
@@ -25,14 +25,16 @@ export function init() {
 
 export async function analyze_game(worker: Worker, history: Move[], chess: Chess, depth: number): Promise<Evaluation[]> {
   const evaluations: Evaluation[] = [];
+  let mayBeGreat = false;
 
   for (const move of history) {
-    evaluations.push(await analyze_move(worker, move, chess, evaluations.at(-1), depth));
+    mayBeGreat = isNextMoveCrucial(move.color, evaluations.at(-2), evaluations.at(-1));
+    evaluations.push(await analyze_move(worker, move, chess, evaluations.at(-1), mayBeGreat, depth));
   }
   return evaluations;
 }
 
-export async function analyze_move(worker: Worker, move: Move, chess: Chess, previousEval: Evaluation | undefined, depth: number): Promise<Evaluation> {
+export async function analyze_move(worker: Worker, move: Move, chess: Chess, previousEval: Evaluation | undefined, mayBeGreat: boolean, depth: number): Promise<Evaluation> {
   let result = await evaluate(worker, move.after, depth);
   chess.load(move.after);
   const turn = chess.turn();
@@ -82,7 +84,7 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   if (label === Label.BEST) {
     if (isForced(previousEval!)) {
       label = Label.FORCED;
-    } else if (isTheOnlyGoodMove(turn, previousEval!)) {
+    } else if (mayBeGreat || isTheOnlyGoodMove(turn, previousEval!)) {
       label = Label.GREAT;
     }
   }
