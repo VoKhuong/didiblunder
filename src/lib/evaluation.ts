@@ -46,13 +46,14 @@ export function isForced(evaluation: Evaluation): boolean {
   return !evaluation.altLines.length;
 }
 
-export function isTheOnlyGoodMove(turn: Color, evaluation: Evaluation): boolean {
+export function haveOnlyOneGoodMove(turn: Color, evaluation?: Evaluation): boolean {
+  if (!evaluation) return false;
   const bestMoveIsWinning = isWinningAfterThisMove(turn, evaluation);
   return bestMoveIsWinning && evaluation.altLines.reduce((result, x) => result && !isWinningAfterThisMove(turn, x), true);
 }
 
 function isWinningAfterThisMove(turn: Color, alt: AltEval) {
-  return turn === 'b' ? alt.score > 0 : alt.score < 0;
+  return turn === 'w' ? alt.score > 0 : alt.score < 0;
 }
 
 export function isNextMoveCrucial(turn: Color, before?: Evaluation, current?: Evaluation) {
