@@ -12,7 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "chess.js": "^1.0.0-beta.8",
+    "chess.js": "1.0.0-beta.8",
     "cm-chessboard": "^8.5.0",
     "stockfish": "^16.0.0"
   },
