@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       chess.js:
-        specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8
+        specifier: github:jhlywa/chess.js
+        version: https://codeload.github.com/jhlywa/chess.js/tar.gz/4d4928d47cacf01a194f5a48bb4b9ddcc9fd5f19
       cm-chessboard:
         specifier: ^8.5.0
         version: 8.7.3
@@ -836,8 +836,9 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
-  chess.js@1.0.0-beta.8:
-    resolution: {integrity: sha512-UngzUMXmexcQaQA/UEJuJj5vatEy34awYMD5YMOp/FW3HM7lqspp7ymYs5JAmquDq0WROtURRfSffoa/vrCCyw==}
+  chess.js@https://codeload.github.com/jhlywa/chess.js/tar.gz/4d4928d47cacf01a194f5a48bb4b9ddcc9fd5f19:
+    resolution: {tarball: https://codeload.github.com/jhlywa/chess.js/tar.gz/4d4928d47cacf01a194f5a48bb4b9ddcc9fd5f19}
+    version: 1.0.0-beta.8
 
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -2593,7 +2594,7 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
-  chess.js@1.0.0-beta.8: {}
+  chess.js@https://codeload.github.com/jhlywa/chess.js/tar.gz/4d4928d47cacf01a194f5a48bb4b9ddcc9fd5f19: {}
 
   chokidar@3.6.0:
     dependencies:
