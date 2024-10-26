@@ -35,9 +35,25 @@ export async function analyze_game(worker: Worker, history: Move[], chess: Chess
 }
 
 export async function analyze_move(worker: Worker, move: Move, chess: Chess, previousEval: Evaluation | undefined, mayBeGreat: boolean, depth: number): Promise<Evaluation> {
-  let result = await evaluate(worker, move.after, depth);
   chess.load(move.after);
   const turn = chess.turn();
+
+  if (chess.isCheckmate()) {
+    // TODO need refine
+    return {
+      score: 0,
+      type: 'mate',
+      pv: '',
+      wdl: {
+        w: turn === 'w' ? 1000 : 0,
+        d: 0,
+        l: turn === 'w' ? 0 : 1000,
+      },
+      altLines: [],
+      label: Label.UNDEFINED
+    }
+  }
+  let result = await evaluate(worker, move.after, depth);
 
   // Reverse when black
   result.score = turn === 'w'
