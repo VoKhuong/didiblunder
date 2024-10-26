@@ -4,6 +4,9 @@ import { type Chess, type Color, type Move, type PieceSymbol } from "chess.js";
 
 export function formatScore(evaluation: Evaluation) {
   if (evaluation.type === "mate") {
+    if (Math.abs(evaluation.score) === Infinity) {
+      return "M#";
+    }
     return `M${Math.abs(evaluation.score)}`;
   } else {
     return (evaluation.score / 100).toLocaleString(undefined, {

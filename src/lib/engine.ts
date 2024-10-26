@@ -1,5 +1,5 @@
 import type { RawEval } from '$models/Engine';
-import type { Evaluation } from '$models/Evaluation';
+import { EVAL_CHECKMATE_BLACK, EVAL_CHECKMATE_WHITE, type Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
@@ -39,20 +39,9 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   const turn = chess.turn();
 
   if (chess.isCheckmate()) {
-    // TODO need refine
-    return {
-      score: 0,
-      type: 'mate',
-      pv: '',
-      wdl: {
-        w: turn === 'w' ? 1000 : 0,
-        d: 0,
-        l: turn === 'w' ? 0 : 1000,
-      },
-      altLines: [],
-      label: Label.CHECKMATE
-    }
+    return turn === 'b' ? EVAL_CHECKMATE_WHITE : EVAL_CHECKMATE_BLACK;
   }
+
   let result = await evaluate(worker, move.after, depth);
 
   // Reverse when black
