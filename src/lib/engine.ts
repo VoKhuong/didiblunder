@@ -3,7 +3,7 @@ import type { Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
-import { computeWinChanceLost, isBestMove, isForced, isNextMoveCrucial, haveOnlyOneGoodMove } from './evaluation';
+import { computeWinChanceLost, isBestMove, isForced, isNextMoveCrucial, haveOnlyOneGoodMove, isSacrifice } from './evaluation';
 
 const NB_LINES = 3;
 
@@ -100,6 +100,8 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   if (label === Label.BEST) {
     if (isForced(previousEval!)) {
       label = Label.FORCED;
+    } else if (isSacrifice(chess, move)) {
+      label = Label.BRILLIANT;
     } else if (mayBeGreat) {
       label = Label.GREAT;
     }
