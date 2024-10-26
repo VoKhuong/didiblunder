@@ -50,7 +50,7 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
         l: turn === 'w' ? 0 : 1000,
       },
       altLines: [],
-      label: Label.UNDEFINED
+      label: Label.CHECKMATE
     }
   }
   let result = await evaluate(worker, move.after, depth);

@@ -10,6 +10,7 @@ export enum Label {
   MISSED = 'Missed',
   BLUNDER = 'Blunder',
   FORCED = 'Forced',
+  CHECKMATE = 'Checkmate',
   UNDEFINED = 'Undefined'
 }
 

@@ -24,6 +24,8 @@ export function getLabelClassColor(label: Label): string {
       return 'text-red-600';
     case Label.FORCED:
       return 'text-neutral-500';
+    case Label.CHECKMATE:
+      return 'text-white';
     default:
       return '';
   }
@@ -53,6 +55,8 @@ export function getLabelHexColor(label: Label): string {
       return '#dc2626';
     case Label.FORCED:
       return '#737373';
+    case Label.CHECKMATE:
+      return '#000000';
     default:
       return 'none';
   }
