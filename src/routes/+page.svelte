@@ -27,12 +27,13 @@
   setContext('engine', exposedEngine);
   const evaluation = derived([evaluations, move], ([$evaluations, $move]) => {
     if ($move >= 0 && $evaluations.length > $move) return $evaluations[$move];
-    else return {
-      score: 0,
-      type: "cp",
-      pv: "",
-      label: Label.UNDEFINED
-    } as Evaluation;
+    else
+      return {
+        score: 0,
+        type: 'cp',
+        pv: '',
+        label: Label.UNDEFINED
+      } as Evaluation;
   });
   setContext('evaluation', evaluation);
 </script>

@@ -39,7 +39,6 @@
   const history: Writable<Move[]> = getContext('history');
   const engine: Readable<Worker> = getContext('engine');
   const evaluations: Writable<Evaluation[]> = getContext('evaluations');
-
 </script>
 
 <div class="card p-4 h-full flex flex-col">
@@ -61,7 +60,7 @@
   </section>
   <footer class="card-footer">
     {#if currentTab === 'load' || currentTab === 'settings'}
-      <ButtonFooter onClick={load} isLoading={isLoading} />
+      <ButtonFooter onClick={load} {isLoading} />
     {:else if currentTab === 'report'}
       <NavigationFooter />
     {/if}

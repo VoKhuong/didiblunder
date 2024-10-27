@@ -8,7 +8,7 @@ export type Evaluation = RawEval & {
 
 export const EVAL_CHECKMATE_WHITE: Evaluation = {
   score: Infinity,
-  type: "mate",
+  type: 'mate',
   pv: '',
   wdl: {
     w: 0,
@@ -17,11 +17,11 @@ export const EVAL_CHECKMATE_WHITE: Evaluation = {
   },
   altLines: [],
   label: Label.CHECKMATE
-}
+};
 
 export const EVAL_CHECKMATE_BLACK: Evaluation = {
   score: -Infinity,
-  type: "mate",
+  type: 'mate',
   pv: '',
   wdl: {
     w: 0,
@@ -30,4 +30,4 @@ export const EVAL_CHECKMATE_BLACK: Evaluation = {
   },
   altLines: [],
   label: Label.CHECKMATE
-}
+};
