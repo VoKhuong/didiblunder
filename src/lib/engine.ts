@@ -3,7 +3,7 @@ import { EVAL_CHECKMATE_BLACK, EVAL_CHECKMATE_WHITE, type Evaluation } from '$mo
 import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
-import { computeWinChanceLost, isBestMove, isForced, isNextMoveCrucial, haveOnlyOneGoodMove, isSacrifice } from './evaluation';
+import { computeWinChanceLost, isBestMove, isForced, isNextMoveCrucial, haveOnlyOneGoodMove, isSacrifice, opponentDidABadPlay } from './evaluation';
 
 const NB_LINES = 3;
 
@@ -94,6 +94,11 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
     } else if (mayBeGreat) {
       label = Label.GREAT;
     }
+  }
+
+  // Check for MISSED
+  if (opponentDidABadPlay(previousEval) && winChanceLost >= 5) {
+    label = Label.MISSED;
   }
 
   return {

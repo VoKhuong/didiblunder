@@ -1,5 +1,6 @@
 import type { AltEval, RawEval } from "$models/Engine";
 import type { Evaluation } from "$models/Evaluation";
+import Label from "$models/Label";
 import { type Chess, type Color, type Move, type PieceSymbol } from "chess.js";
 
 export function formatScore(evaluation: Evaluation) {
@@ -127,6 +128,10 @@ export function isSacrifice(chess: Chess, move: Move): boolean {
   }
 
   return false;
+}
+
+export function opponentDidABadPlay(prevEval?: Evaluation): boolean {
+  return !!prevEval && (prevEval.label === Label.BLUNDER || prevEval.label === Label.MISTAKE);
 }
 
 /**
