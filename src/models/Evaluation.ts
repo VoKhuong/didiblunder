@@ -3,7 +3,7 @@ import Label from './Label';
 
 export type Evaluation = RawEval & {
   label: Label;
-  winChance?: number;
+  opening?: string;
 };
 
 export const EVAL_CHECKMATE_WHITE: Evaluation = {

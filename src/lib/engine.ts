@@ -2,8 +2,10 @@ import type { RawEval } from '$models/Engine';
 import { EVAL_CHECKMATE_BLACK, EVAL_CHECKMATE_WHITE, type Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
-import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
 import { computeWinChanceLost, isBestMove, isForced, isNextMoveCrucial, haveOnlyOneGoodMove, isSacrifice, opponentDidABadPlay } from './evaluation';
+
+import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
+import OPENINGS from '$lib/openings.json';
 
 const NB_LINES = 3;
 
@@ -55,20 +57,28 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
     : [result.wdl.l, result.wdl.w];
 
   let label;
-  let winChanceLost = 0;
 
   // Compute label
-  // Check for BEST and BOOK
+  // Check for BOOK
+  if (!previousEval || previousEval.label === Label.BOOK) {
+    const openingName: string | undefined = OPENINGS[chess.fen() as keyof typeof OPENINGS];
+    if (openingName) {
+      return {
+        ...result,
+        label: Label.BOOK,
+        opening: openingName
+      };
+    }
+  }
+
+  // Check for BEST
   if (isBestMove(move, previousEval)) {
     label = Label.BEST;
   }
-  if (!previousEval) {
-    label = Label.BOOK;
-  } else {
-    winChanceLost = turn === 'b'
-      ? computeWinChanceLost(previousEval, result)
-      : -computeWinChanceLost(previousEval, result);
-  }
+
+  const winChanceLost = turn === 'b'
+      ? computeWinChanceLost(previousEval!, result)
+      : -computeWinChanceLost(previousEval!, result);
 
   // Check for EXCELLENT, GOOD, INACCURACY, MISTAKE or BLUNDER
   if (label === undefined) {
@@ -104,7 +114,6 @@ export async function analyze_move(worker: Worker, move: Move, chess: Chess, pre
   return {
     ...result,
     label,
-    winChance: winChanceLost
   };
 }
 
