@@ -38,8 +38,8 @@
   setContext('evaluation', evaluation);
 </script>
 
-<div class="flex flex-wrap justify-center my-6 gap-6">
-  <div class="size-4/5 md:size-3/5 lg:size-2/5 flex gap-x-4">
+<div class="flex flex-wrap justify-center my-6 md:my-16 gap-6">
+  <div class="size-4/5 md:size-3/5 lg:size-5/12 flex gap-x-4">
     <EvaluationBar evaluation={$evaluation} />
     <div class="grow">
       <Chessboard />
