@@ -4,6 +4,7 @@
   import ButtonFooter from './tabs/footers/ButtonFooter.svelte';
   import NavigationFooter from './tabs/footers/NavigationFooter.svelte';
   import Report from './tabs/Report.svelte';
+  import Settings from './tabs/Settings.svelte';
   import { getContext } from 'svelte';
   import type { Chess, Move } from 'chess.js';
   import type { Readable, Writable } from 'svelte/store';
@@ -53,7 +54,7 @@
         {:else if currentTab === 'report'}
           <Report />
         {:else if currentTab === 'settings'}
-          (tab panel 3 contents)
+          <Settings />
         {/if}
       </svelte:fragment>
     </TabGroup>
