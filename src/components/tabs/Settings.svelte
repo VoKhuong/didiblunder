@@ -1,22 +1,24 @@
 <script lang="ts">
+  import type { Settings } from '$models/Settings';
   import { RadioGroup, RadioItem, RangeSlider } from '@skeletonlabs/skeleton';
+  import { getContext } from 'svelte';
+  import type { Writable } from 'svelte/store';
 
-  let value: number = 0;
-  let slider: number = 15;
+  const settings: Writable<Settings> = getContext('settings');
 </script>
 
 <div class="w-full space-y-4">
   <div class="flex justify-between items-center">
-    <label class="font-bold text-left" for="justify">Orientation</label>
+    <label class="font-bold text-left" for="orientation">Orientation</label>
     <RadioGroup>
-      <RadioItem bind:group={value} name="justify" value={0}>White</RadioItem>
-      <RadioItem bind:group={value} name="justify" value={1}>Black</RadioItem>
+      <RadioItem bind:group={$settings.orientation} name="orientation" value="w">White</RadioItem>
+      <RadioItem bind:group={$settings.orientation} name="orientation" value="b">Black</RadioItem>
     </RadioGroup>
   </div>
-  <RangeSlider name="range-slider" bind:value={slider} min={10} max={25} step={1} ticked>
+  <RangeSlider name="depth" bind:value={$settings.depth} min={10} max={25} step={1} ticked>
     <div class="flex justify-between items-center">
-      <div class="font-bold">Depth</div>
-      <div class="text-sm">{slider} / 25</div>
+      <label class="font-bold" for="depth">Depth</label>
+      <p class="text-sm">{$settings.depth} / 25</p>
     </div>
   </RangeSlider>
 </div>

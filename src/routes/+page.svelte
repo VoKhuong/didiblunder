@@ -9,6 +9,7 @@
   import type { Evaluation } from '$models/Evaluation';
   import Label from '$models/Label';
   import { init } from '$lib/engine';
+  import type { Settings } from '$models/Settings';
 
   onMount(() => {
     engine.set(init());
@@ -36,6 +37,11 @@
       } as Evaluation;
   });
   setContext('evaluation', evaluation);
+  const settings: Writable<Settings> = writable({
+    orientation: 'w',
+    depth: 10
+  });
+  setContext('settings', settings)
 </script>
 
 <div class="flex flex-wrap justify-center my-6 md:my-16 gap-6">

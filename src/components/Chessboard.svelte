@@ -4,9 +4,10 @@
   import { DEFAULT_POSITION, type Move } from 'chess.js';
 
   import { getContext, onMount } from 'svelte';
-  import type { Writable } from 'svelte/store';
+  import { derived, type Writable } from 'svelte/store';
   import type { Evaluation } from '$models/Evaluation';
   import { EvaluationMarkerExtension } from '$lib/extension';
+  import type { Settings } from '$models/Settings';
 
   let boardElement: HTMLDivElement;
 
@@ -16,6 +17,8 @@
   const evaluation: Writable<Evaluation> = getContext('evaluation');
   const move: Writable<number> = getContext('move');
   const history: Writable<Move[]> = getContext('history');
+  const settings: Writable<Settings> = getContext('settings');
+  const orientation = derived(settings, $settings => $settings.orientation);
 
   onMount(async () => {
     board = new Chessboard(boardElement, {
@@ -35,6 +38,11 @@
     });
   });
 
+  orientation.subscribe(value => {
+    board?.setOrientation(value);
+    // TODO: quick fix
+    board?.setMarkers([]);
+  });
   $: board?.setPosition($position, true);
   $: {
     if ($history.length > 0 && $move >= 0) {

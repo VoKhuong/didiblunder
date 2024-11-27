@@ -10,6 +10,7 @@
   import type { Readable, Writable } from 'svelte/store';
   import { analyze_game } from '$lib/engine';
   import type { Evaluation } from '$models/Evaluation';
+  import type { Settings as SettingsType } from "$models/Settings";
 
   let currentTab: string = 'load';
 
@@ -27,7 +28,7 @@
     history.set(chess.history({ verbose: true }));
     move.set(-1);
     position.set($history[0].before);
-    const report = await analyze_game($engine, $history, chess, 5);
+    const report = await analyze_game($engine, $history, chess, $settings.depth);
     console.log(report);
     evaluations.set(report);
     currentTab = 'report';
@@ -40,6 +41,7 @@
   const history: Writable<Move[]> = getContext('history');
   const engine: Readable<Worker> = getContext('engine');
   const evaluations: Writable<Evaluation[]> = getContext('evaluations');
+  const settings: Writable<SettingsType> = getContext('settings');
 </script>
 
 <div class="card p-4 h-full flex flex-col">
