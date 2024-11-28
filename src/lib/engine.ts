@@ -40,27 +40,32 @@ export async function analyze_game(
   depth: number
 ): Promise<Evaluation[]> {
   const evaluations: Evaluation[] = [];
+  const rawEvals: RawEval[] = [];
   let mayBeGreat = false;
+  const start = performance.now();
 
   for (const move of history) {
-    mayBeGreat =
-      isNextMoveCrucial(move.color, evaluations.at(-2), evaluations.at(-1)) ||
-      haveOnlyOneGoodMove(move.color, evaluations.at(-1));
-    evaluations.push(
-      await analyze_move(worker, move, chess, evaluations.at(-1), mayBeGreat, depth)
-    );
+    rawEvals.push(await evaluate(worker, move.after, depth));
   }
+
+  for (let i = 0; i < history.length; i++) {
+    mayBeGreat =
+      isNextMoveCrucial(history[i].color, evaluations.at(-2), evaluations.at(-1)) ||
+      haveOnlyOneGoodMove(history[i].color, evaluations.at(-1));
+    evaluations.push(analyze_move(history[i], rawEvals[i], chess, evaluations.at(-1), mayBeGreat));
+  }
+  const end = performance.now();
+  console.log(`Execution time: ${end - start} ms`);
   return evaluations;
 }
 
-export async function analyze_move(
-  worker: Worker,
+export function analyze_move(
   move: Move,
+  rawEval: RawEval,
   chess: Chess,
   previousEval: Evaluation | undefined,
   mayBeGreat: boolean,
-  depth: number
-): Promise<Evaluation> {
+): Evaluation {
   chess.load(move.after);
   const turn = chess.turn();
 
@@ -68,17 +73,15 @@ export async function analyze_move(
     return turn === 'b' ? EVAL_CHECKMATE_WHITE : EVAL_CHECKMATE_BLACK;
   }
 
-  let result = await evaluate(worker, move.after, depth);
-
   // Reverse when black
-  result.score = turn === 'w' ? result.score : -result.score;
-  result.altLines = result.altLines.map((x) => ({
+  rawEval.score = turn === 'w' ? rawEval.score : -rawEval.score;
+  rawEval.altLines = rawEval.altLines.map((x) => ({
     ...x,
     score: turn === 'w' ? x.score : -x.score
   }));
 
-  [result.wdl.w, result.wdl.l] =
-    turn === 'w' ? [result.wdl.w, result.wdl.l] : [result.wdl.l, result.wdl.w];
+  [rawEval.wdl.w, rawEval.wdl.l] =
+    turn === 'w' ? [rawEval.wdl.w, rawEval.wdl.l] : [rawEval.wdl.l, rawEval.wdl.w];
 
   let label;
 
@@ -88,7 +91,7 @@ export async function analyze_move(
     const openingName: string | undefined = OPENINGS[chess.fen() as keyof typeof OPENINGS];
     if (openingName) {
       return {
-        ...result,
+        ...rawEval,
         label: Label.BOOK,
         opening: openingName
       };
@@ -102,8 +105,8 @@ export async function analyze_move(
 
   const winChanceLost =
     turn === 'b'
-      ? computeWinChanceLost(previousEval!, result)
-      : -computeWinChanceLost(previousEval!, result);
+      ? computeWinChanceLost(previousEval!, rawEval)
+      : -computeWinChanceLost(previousEval!, rawEval);
 
   // Check for EXCELLENT, GOOD, INACCURACY, MISTAKE or BLUNDER
   if (label === undefined) {
@@ -137,7 +140,7 @@ export async function analyze_move(
   }
 
   return {
-    ...result,
+    ...rawEval,
     label
   };
 }

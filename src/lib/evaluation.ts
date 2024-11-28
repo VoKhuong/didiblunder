@@ -116,7 +116,7 @@ export function isSacrifice(chess: Chess, move: Move): boolean {
   // Piece values
   const defenders = chess
     .attackers(move.to, inverse(move.color))
-    .map((x) => toPieceValue(chess.get(x).type));
+    .map((x) => toPieceValue(chess.get(x)!.type));
   const piece = toPieceValue(move.piece);
 
   const isCovered = chess.isAttacked(move.to, move.color);
