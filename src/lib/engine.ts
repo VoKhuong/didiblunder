@@ -15,7 +15,7 @@ import {
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
 import OPENINGS from '$lib/openings.json';
 
-const NB_LINES = 3;
+const NB_LINES = 2;
 
 export function init() {
   const worker = new Stockfish();
