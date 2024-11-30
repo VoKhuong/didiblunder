@@ -57,8 +57,6 @@
 </div>
 <p>type: {$evaluation.type}</p>
 <p>score: {$evaluation.score}</p>
-<!-- p>wdl: {$evaluation.wdl?.w} {$evaluation.wdl?.d} {$evaluation.wdl?.l}</p -->
-<!-- p>winChanceLost: {$evaluation.winChance}</p -->
 {#each $evaluation?.altLines || [] as alt}
   <p>alt: {alt.type} {alt.score} {alt.pv}</p>
 {/each}

@@ -24,7 +24,6 @@ export function init() {
 
   worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
   worker.postMessage(`setoption name MultiPV value ${NB_LINES}`);
-  worker.postMessage('setoption name UCI_ShowWDL value true');
 
   worker.postMessage('isready');
   worker.postMessage('uci');
@@ -79,9 +78,6 @@ export function analyze_move(
     ...x,
     score: turn === 'w' ? x.score : -x.score
   }));
-
-  [rawEval.wdl.w, rawEval.wdl.l] =
-    turn === 'w' ? [rawEval.wdl.w, rawEval.wdl.l] : [rawEval.wdl.l, rawEval.wdl.w];
 
   let label;
 
@@ -154,9 +150,7 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
 
     worker.onmessage = ({ data }: { data: string }) => {
       if (regexInfo.test(data)) {
-        const match = data.match(
-          /multipv (\d+) score (\w+) (-?\d+).*wdl (\d+) (\d+) (\d+).*pv (.*)/
-        );
+        const match = data.match(/multipv (\d+) score (\w+) (-?\d+).*pv (.*)/);
         const line = parseInt(match?.at(1)!);
 
         // Info best line
@@ -165,20 +159,15 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
             ...result,
             type: match?.at(2)!,
             score: parseInt(match?.at(3)!),
-            pv: match?.at(7)!,
-            wdl: {
-              w: parseInt(match?.at(4)!),
-              d: parseInt(match?.at(5)!),
-              l: parseInt(match?.at(6)!)
-            },
+            pv: match?.at(4)!,
             data
           };
         } else {
           // Alt lines
           result.altLines.push({
-            score: parseInt(match?.at(3)!),
             type: match?.at(2)!,
-            pv: match?.at(7)!
+            score: parseInt(match?.at(3)!),
+            pv: match?.at(4)!
           });
         }
       }
