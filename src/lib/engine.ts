@@ -15,15 +15,13 @@ import {
 import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
 import OPENINGS from '$lib/openings.json';
 
-const NB_LINES = 2;
-
 export function init() {
   const worker = new Stockfish();
   worker.onmessage = ({ data }) => console.log(`page got message: ${data}`);
   worker.onerror = (ev) => console.log(`page got error: ${ev.message}`);
 
   worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
-  worker.postMessage(`setoption name MultiPV value ${NB_LINES}`);
+  worker.postMessage(`setoption name MultiPV value 2`);
 
   worker.postMessage('isready');
   worker.postMessage('uci');
@@ -74,10 +72,10 @@ export function analyze_move(
 
   // Reverse when black
   rawEval.score = turn === 'w' ? rawEval.score : -rawEval.score;
-  rawEval.altLines = rawEval.altLines.map((x) => ({
-    ...x,
-    score: turn === 'w' ? x.score : -x.score
-  }));
+
+  if (rawEval.altLine && turn === 'b') {
+    rawEval.altLine.score = -rawEval.altLine.score;
+  }
 
   let label;
 
@@ -144,9 +142,7 @@ export function analyze_move(
 export async function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
   return new Promise((resolve) => {
     const regexInfo = new RegExp(`^info depth ${depth} .* multipv`);
-    let result: any = {
-      altLines: []
-    };
+    let result: any = {};
 
     worker.onmessage = ({ data }: { data: string }) => {
       if (regexInfo.test(data)) {
@@ -163,12 +159,12 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
             data
           };
         } else {
-          // Alt lines
-          result.altLines.push({
+          // Alt line
+          result.altLine = {
             type: match?.at(2)!,
             score: parseInt(match?.at(3)!),
             pv: match?.at(4)!
-          });
+          };
         }
       }
 

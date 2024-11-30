@@ -10,7 +10,6 @@ export const EVAL_CHECKMATE_WHITE: Evaluation = {
   score: Infinity,
   type: 'mate',
   pv: '',
-  altLines: [],
   label: Label.CHECKMATE
 };
 
@@ -18,6 +17,5 @@ export const EVAL_CHECKMATE_BLACK: Evaluation = {
   score: -Infinity,
   type: 'mate',
   pv: '',
-  altLines: [],
   label: Label.CHECKMATE
 };

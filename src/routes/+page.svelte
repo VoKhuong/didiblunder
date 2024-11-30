@@ -57,9 +57,9 @@
 </div>
 <p>type: {$evaluation.type}</p>
 <p>score: {$evaluation.score}</p>
-{#each $evaluation?.altLines || [] as alt}
-  <p>alt: {alt.type} {alt.score} {alt.pv}</p>
-{/each}
+{#if $evaluation?.altLine}
+  <p>alt: {$evaluation?.altLine.type} {$evaluation?.altLine.score} {$evaluation?.altLine.pv}</p>
+{/if}
 <p>{$evaluation.pv}</p>
 <p>{$evaluation.data}</p>
 <p>{$position}</p>

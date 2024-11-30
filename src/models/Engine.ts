@@ -3,7 +3,7 @@ export type RawEval = {
   type: 'cp' | 'mate';
   pv: string;
   data?: string;
-  altLines: AltEval[];
+  altLine?: AltEval;
 };
 
 export type AltEval = {
