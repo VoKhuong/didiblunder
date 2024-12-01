@@ -139,6 +139,8 @@ export function analyze_move(
   };
 }
 
+const REGEX_MATCH = /multipv (\d+) score (\w+) (-?\d+).*pv (.*)/;
+
 export async function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
   return new Promise((resolve) => {
     const regexInfo = new RegExp(`^info depth ${depth} .* multipv`);
@@ -146,7 +148,7 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
 
     worker.onmessage = ({ data }: { data: string }) => {
       if (regexInfo.test(data)) {
-        const match = data.match(/multipv (\d+) score (\w+) (-?\d+).*pv (.*)/);
+        const match = data.match(REGEX_MATCH);
         const line = parseInt(match?.at(1)!);
 
         // Info best line
