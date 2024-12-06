@@ -45,6 +45,8 @@ export async function analyze_game(
     rawEvals.push(await evaluate(worker, move.after, depth));
   }
 
+  const mid = performance.now();
+
   for (let i = 0; i < history.length; i++) {
     mayBeGreat =
       isNextMoveCrucial(history[i].color, evaluations.at(-2), evaluations.at(-1)) ||
@@ -52,7 +54,9 @@ export async function analyze_game(
     evaluations.push(analyze_move(history[i], rawEvals[i], chess, evaluations.at(-1), mayBeGreat));
   }
   const end = performance.now();
-  console.log(`Execution time: ${end - start} ms`);
+  console.log(`Execution engine time: ${mid - start} ms`);
+  console.log(`Execution labeling time: ${end - mid} ms`);
+  console.log(`Execution total time: ${end - start} ms`);
   return evaluations;
 }
 
@@ -169,9 +173,8 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
           };
         }
       }
-
       // Last message
-      if (data.startsWith('bestmove')) {
+      else if (data.startsWith('bestmove')) {
         resolve(result);
       }
     };
