@@ -38,7 +38,9 @@ export async function init(engine: string) {
   worker.onmessage = ({ data }: any) => console.log(`page got message: ${data}`);
   worker.onerror = (ev: any) => console.log(`page got error: ${ev.message}`);
 
-  worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
+  if (engine.includes('multi')) {
+    worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
+  }
   worker.postMessage(`setoption name MultiPV value 2`);
 
   worker.postMessage('isready');
