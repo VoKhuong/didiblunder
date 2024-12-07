@@ -39,7 +39,8 @@
   setContext('evaluation', evaluation);
   const settings: Writable<Settings> = writable({
     orientation: 'w',
-    depth: 10
+    depth: 10,
+    engine: 'lite-multi'
   });
   setContext('settings', settings)
 </script>

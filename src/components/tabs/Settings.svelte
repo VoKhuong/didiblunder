@@ -15,10 +15,19 @@
       <RadioItem bind:group={$settings.orientation} name="orientation" value="b">Black</RadioItem>
     </RadioGroup>
   </div>
-  <RangeSlider name="depth" bind:value={$settings.depth} min={10} max={25} step={1} ticked>
+  <RangeSlider name="depth" bind:value={$settings.depth} min={15} max={20} step={1} ticked>
     <div class="flex justify-between items-center">
       <label class="font-bold" for="depth">Depth</label>
-      <p class="text-sm">{$settings.depth} / 25</p>
+      <p class="text-sm">{$settings.depth} / 20</p>
     </div>
   </RangeSlider>
+  <label class="label" for="engine">
+    <span class="font-bold">Engine</span>
+    <select name="engine" class="select" bind:value={$settings.engine}>
+      <option value="lite-multi">Lite multi-thread ⚡</option>
+      <option value="lite-single">Lite single-thread 🚀</option>
+      <option value="large-multi">Large multi-thread 🚄</option>
+      <option value="large-single">Large single-thread 🚂</option>
+    </select>
+  </label>
 </div>

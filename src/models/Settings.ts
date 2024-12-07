@@ -1,4 +1,5 @@
 export type Settings = {
   orientation: 'w' | 'b',
-  depth: number
+  depth: number,
+  engine: string
 };

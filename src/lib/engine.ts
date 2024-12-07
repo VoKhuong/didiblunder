@@ -153,10 +153,9 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
     worker.onmessage = ({ data }: { data: string }) => {
       if (regexInfo.test(data)) {
         const match = data.match(REGEX_MATCH);
-        const line = parseInt(match?.at(1)!);
 
         // Info best line
-        if (line === 1) {
+        if (match?.at(1)! === "1") {
           result = {
             ...result,
             type: match?.at(2)!,
