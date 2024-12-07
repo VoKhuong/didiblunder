@@ -12,13 +12,31 @@ import {
   opponentDidABadPlay
 } from './evaluation';
 
-import Stockfish from 'stockfish/src/stockfish-16.1-lite.js?worker';
 import OPENINGS from '$lib/openings.json';
 
-export function init() {
-  const worker = new Stockfish();
-  worker.onmessage = ({ data }) => console.log(`page got message: ${data}`);
-  worker.onerror = (ev) => console.log(`page got error: ${ev.message}`);
+export async function init(engine: string) {
+  let workerModule;
+  switch (engine) {
+    case 'lite-multi':
+      workerModule = await import('stockfish/src/stockfish-16.1-lite.js?worker');
+      break;
+    case 'lite-single':
+      workerModule = await import('stockfish/src/stockfish-16.1-lite-single.js?worker');
+      break;
+    case 'large-multi':
+      workerModule = await import('stockfish/src/stockfish-16.1.js?worker');
+      break;
+    case 'large-single':
+      workerModule = await import('stockfish/src/stockfish-16.1-single.js?worker');
+      break;
+    default:
+      throw new Error('Invalid engine');
+  }
+
+  const worker = new workerModule.default();
+
+  worker.onmessage = ({ data }: any) => console.log(`page got message: ${data}`);
+  worker.onerror = (ev: any) => console.log(`page got error: ${ev.message}`);
 
   worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
   worker.postMessage(`setoption name MultiPV value 2`);

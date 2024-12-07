@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount, setContext } from 'svelte';
+  import { setContext } from 'svelte';
+  import { browser } from '$app/environment';
   import { Chess, DEFAULT_POSITION, type Move } from 'chess.js';
 
   import Chessboard from '../components/Chessboard.svelte';
@@ -11,9 +12,6 @@
   import { init } from '$lib/engine';
   import type { Settings } from '$models/Settings';
 
-  onMount(() => {
-    engine.set(init());
-  });
   setContext('chess', new Chess());
   const history: Writable<Move[]> = writable([]);
   setContext('history', history);
@@ -42,7 +40,12 @@
     depth: 10,
     engine: 'lite-multi'
   });
-  setContext('settings', settings)
+  setContext('settings', settings);
+  const settingsEngine = derived(settings, ($settings) => $settings.engine);
+
+  $: if (browser) {
+    init($settingsEngine).then((worker) => engine.set(worker));
+  }
 </script>
 
 <div class="flex flex-wrap justify-center my-6 md:my-16 gap-6">
