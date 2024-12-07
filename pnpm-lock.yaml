@@ -15,8 +15,8 @@ importers:
         specifier: ^8.7.4
         version: 8.7.4
       stockfish:
-        specifier: ^16.0.0
-        version: 16.0.0
+        specifier: github:nmrugg/stockfish.js#v16.1.0
+        version: https://codeload.github.com/nmrugg/stockfish.js/tar.gz/215df8c6a72847e306644d399733de18fb8e0d6c
     devDependencies:
       '@skeletonlabs/skeleton':
         specifier: 2.8.0
@@ -1654,8 +1654,9 @@ packages:
   stacktracey@2.1.8:
     resolution: {integrity: sha512-Kpij9riA+UNg7TnphqjH7/CzctQ/owJGNbFkfEeve4Z4uxT5+JapVLFXcsurIfN34gnTWZNJ/f7NMG0E8JDzTw==}
 
-  stockfish@16.0.0:
-    resolution: {integrity: sha512-uu4AqsE2x0tD+SsYzZy4UtqeH4U9zDi1V8loDFDbMwCtvumGXF9j81Pg1ZmIkUgZhwQqPxQAv8IN5oy6hZa7Bw==}
+  stockfish@https://codeload.github.com/nmrugg/stockfish.js/tar.gz/215df8c6a72847e306644d399733de18fb8e0d6c:
+    resolution: {tarball: https://codeload.github.com/nmrugg/stockfish.js/tar.gz/215df8c6a72847e306644d399733de18fb8e0d6c}
+    version: 16.1.0
     hasBin: true
 
   stoppable@1.1.0:
@@ -3376,7 +3377,7 @@ snapshots:
       as-table: 1.0.55
       get-source: 2.0.12
 
-  stockfish@16.0.0: {}
+  stockfish@https://codeload.github.com/nmrugg/stockfish.js/tar.gz/215df8c6a72847e306644d399733de18fb8e0d6c: {}
 
   stoppable@1.1.0: {}
 

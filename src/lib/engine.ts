@@ -12,7 +12,7 @@ import {
   opponentDidABadPlay
 } from './evaluation';
 
-import Stockfish from 'stockfish/src/stockfish-nnue-16.js?worker';
+import Stockfish from 'stockfish/src/stockfish-16.1.js?worker';
 import OPENINGS from '$lib/openings.json';
 
 export function init() {

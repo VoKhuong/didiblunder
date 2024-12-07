@@ -14,7 +14,7 @@
   "dependencies": {
     "chess.js": "github:jhlywa/chess.js",
     "cm-chessboard": "^8.7.4",
-    "stockfish": "^16.0.0"
+    "stockfish": "github:nmrugg/stockfish.js#v16.1.0"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "2.8.0",
