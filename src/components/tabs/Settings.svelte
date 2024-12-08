@@ -1,8 +1,20 @@
 <script lang="ts">
   import type { Settings } from '$models/Settings';
-  import { RadioGroup, RadioItem, RangeSlider } from '@skeletonlabs/skeleton';
+  import {
+    RadioGroup,
+    RadioItem,
+    RangeSlider,
+    type DrawerSettings
+  } from '@skeletonlabs/skeleton';
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
+  import { getDrawerStore } from '@skeletonlabs/skeleton';
+
+  const drawerStore = getDrawerStore();
+  const drawerSettings: DrawerSettings = {
+    position: 'right',
+    width: 'md:w-96'
+  };
 
   const settings: Writable<Settings> = getContext('settings');
 </script>
@@ -22,10 +34,16 @@
     </div>
   </RangeSlider>
   <label class="label" for="engine">
-    <span class="font-bold">Engine</span>
+    <span class="font-bold flex justify-between">
+      Engine
+      <button
+        class="ml-1 badge-icon variant-filled-surface inline-flex"
+        on:click={() => drawerStore.open(drawerSettings)}>?</button
+      >
+    </span>
     <select name="engine" class="select" bind:value={$settings.engine}>
-      <option value="lite-multi">Lite multi-thread ⚡</option>
-      <option value="lite-single">Lite single-thread 🚀</option>
+      <option value="lite-single">Lite single-thread ⚡</option>
+      <option value="lite-multi">Lite multi-thread 🚀</option>
       <option value="large-multi">Large multi-thread 🚄</option>
       <option value="large-single">Large single-thread 🚂</option>
     </select>
