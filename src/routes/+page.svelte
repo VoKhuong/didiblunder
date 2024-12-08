@@ -37,8 +37,8 @@
   setContext('evaluation', evaluation);
   const settings: Writable<Settings> = writable({
     orientation: 'w',
-    depth: 10,
-    engine: 'lite-multi'
+    depth: 15,
+    engine: 'lite-single'
   });
   setContext('settings', settings);
   const settingsEngine = derived(settings, ($settings) => $settings.engine);
