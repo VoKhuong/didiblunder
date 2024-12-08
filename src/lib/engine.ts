@@ -42,6 +42,7 @@ export async function init(engine: string) {
     worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
   }
   worker.postMessage(`setoption name MultiPV value 2`);
+  worker.postMessage(`setoption name Move Overhead value 0`);
 
   worker.postMessage('isready');
   worker.postMessage('uci');
