@@ -11,6 +11,9 @@
   let filename: string = '';
   let filesPgn: FileList;
 
+  // chess.com fields
+  let username = '';
+
   $: {
     if (filesPgn && filesPgn.length > 0) {
       filesPgn
@@ -58,7 +61,13 @@
       <p class="truncate">{filename}</p>
     </div>
   {:else if loader === 'chesscom'}
-    chess.com
+  <label class="label">
+    <span>Username</span>
+    <div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+      <input type="text" class="pl-4" placeholder="magnuscarlsen" />
+      <button class="py-2 variant-filled">🔎</button>
+    </div>
+  </label>
   {:else if loader === 'lichess'}
     lichess.org
   {/if}
