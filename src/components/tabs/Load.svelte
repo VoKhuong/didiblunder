@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { loadRecentGames } from '$lib/api';
   import { FileButton } from '@skeletonlabs/skeleton';
 
   export let onChange: (pgn: string) => void = (pgn) => console.log('pgn => ', pgn);
@@ -7,12 +8,25 @@
   let strPgn: string = '';
 
   // PGN fields
-  let disabled: boolean = false;
+  let disabledImportPgn: boolean = false;
   let filename: string = '';
   let filesPgn: FileList;
 
   // chess.com fields
+  let disabledSearchUsername = false;
   let username = '';
+
+  const onClick = async () => {
+    // validate username
+    const regex = /^[A-Za-z0-9_]{3,}$/;
+    if (regex.test(username)) {
+      disabledSearchUsername = true;
+      const games = await loadRecentGames(username);
+      console.log(games);
+    } else {
+      alert('Username is invalid.');
+    }
+  }
 
   $: {
     if (filesPgn && filesPgn.length > 0) {
@@ -20,9 +34,9 @@
         .item(0)
         ?.text()
         .then((txt) => {
+          disabledImportPgn = true;
           strPgn = txt;
           filename = filesPgn.item(0)?.name ?? '';
-          disabled = true;
         });
     }
   }
@@ -43,10 +57,10 @@
   {#if loader === 'pgn'}
     <textarea
       bind:value={strPgn}
-      class="textarea"
+      class="textarea p-2"
       rows="4"
       placeholder="1. e4 Nc6 2. Bc4 Nf6 3. Nc3 e6 4. Nf3 d5 5. e5 Nd7..."
-      {disabled}
+      disabled={disabledImportPgn}
     />
     <hr class="my-4" />
     <div class="flex items-center gap-2">
@@ -64,8 +78,14 @@
   <label class="label">
     <span>Username</span>
     <div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-      <input type="text" class="pl-4" placeholder="magnuscarlsen" />
-      <button class="py-2 variant-filled">🔎</button>
+      <input bind:value={username} type="text" class="pl-4" placeholder="magnuscarlsen" />
+      <button
+        class="py-2 variant-filled"
+        on:click={onClick}
+        disabled={disabledSearchUsername}
+      >
+        {disabledSearchUsername ? '🚥' : '🔎'}
+      </button>
     </div>
   </label>
   {:else if loader === 'lichess'}
