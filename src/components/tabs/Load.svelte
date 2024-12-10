@@ -1,9 +1,11 @@
 <script lang="ts">
   import { loadRecentGames } from '$lib/api';
-  import { FileButton } from '@skeletonlabs/skeleton';
+  import { FileButton, type ModalSettings } from '@skeletonlabs/skeleton';
+  import { getModalStore } from '@skeletonlabs/skeleton';
 
   export let onChange: (pgn: string) => void = (pgn) => console.log('pgn => ', pgn);
 
+  const modalStore = getModalStore();
   let loader: string = 'pgn';
   let strPgn: string = '';
 
@@ -23,6 +25,13 @@
       disabledSearchUsername = true;
       const games = await loadRecentGames(username);
       console.log(games);
+      
+      const modal: ModalSettings = {
+        type: 'component',
+        component: 'chessComGameSelection',
+        meta: { games, username }
+      };
+      modalStore.trigger(modal);
     } else {
       alert('Username is invalid.');
     }

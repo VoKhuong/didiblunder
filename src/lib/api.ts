@@ -5,3 +5,7 @@ export const loadRecentGames = async (username: string) => {
   const payload = await response.json();
   return payload.games;
 }
+
+export const userWon = (username: string, game: any) =>
+  (game.white.username === username && game.white.result === 'win')
+  || (game.black.username === username && game.black.result === 'win');
