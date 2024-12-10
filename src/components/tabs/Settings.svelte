@@ -1,19 +1,14 @@
 <script lang="ts">
   import type { Settings } from '$models/Settings';
-  import {
-    RadioGroup,
-    RadioItem,
-    RangeSlider,
-    type DrawerSettings
-  } from '@skeletonlabs/skeleton';
+  import { RadioGroup, RadioItem, RangeSlider, type ModalSettings } from '@skeletonlabs/skeleton';
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
-  import { getDrawerStore } from '@skeletonlabs/skeleton';
+  import { getModalStore } from '@skeletonlabs/skeleton';
 
-  const drawerStore = getDrawerStore();
-  const drawerSettings: DrawerSettings = {
-    position: 'right',
-    width: 'md:w-96'
+  const modalStore = getModalStore();
+  const modalSettings: ModalSettings = {
+    type: 'component',
+    component: 'engineHelp'
   };
 
   const settings: Writable<Settings> = getContext('settings');
@@ -38,7 +33,7 @@
       Engine
       <button
         class="ml-1 badge-icon variant-filled-surface inline-flex"
-        on:click={() => drawerStore.open(drawerSettings)}>?</button
+        on:click={() => modalStore.trigger(modalSettings)}>?</button
       >
     </span>
     <select name="engine" class="select" bind:value={$settings.engine}>
