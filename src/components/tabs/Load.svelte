@@ -77,8 +77,8 @@
   {:else if loader === 'chesscom'}
   <label class="label">
     <span>Username</span>
-    <div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-      <input bind:value={username} type="text" class="pl-4" placeholder="magnuscarlsen" />
+    <div class="input-group input-group-divider flex">
+      <input bind:value={username} type="text" class="pl-4 grow" placeholder="magnuscarlsen" />
       <button
         class="py-2 variant-filled"
         on:click={onClick}
