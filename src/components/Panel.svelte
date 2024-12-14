@@ -22,8 +22,9 @@
     strPgn = newPgn;
   };
 
-  const load = async () => {
+  const analyze = async () => {
     isLoading = true;
+    console.log(strPgn);
     chess.loadPgn(strPgn);
     history.set(chess.history({ verbose: true }));
     move.set(-1);
@@ -52,7 +53,7 @@
       <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
       <svelte:fragment slot="panel">
         {#if currentTab === 'load'}
-          <Load onChange={onChangeStrPgn} />
+          <Load onChange={onChangeStrPgn} analyze={analyze} />
         {:else if currentTab === 'report'}
           <Report />
         {:else if currentTab === 'settings'}
@@ -63,7 +64,7 @@
   </section>
   <footer class="card-footer">
     {#if currentTab === 'load' || currentTab === 'settings'}
-      <ButtonFooter onClick={load} {isLoading} />
+      <ButtonFooter onClick={analyze} {isLoading} />
     {:else if currentTab === 'report'}
       <NavigationFooter />
     {/if}

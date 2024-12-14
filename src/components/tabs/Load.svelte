@@ -4,6 +4,7 @@
   import { getModalStore } from '@skeletonlabs/skeleton';
 
   export let onChange: (pgn: string) => void = (pgn) => console.log('pgn => ', pgn);
+  export let analyze: () => void;
 
   const modalStore = getModalStore();
   let loader: string = 'pgn';
@@ -24,12 +25,11 @@
     if (regex.test(username)) {
       disabledSearchUsername = true;
       const games = await loadRecentGames(username);
-      console.log(games);
 
       const modal: ModalSettings = {
         type: 'component',
         component: 'chessComGameSelection',
-        meta: { games, username }
+        meta: { games, username, onGameSelected, setDisabledSearchUsername, analyze }
       };
       modalStore.trigger(modal);
     } else {
@@ -42,6 +42,13 @@
       await onClick();
     }
   };
+
+  const onGameSelected = (game: any) => {
+    strPgn = game.pgn;
+    onChange(strPgn);
+  };
+
+  const setDisabledSearchUsername = (disabled: boolean) => (disabledSearchUsername = disabled);
 
   $: {
     if (filesPgn && filesPgn.length > 0) {
