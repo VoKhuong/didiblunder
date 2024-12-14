@@ -25,7 +25,7 @@
       disabledSearchUsername = true;
       const games = await loadRecentGames(username);
       console.log(games);
-      
+
       const modal: ModalSettings = {
         type: 'component',
         component: 'chessComGameSelection',
@@ -35,7 +35,13 @@
     } else {
       alert('Username is invalid.');
     }
-  }
+  };
+
+  const onKeyDown = async (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      await onClick();
+    }
+  };
 
   $: {
     if (filesPgn && filesPgn.length > 0) {
@@ -84,19 +90,21 @@
       <p class="truncate">{filename}</p>
     </div>
   {:else if loader === 'chesscom'}
-  <label class="label">
-    <span>Username</span>
-    <div class="input-group input-group-divider flex">
-      <input bind:value={username} type="text" class="pl-4 grow" placeholder="magnuscarlsen" />
-      <button
-        class="py-2 variant-filled"
-        on:click={onClick}
-        disabled={disabledSearchUsername}
-      >
-        {disabledSearchUsername ? '🚥' : '🔎'}
-      </button>
-    </div>
-  </label>
+    <label class="label">
+      <span>Username</span>
+      <div class="input-group input-group-divider flex">
+        <input
+          bind:value={username}
+          type="text"
+          class="pl-4 grow"
+          placeholder="magnuscarlsen"
+          on:keydown={onKeyDown}
+        />
+        <button class="py-2 variant-filled" on:click={onClick} disabled={disabledSearchUsername}>
+          {disabledSearchUsername ? '🚥' : '🔎'}
+        </button>
+      </div>
+    </label>
   {:else if loader === 'lichess'}
     lichess.org
   {/if}
