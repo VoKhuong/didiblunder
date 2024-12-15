@@ -10,7 +10,7 @@
   import type { Readable, Writable } from 'svelte/store';
   import { analyze_game } from '$lib/engine';
   import type { Evaluation } from '$models/Evaluation';
-  import type { Settings as SettingsType } from "$models/Settings";
+  import type { Settings as SettingsType } from '$models/Settings';
 
   let currentTab: string = 'load';
 
@@ -53,7 +53,7 @@
       <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
       <svelte:fragment slot="panel">
         {#if currentTab === 'load'}
-          <Load onChange={onChangeStrPgn} analyze={analyze} />
+          <Load onChange={onChangeStrPgn} {analyze} />
         {:else if currentTab === 'report'}
           <Report />
         {:else if currentTab === 'settings'}

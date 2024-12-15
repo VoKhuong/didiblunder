@@ -86,7 +86,7 @@ export function analyze_move(
   rawEval: RawEval,
   chess: Chess,
   previousEval: Evaluation | undefined,
-  mayBeGreat: boolean,
+  mayBeGreat: boolean
 ): Evaluation {
   chess.load(move.after);
   const turn = chess.turn();
@@ -164,7 +164,8 @@ export function analyze_move(
   };
 }
 
-const REGEX_MATCH = /multipv (\d+) score (\w+) (-?\d+) nodes \d+ nps \d+(?: hashfull \d+)? time \d+ pv (.*)/;
+const REGEX_MATCH =
+  /multipv (\d+) score (\w+) (-?\d+) nodes \d+ nps \d+(?: hashfull \d+)? time \d+ pv (.*)/;
 
 export async function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
   return new Promise((resolve) => {
@@ -174,22 +175,24 @@ export async function evaluate(worker: Worker, fen: string, depth: number): Prom
     worker.onmessage = ({ data }: { data: string }) => {
       if (regexInfo.test(data)) {
         const match = data.match(REGEX_MATCH);
-
+        if (!match) {
+          throw new Error(`REGEX_MATCH failed: ${data}`);
+        }
         // Info best line
-        if (match?.at(1)! === "1") {
+        if (match.at(1) === '1') {
           result = {
             ...result,
-            type: match?.at(2)!,
-            score: parseInt(match?.at(3)!),
-            pv: match?.at(4)!,
+            type: match.at(2),
+            score: parseInt(match.at(3)!),
+            pv: match.at(4),
             data
           };
         } else {
           // Alt line
           result.altLine = {
-            type: match?.at(2)!,
-            score: parseInt(match?.at(3)!),
-            pv: match?.at(4)!
+            type: match.at(2),
+            score: parseInt(match.at(3)!),
+            pv: match.at(4)
           };
         }
       }

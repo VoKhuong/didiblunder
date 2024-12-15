@@ -1,5 +1,5 @@
 <script lang="ts">
-  // @ts-expect-error
+  // @ts-expect-error: no declaration file as it was written in JS
   import { Chessboard } from 'cm-chessboard/src/Chessboard';
   import { DEFAULT_POSITION, type Move } from 'chess.js';
 
@@ -18,7 +18,7 @@
   const move: Writable<number> = getContext('move');
   const history: Writable<Move[]> = getContext('history');
   const settings: Writable<Settings> = getContext('settings');
-  const orientation = derived(settings, $settings => $settings.orientation);
+  const orientation = derived(settings, ($settings) => $settings.orientation);
 
   onMount(async () => {
     board = new Chessboard(boardElement, {
@@ -38,7 +38,7 @@
     });
   });
 
-  orientation.subscribe(value => {
+  orientation.subscribe((value) => {
     board?.setOrientation(value);
     // TODO: quick fix
     board?.setMarkers([]);

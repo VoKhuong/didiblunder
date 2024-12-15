@@ -52,7 +52,9 @@ export function isForced(evaluation: Evaluation): boolean {
 
 export function haveOnlyOneGoodMove(turn: Color, evaluation?: Evaluation): boolean {
   if (!evaluation || !evaluation.altLine) return false;
-  return isWinningAfterThisMove(turn, evaluation) && !isWinningAfterThisMove(turn, evaluation.altLine);
+  return (
+    isWinningAfterThisMove(turn, evaluation) && !isWinningAfterThisMove(turn, evaluation.altLine)
+  );
 }
 
 function isWinningAfterThisMove(turn: Color, alt: AltEval) {

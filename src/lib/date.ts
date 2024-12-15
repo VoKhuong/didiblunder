@@ -33,4 +33,4 @@ export const getRelativeTimeFromNowString = (date: Date) => {
 
   const rtf = new Intl.RelativeTimeFormat();
   return rtf.format(-value, unit);
-}
+};
