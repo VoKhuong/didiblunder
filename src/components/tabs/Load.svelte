@@ -25,14 +25,14 @@
     if (regex.test(username)) {
       disabledSearchUsername = true;
       const games = await loadRecentGames(username);
-      
+
       if (games?.length) {
         const modal: ModalSettings = {
-        type: 'component',
-        component: 'chessComGameSelection',
-        meta: { games, username, onGameSelected, setDisabledSearchUsername, analyze }
-      };
-      modalStore.trigger(modal);
+          type: 'component',
+          component: 'chessComGameSelection',
+          meta: { games, username, onGameSelected, setDisabledSearchUsername, analyze }
+        };
+        modalStore.trigger(modal);
       } else {
         alert('No game found or username is invalid.');
         disabledSearchUsername = false;
@@ -118,6 +118,6 @@
       </div>
     </label>
   {:else if loader === 'lichess'}
-    lichess.org
+    <h3 class="h3 text-center">🚧 Sorry, WIP 🚧</h3>
   {/if}
 </div>
