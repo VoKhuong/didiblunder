@@ -61,3 +61,22 @@ export function getLabelHexColor(label: Label): string {
       return 'none';
   }
 }
+
+export function shouldShowBest(label: Label): boolean {
+  switch (label) {
+    case Label.BRILLIANT:
+      return false;
+    case Label.GREAT:
+      return false;
+    case Label.BEST:
+      return false;
+    case Label.BOOK:
+      return false;
+    case Label.FORCED:
+      return false;
+    case Label.CHECKMATE:
+      return false;
+    default:
+      return true;
+  }
+}

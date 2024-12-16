@@ -30,4 +30,4 @@
 <div class="h-28 md:h-32 lg:h-56 mb-2 overflow-y-auto">
   <Table source={data} interactive on:selected={onSelected} />
 </div>
-<Feedback {san} {score} label={$evaluation.label} opening={$evaluation.opening} />
+<Feedback {san} {score} label={$evaluation.label} opening={$evaluation.opening} best={$evaluation.best} />

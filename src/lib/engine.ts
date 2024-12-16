@@ -4,12 +4,12 @@ import Label from '$models/Label';
 import type { Chess, Move } from 'chess.js';
 import {
   computeWinChanceLost,
-  isBestMove,
   isForced,
   isNextMoveCrucial,
   haveOnlyOneGoodMove,
   isSacrifice,
-  opponentDidABadPlay
+  opponentDidABadPlay,
+  getBestMove
 } from './evaluation';
 
 import OPENINGS from '$lib/openings.json';
@@ -90,6 +90,7 @@ export function analyze_move(
 ): Evaluation {
   chess.load(move.after);
   const turn = chess.turn();
+  const best = getBestMove(previousEval);
 
   if (chess.isCheckmate()) {
     return turn === 'b' ? EVAL_CHECKMATE_WHITE : EVAL_CHECKMATE_BLACK;
@@ -118,7 +119,7 @@ export function analyze_move(
   }
 
   // Check for BEST
-  if (isBestMove(move, previousEval)) {
+  if (move.lan === best) {
     label = Label.BEST;
   }
 
@@ -160,7 +161,8 @@ export function analyze_move(
 
   return {
     ...rawEval,
-    label
+    label,
+    best
   };
 }
 

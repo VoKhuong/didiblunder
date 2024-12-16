@@ -38,12 +38,8 @@ export function toEvaluationHeight(evaluation: Evaluation) {
       : 0;
 }
 
-export function isBestMove(move: Move, evaluation?: Evaluation): boolean {
-  if (evaluation?.pv.split(' ').at(0) === move.lan) {
-    return true;
-  } else {
-    return false;
-  }
+export function getBestMove(evaluation?: Evaluation): string | undefined {
+  return evaluation?.pv.split(' ').at(0);
 }
 
 export function isForced(evaluation: Evaluation): boolean {

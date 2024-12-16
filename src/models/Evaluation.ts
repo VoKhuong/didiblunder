@@ -4,6 +4,7 @@ import Label from './Label';
 export type Evaluation = RawEval & {
   label: Label;
   opening?: string;
+  best?: string;
 };
 
 export const EVAL_CHECKMATE_WHITE: Evaluation = {
