@@ -169,7 +169,7 @@ export function analyze_move(
 const REGEX_MATCH =
   /multipv (\d+) score (\w+) (-?\d+) nodes \d+ nps \d+(?: hashfull \d+)? time \d+ pv (.*)/;
 
-export async function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
+export function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
   return new Promise((resolve) => {
     const regexInfo = new RegExp(`^info depth ${depth} seldepth \\d+ multipv`);
     let result: any = {};

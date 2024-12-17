@@ -5,6 +5,7 @@
 
   export let onChange: (pgn: string) => void = (pgn) => console.log('pgn => ', pgn);
   export let analyze: () => void;
+  export let isLoading;
 
   const modalStore = getModalStore();
   let loader: string = 'pgn';
@@ -87,7 +88,7 @@
       class="textarea p-2"
       rows="4"
       placeholder="1. e4 Nc6 2. Bc4 Nf6 3. Nc3 e6 4. Nf3 d5 5. e5 Nd7..."
-      disabled={disabledImportPgn}
+      disabled={disabledImportPgn || isLoading}
     />
     <hr class="my-4" />
     <div class="flex items-center gap-2">
@@ -96,6 +97,7 @@
         accept=".pgn, .txt"
         name="pgnfile"
         button="btn variant-ghost"
+        disabled={isLoading}
       >
         Import PGN file
       </FileButton>
@@ -112,7 +114,7 @@
           placeholder="magnuscarlsen"
           on:keydown={onKeyDown}
         />
-        <button class="py-2 variant-filled" on:click={onClick} disabled={disabledSearchUsername}>
+        <button class="py-2 variant-filled" on:click={onClick} disabled={disabledSearchUsername || isLoading}>
           {disabledSearchUsername ? '🚥' : '🔎'}
         </button>
       </div>

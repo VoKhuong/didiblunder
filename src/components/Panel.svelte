@@ -25,15 +25,21 @@
   const analyze = async () => {
     isLoading = true;
     console.log(strPgn);
-    chess.loadPgn(strPgn);
-    history.set(chess.history({ verbose: true }));
-    move.set(-1);
-    position.set($history[0].before);
-    const report = await analyze_game($engine, $history, chess, $settings.depth);
-    console.log(report);
-    evaluations.set(report);
-    currentTab = 'report';
-    isLoading = false;
+    try {
+      chess.loadPgn(strPgn);
+      history.set(chess.history({ verbose: true }));
+      move.set(-1);
+      position.set($history[0].before);
+      const report = await analyze_game($engine, $history, chess, $settings.depth);
+      console.log(report);
+      evaluations.set(report);
+      currentTab = 'report';
+    } catch (e) {
+      alert('An error occured, please try again.');
+      throw e;
+    } finally {
+      isLoading = false;
+    }
   };
 
   const chess: Chess = getContext('chess');
@@ -53,7 +59,7 @@
       <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
       <svelte:fragment slot="panel">
         {#if currentTab === 'load'}
-          <Load onChange={onChangeStrPgn} {analyze} />
+          <Load onChange={onChangeStrPgn} {analyze} {isLoading} />
         {:else if currentTab === 'report'}
           <Report />
         {:else if currentTab === 'settings'}
