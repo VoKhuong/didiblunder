@@ -1,1 +1,4 @@
-/*/stockfish*.wasm /stockfish*.wasm
+/_app/immutable/workers/stockfish-16.1-lite-single-*.wasm /stockfish-16.1-lite-single.wasm
+/_app/immutable/workers/stockfish-16.1-lite-*.wasm /stockfish-16.1-lite.wasm
+/_app/immutable/workers/stockfish-16.1-*.wasm /stockfish-16.1.wasm
+/_app/immutable/workers/stockfish-16.1-single-*.wasm /stockfish-16.1-single.wasm
