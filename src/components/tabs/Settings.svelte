@@ -39,8 +39,8 @@
     <select name="engine" class="select" bind:value={$settings.engine}>
       <option value="lite-single">Lite single-thread ⚡</option>
       <option value="lite-multi">Lite multi-thread 🚀</option>
-      <option value="large-multi">Large multi-thread 🚄</option>
-      <option value="large-single">Large single-thread 🚂</option>
+      <!-- option value="large-multi">Large multi-thread 🚄</option -->
+      <!-- option value="large-single">Large single-thread 🚂</option -->
     </select>
   </label>
 </div>
