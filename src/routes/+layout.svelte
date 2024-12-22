@@ -8,7 +8,14 @@
   import { onMount } from 'svelte';
   import { preloadAudio } from '$lib/media';
   import posthog from 'posthog-js';
-  import { PUBLIC_POSTHOG_TOKEN, PUBLIC_POSTHOG_URL } from "$env/static/public";
+  import * as Sentry from '@sentry/browser';
+  import {
+    PUBLIC_POSTHOG_TOKEN,
+    PUBLIC_POSTHOG_URL,
+    PUBLIC_SENTRY_DSN,
+    PUBLIC_SENTRY_ORG,
+    PUBLIC_SENTRY_PROJECT_ID
+  } from '$env/static/public';
 
   initializeStores();
 
@@ -22,6 +29,19 @@
       api_host: PUBLIC_POSTHOG_URL,
       person_profiles: 'identified_only'
     });
+
+    Sentry.init({
+      dsn: PUBLIC_SENTRY_DSN,
+      tracesSampleRate: 1.0,
+      integrations: [
+        posthog.sentryIntegration({
+          organization: PUBLIC_SENTRY_ORG,
+          projectId: parseInt(PUBLIC_SENTRY_PROJECT_ID),
+          severityAllowList: ['error', 'info']
+        })
+      ]
+    });
+
     preloadAudio('sfx-move', '/media/move.webm');
     preloadAudio('sfx-capture', '/media/capture.webm');
     preloadAudio('sfx-check', '/media/check.webm');

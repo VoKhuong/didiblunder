@@ -12,6 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@sentry/browser": "^8.47.0",
     "chess.js": "github:jhlywa/chess.js",
     "cm-chessboard": "^8.7.4",
     "posthog-js": "^1.203.1",
