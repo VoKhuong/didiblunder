@@ -14,6 +14,7 @@
   "dependencies": {
     "chess.js": "github:jhlywa/chess.js",
     "cm-chessboard": "^8.7.4",
+    "posthog-js": "^1.203.1",
     "stockfish": "github:nmrugg/stockfish.js#v16.1.0"
   },
   "devDependencies": {

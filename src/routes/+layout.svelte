@@ -7,6 +7,8 @@
   import ChessComGameSelection from '../components/tabs/modals/ChessComGameSelection.svelte';
   import { onMount } from 'svelte';
   import { preloadAudio } from '$lib/media';
+  import posthog from 'posthog-js';
+  import { PUBLIC_POSTHOG_TOKEN, PUBLIC_POSTHOG_URL } from "$env/static/public";
 
   initializeStores();
 
@@ -16,6 +18,10 @@
   };
 
   onMount(() => {
+    posthog.init(PUBLIC_POSTHOG_TOKEN, {
+      api_host: PUBLIC_POSTHOG_URL,
+      person_profiles: 'identified_only'
+    });
     preloadAudio('sfx-move', '/media/move.webm');
     preloadAudio('sfx-capture', '/media/capture.webm');
     preloadAudio('sfx-check', '/media/check.webm');
