@@ -13,6 +13,7 @@ import {
 } from './evaluation';
 
 import OPENINGS from '$lib/openings.json';
+import { log } from '$lib/log';
 
 export async function init(engine: string) {
   let workerModule;
@@ -35,8 +36,8 @@ export async function init(engine: string) {
 
   const worker = new workerModule.default();
 
-  worker.onmessage = ({ data }: any) => console.log(`page got message: ${data}`);
-  worker.onerror = (ev: any) => console.log(`page got error: ${ev.message}`);
+  worker.onmessage = ({ data }: any) => log(`page got message: ${data}`);
+  worker.onerror = (ev: any) => log(`page got error: ${ev.message}`);
 
   if (engine.includes('multi')) {
     worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
@@ -75,9 +76,9 @@ export async function analyze_game(
     evaluations.push(analyze_move(history[i], rawEvals[i], chess, evaluations.at(-1), mayBeGreat));
   }
   const end = performance.now();
-  console.log(`Execution engine time: ${mid - start} ms`);
-  console.log(`Execution labeling time: ${end - mid} ms`);
-  console.log(`Execution total time: ${end - start} ms`);
+  log(`Execution engine time: ${mid - start} ms`);
+  log(`Execution labeling time: ${end - mid} ms`);
+  log(`Execution total time: ${end - start} ms`);
   return evaluations;
 }
 

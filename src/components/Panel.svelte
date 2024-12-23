@@ -11,6 +11,7 @@
   import { analyze_game } from '$lib/engine';
   import type { Evaluation } from '$models/Evaluation';
   import type { Settings as SettingsType } from '$models/Settings';
+  import { log } from '$lib/log';
 
   let currentTab: string = 'load';
 
@@ -24,14 +25,14 @@
 
   const analyze = async () => {
     isLoading = true;
-    console.log(strPgn);
+    log(strPgn);
     try {
       chess.loadPgn(strPgn);
       history.set(chess.history({ verbose: true }));
       move.set(-1);
       position.set($history[0].before);
       const report = await analyze_game($engine, $history, chess, $settings.depth);
-      console.log(report);
+      log(report);
       evaluations.set(report);
       currentTab = 'report';
     } catch (e) {

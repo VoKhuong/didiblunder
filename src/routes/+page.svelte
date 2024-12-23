@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext } from 'svelte';
-  import { browser } from '$app/environment';
+  import { browser, dev } from '$app/environment';
   import { Chess, DEFAULT_POSITION, type Move } from 'chess.js';
 
   import Chessboard from '../components/Chessboard.svelte';
@@ -59,11 +59,13 @@
     <Panel />
   </div>
 </div>
-<p>type: {$evaluation.type}</p>
-<p>score: {$evaluation.score}</p>
-{#if $evaluation?.altLine}
-  <p>alt: {$evaluation?.altLine.type} {$evaluation?.altLine.score} {$evaluation?.altLine.pv}</p>
+{#if dev}
+  <p>type: {$evaluation.type}</p>
+  <p>score: {$evaluation.score}</p>
+  {#if $evaluation?.altLine}
+    <p>alt: {$evaluation?.altLine.type} {$evaluation?.altLine.score} {$evaluation?.altLine.pv}</p>
+  {/if}
+  <p>{$evaluation.pv}</p>
+  <p>{$evaluation.data}</p>
+  <p>{$position}</p>
 {/if}
-<p>{$evaluation.pv}</p>
-<p>{$evaluation.data}</p>
-<p>{$position}</p>
