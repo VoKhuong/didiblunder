@@ -73,8 +73,8 @@
 </script>
 
 <div class="flex items-center">
-  <p>Load game from&nbsp</p>
-  <select bind:value={loader} class="select w-fit">
+  <label for="loader">Load game from&nbsp</label>
+  <select name="loader" bind:value={loader} class="select w-fit">
     <option value="pgn">PGN</option>
     <option value="chesscom">chess.com</option>
     <option value="lichess">lichess.org</option>
