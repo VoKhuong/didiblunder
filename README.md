@@ -31,11 +31,12 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-
-> **NOTE**: Currently, Did I Blunder is heavily coupled with the Cloudflare adapter and is targeted for deployment on Cloudflare Pages.
+**NOTE**: Currently, Did I Blunder is heavily coupled with the Cloudflare adapter and is targeted for deployment on Cloudflare Pages.
 
 ## Acknowledgements
 
 - [En Croissant](https://github.com/franciscoBSalgueiro/en-croissant) for the inspiration and a way to compute win percentage
 
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
