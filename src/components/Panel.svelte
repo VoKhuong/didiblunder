@@ -18,6 +18,11 @@
   // Load
   let strPgn: string = '';
   let isLoading: boolean = false;
+  let progress = 0;
+
+  const setProgress = (n: number) => {
+    progress = n;
+  };
 
   const onChangeStrPgn = (newPgn: string) => {
     strPgn = newPgn;
@@ -31,7 +36,7 @@
       history.set(chess.history({ verbose: true }));
       move.set(-1);
       position.set($history[0].before);
-      const report = await analyze_game($engine, $history, chess, $settings.depth);
+      const report = await analyze_game($engine, $history, chess, $settings.depth, setProgress);
       log(report);
       evaluations.set(report);
       currentTab = 'report';
@@ -40,6 +45,7 @@
       throw e;
     } finally {
       isLoading = false;
+      progress = 0;
     }
   };
 
@@ -71,7 +77,7 @@
   </section>
   <footer class="card-footer">
     {#if currentTab === 'load' || currentTab === 'settings'}
-      <ButtonFooter onClick={analyze} {isLoading} />
+      <ButtonFooter onClick={analyze} {isLoading} {progress} />
     {:else if currentTab === 'report'}
       <NavigationFooter />
     {/if}

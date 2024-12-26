@@ -56,15 +56,20 @@ export async function analyze_game(
   worker: Worker,
   history: Move[],
   chess: Chess,
-  depth: number
+  depth: number,
+  setProgress: (n: number) => void
 ): Promise<Evaluation[]> {
   const evaluations: Evaluation[] = [];
   const rawEvals: RawEval[] = [];
   let mayBeGreat = false;
   const start = performance.now();
+  const length = history.length;
+  let rawPromise;
 
-  for (const move of history) {
-    rawEvals.push(await evaluate(worker, move.after, depth));
+  for (let i = 0; i < history.length; i++) {
+    rawPromise = evaluate(worker, history[i].after, depth);
+    setProgress(Math.min(Math.floor((i / length) * 100), 98));
+    rawEvals.push(await rawPromise);
   }
 
   const mid = performance.now();
@@ -75,6 +80,7 @@ export async function analyze_game(
       haveOnlyOneGoodMove(history[i].color, evaluations.at(-1));
     evaluations.push(analyze_move(history[i], rawEvals[i], chess, evaluations.at(-1), mayBeGreat));
   }
+  setProgress(100);
   const end = performance.now();
   log(`Execution engine time: ${mid - start} ms`);
   log(`Execution labeling time: ${end - mid} ms`);
