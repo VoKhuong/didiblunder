@@ -1,7 +1,7 @@
 export const loadRecentGames = async (username: string) => {
   const today = new Date();
   const response = await fetch(
-    `https://api.chess.com/pub/player/${username}/games/${today.getFullYear()}/${today.getMonth() + 1}`
+    `https://api.chess.com/pub/player/${username}/games/${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}`
   );
   const payload = await response.json();
   return payload.games;
