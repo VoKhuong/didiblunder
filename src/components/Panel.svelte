@@ -30,6 +30,10 @@
 
   const analyze = async () => {
     isLoading = true;
+
+    // add a line break after last comment for chess.com mobile PGN export
+    strPgn = strPgn.replace(/](?![\s\S]*\])(?!\n\n)/, ']\n');
+
     log(strPgn);
     try {
       chess.loadPgn(strPgn);
