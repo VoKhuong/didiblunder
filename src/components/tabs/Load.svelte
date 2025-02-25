@@ -8,7 +8,7 @@
   export let isLoading;
 
   const modalStore = getModalStore();
-  let loader: string = 'pgn';
+  let loader: string = 'chesscom';
   let strPgn: string = '';
 
   // PGN fields
