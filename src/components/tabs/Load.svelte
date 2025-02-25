@@ -21,6 +21,8 @@
   let username = '';
 
   const onClick = async () => {
+    // trim trailing spaces
+    username = username.trim();
     // validate username
     const regex = /^[A-Za-z0-9_]{3,}$/;
     if (regex.test(username)) {
