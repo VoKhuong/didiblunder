@@ -10,3 +10,5 @@ export const loadRecentGames = async (username: string) => {
 export const userWon = (username: string, game: any) =>
   (game.white.username === username && game.white.result === 'win') ||
   (game.black.username === username && game.black.result === 'win');
+
+export const isDraw = (game: any) => game.white.result !== 'win' && game.black.result !== 'win';

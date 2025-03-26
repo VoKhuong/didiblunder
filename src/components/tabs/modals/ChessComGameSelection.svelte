@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SvelteComponent } from 'svelte';
   import { getModalStore } from '@skeletonlabs/skeleton';
-  import { userWon } from '$lib/api';
+  import { isDraw, userWon } from '$lib/api';
   import { getRelativeTimeFromNowString } from '$lib/date';
 
   const modalStore = getModalStore();
@@ -41,9 +41,11 @@
         on:click={() => onClick(game)}
         on:keydown={(e) => onKeyDown(e, game)}
         role="link"
-        class="card p-4 hover:font-bold hover:cursor-pointer {userWon(username, game)
-          ? 'variant-ghost-primary'
-          : 'variant-ghost-error'}"
+        class="card p-4 hover:font-bold hover:cursor-pointer {isDraw(game)
+          ? 'variant-ghost-warning'
+          : userWon(username, game)
+            ? 'variant-ghost-primary'
+            : 'variant-ghost-error'}"
         tabindex={index}
       >
         <p>
