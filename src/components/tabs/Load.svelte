@@ -1,11 +1,16 @@
 <script lang="ts">
   import { loadRecentGames } from '$lib/api';
+  import type { Settings } from '$models/Settings';
   import { FileButton, type ModalSettings } from '@skeletonlabs/skeleton';
   import { getModalStore } from '@skeletonlabs/skeleton';
+  import { getContext } from 'svelte';
+  import type { Writable } from 'svelte/store';
 
   export let onChange: (pgn: string) => void = (pgn) => console.log('pgn => ', pgn);
   export let analyze: () => void;
   export let isLoading;
+
+  const settings: Writable<Settings> = getContext('settings');
 
   const modalStore = getModalStore();
   let loader: string = 'chesscom';
@@ -51,9 +56,10 @@
     }
   };
 
-  const onGameSelected = (game: any) => {
+  const onGameSelected = (game: any, orientation: 'w' | 'b') => {
     strPgn = game.pgn;
     onChange(strPgn);
+    $settings.orientation = orientation;
   };
 
   const setDisabledSearchUsername = (disabled: boolean) => (disabledSearchUsername = disabled);
@@ -116,7 +122,11 @@
           placeholder="magnuscarlsen"
           on:keydown={onKeyDown}
         />
-        <button class="py-2 variant-filled" on:click={onClick} disabled={disabledSearchUsername || isLoading}>
+        <button
+          class="py-2 variant-filled"
+          on:click={onClick}
+          disabled={disabledSearchUsername || isLoading}
+        >
           {disabledSearchUsername ? '🚥' : '🔎'}
         </button>
       </div>

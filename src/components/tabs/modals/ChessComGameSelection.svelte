@@ -18,7 +18,8 @@
   };
 
   const onClick = (game: any) => {
-    onGameSelected(game);
+    const orientation = game.white.username === username ? 'w' : 'b';
+    onGameSelected(game, orientation);
     setDisabled(false);
     analyze();
     parent.onClose();
