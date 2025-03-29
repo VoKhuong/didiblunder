@@ -31,7 +31,11 @@
     }
   };
 
-  export let parent: SvelteComponent;
+  interface Props {
+    parent: SvelteComponent;
+  }
+
+  let { parent }: Props = $props();
 </script>
 
 <div class="card mt-8 mb-4 p-4 w-modal relative shadow-xl space-y-4">
@@ -39,8 +43,8 @@
   <main class="space-y-2">
     {#each games as game, index}
       <div
-        on:click={() => onClick(game)}
-        on:keydown={(e) => onKeyDown(e, game)}
+        onclick={() => onClick(game)}
+        onkeydown={(e) => onKeyDown(e, game)}
         role="link"
         class="card p-4 hover:font-bold hover:cursor-pointer {isDraw(game)
           ? 'variant-ghost-warning'
@@ -68,7 +72,7 @@
   <footer class="flex justify-center">
     <button
       class="btn-icon variant-filled md:absolute md:-top-5 md:-right-5 font-bold shadow-xl"
-      on:click={onClose}>✕</button
+      onclick={onClose}>✕</button
     >
   </footer>
 </div>

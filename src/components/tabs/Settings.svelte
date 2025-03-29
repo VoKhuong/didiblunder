@@ -33,7 +33,7 @@
       Engine
       <button
         class="ml-1 badge-icon variant-filled-surface inline-flex"
-        on:click={() => modalStore.trigger(modalSettings)}>?</button
+        onclick={() => modalStore.trigger(modalSettings)}>?</button
       >
     </span>
     <select name="engine" class="select" bind:value={$settings.engine}>

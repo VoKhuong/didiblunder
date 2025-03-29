@@ -13,12 +13,12 @@
   import type { Settings as SettingsType } from '$models/Settings';
   import { log } from '$lib/log';
 
-  let currentTab: string = 'load';
+  let currentTab: string = $state('load');
 
   // Load
   let strPgn: string = '';
-  let isLoading: boolean = false;
-  let progress = 0;
+  let isLoading: boolean = $state(false);
+  let progress = $state(0);
 
   const setProgress = (n: number) => {
     progress = n;
@@ -68,15 +68,17 @@
       <Tab bind:group={currentTab} name="load" value="load">💾 Load</Tab>
       <Tab bind:group={currentTab} name="report" value="report">📊 Report</Tab>
       <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
-      <svelte:fragment slot="panel">
-        {#if currentTab === 'load'}
-          <Load onChange={onChangeStrPgn} {analyze} {isLoading} />
-        {:else if currentTab === 'report'}
-          <Report />
-        {:else if currentTab === 'settings'}
-          <Settings />
-        {/if}
-      </svelte:fragment>
+      {#snippet panel()}
+          
+          {#if currentTab === 'load'}
+            <Load onChange={onChangeStrPgn} {analyze} {isLoading} />
+          {:else if currentTab === 'report'}
+            <Report />
+          {:else if currentTab === 'settings'}
+            <Settings />
+          {/if}
+        
+          {/snippet}
     </TabGroup>
   </section>
   <footer class="card-footer">

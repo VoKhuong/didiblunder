@@ -14,17 +14,15 @@
   const evaluation: Writable<Evaluation> = getContext('evaluation');
 
   let data: TableSource = toTableSource($history);
-  let san: string = $history[$move]?.san;
-
-  let score: string;
+  let score: string = $derived(formatScore($evaluation));
 
   const onSelected = (meta: CustomEvent) => {
     move.set(getMoveNumber(meta.detail[0]));
     position.set($history[$move].after);
   };
 
-  $: san = $history[$move]?.san;
-  $: score = formatScore($evaluation);
+  let san = $derived($history[$move]?.san);
+  
 </script>
 
 <div class="h-28 md:h-32 lg:h-56 mb-2 overflow-y-auto">

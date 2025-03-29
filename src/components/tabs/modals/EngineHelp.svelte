@@ -1,7 +1,11 @@
 <script lang="ts">
   import type { SvelteComponent } from 'svelte';
 
-  export let parent: SvelteComponent;
+  interface Props {
+    parent: SvelteComponent;
+  }
+
+  let { parent }: Props = $props();
 </script>
 
 <div class="card p-4 w-modal relative shadow-xl space-y-4">
@@ -33,7 +37,7 @@
   <footer class="flex justify-center">
     <button
       class="btn-icon variant-filled md:absolute md:-top-5 md:-right-5 font-bold shadow-xl"
-      on:click={parent.onClose}>✕</button
+      onclick={parent.onClose}>✕</button
     >
   </footer>
 </div>

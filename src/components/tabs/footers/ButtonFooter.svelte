@@ -1,15 +1,19 @@
 <script lang="ts">
   import { ProgressRadial } from '@skeletonlabs/skeleton';
 
-  export let onClick: (event: MouseEvent) => void = () => console.log('onClick event fired');
-  export let isLoading: boolean = false;
-  export let progress: number = 0;
+  interface Props {
+    onClick?: (event: MouseEvent) => void;
+    isLoading?: boolean;
+    progress?: number;
+  }
+
+  let { onClick = () => console.log('onClick event fired'), isLoading = false, progress = 0 }: Props = $props();
 </script>
 
 <button
   type="button"
   class="btn btn-lg variant-filled w-full"
-  on:click={onClick}
+  onclick={onClick}
   disabled={isLoading}
 >
   {#if isLoading}

@@ -2,11 +2,13 @@
   import { toEvaluationHeight } from '$lib/evaluation';
   import type { Evaluation } from '$models/Evaluation';
 
-  export let evaluation: Evaluation;
+  interface Props {
+    evaluation: Evaluation;
+  }
 
-  let barHeight = 0.5;
+  let { evaluation }: Props = $props();
 
-  $: barHeight = toEvaluationHeight(evaluation);
+  let barHeight = $derived(toEvaluationHeight(evaluation));
 </script>
 
 <div class="relative w-6 bg-black">

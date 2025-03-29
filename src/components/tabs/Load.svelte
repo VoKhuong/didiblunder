@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { loadRecentGames } from '$lib/api';
   import type { Settings } from '$models/Settings';
   import { FileButton, type ModalSettings } from '@skeletonlabs/skeleton';
@@ -6,24 +8,28 @@
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
 
-  export let onChange: (pgn: string) => void = (pgn) => console.log('pgn => ', pgn);
-  export let analyze: () => void;
-  export let isLoading;
+  interface Props {
+    onChange?: (pgn: string) => void;
+    analyze: () => void;
+    isLoading: any;
+  }
+
+  let { onChange = (pgn) => console.log('pgn => ', pgn), analyze, isLoading }: Props = $props();
 
   const settings: Writable<Settings> = getContext('settings');
 
   const modalStore = getModalStore();
-  let loader: string = 'chesscom';
-  let strPgn: string = '';
+  let loader: string = $state('chesscom');
+  let strPgn: string = $state('');
 
   // PGN fields
-  let disabledImportPgn: boolean = false;
-  let filename: string = '';
-  let filesPgn: FileList;
+  let disabledImportPgn: boolean = $state(false);
+  let filename: string = $state('');
+  let filesPgn: FileList = $state();
 
   // chess.com fields
-  let disabledSearchUsername = false;
-  let username = '';
+  let disabledSearchUsername = $state(false);
+  let username = $state('');
 
   const onClick = async () => {
     // trim trailing spaces
@@ -64,7 +70,7 @@
 
   const setDisabledSearchUsername = (disabled: boolean) => (disabledSearchUsername = disabled);
 
-  $: {
+  run(() => {
     if (filesPgn && filesPgn.length > 0) {
       filesPgn
         .item(0)
@@ -75,9 +81,11 @@
           filename = filesPgn.item(0)?.name ?? '';
         });
     }
-  }
+  });
 
-  $: onChange(strPgn);
+  run(() => {
+    onChange(strPgn);
+  });
 </script>
 
 <div class="flex items-center">
@@ -97,7 +105,7 @@
       rows="4"
       placeholder="1. e4 Nc6 2. Bc4 Nf6 3. Nc3 e6 4. Nf3 d5 5. e5 Nd7..."
       disabled={disabledImportPgn || isLoading}
-    />
+></textarea>
     <hr class="my-4" />
     <div class="flex items-center gap-2">
       <FileButton
@@ -120,11 +128,11 @@
           type="text"
           class="pl-4 grow"
           placeholder="magnuscarlsen"
-          on:keydown={onKeyDown}
+          onkeydown={onKeyDown}
         />
         <button
           class="py-2 variant-filled"
-          on:click={onClick}
+          onclick={onClick}
           disabled={disabledSearchUsername || isLoading}
         >
           {disabledSearchUsername ? '🚥' : '🔎'}

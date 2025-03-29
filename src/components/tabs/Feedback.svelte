@@ -3,11 +3,21 @@
   import Label from '$models/Label';
   import LabelIcon from '../LabelIcon.svelte';
 
-  export let san: string;
-  export let label: Label;
-  export let score: string;
-  export let opening: string | undefined;
-  export let best: string | undefined;
+  interface Props {
+    san: string;
+    label: Label;
+    score: string;
+    opening: string | undefined;
+    best: string | undefined;
+  }
+
+  let {
+    san,
+    label,
+    score,
+    opening,
+    best
+  }: Props = $props();
 </script>
 
 <div class="flex justify-center items-center {getLabelClassColor(label)}">

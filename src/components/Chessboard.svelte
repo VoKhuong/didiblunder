@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   // @ts-expect-error: no declaration file as it was written in JS
   import { Chessboard } from 'cm-chessboard/src/Chessboard';
   import { DEFAULT_POSITION, type Move } from 'chess.js';
@@ -11,9 +13,9 @@
   import { playMoveTypeSound } from '$lib/media';
   import { getMoveType } from '$lib/chess';
 
-  let boardElement: HTMLDivElement;
+  let boardElement: HTMLDivElement | undefined = $state();
 
-  let board: Chessboard;
+  let board: Chessboard = $state();
 
   const position: Writable<string> = getContext('position');
   const evaluation: Writable<Evaluation> = getContext('evaluation');
@@ -45,8 +47,10 @@
     // TODO: quick fix
     board?.setMarkers([]);
   });
-  $: board?.setPosition($position, true);
-  $: {
+  run(() => {
+    board?.setPosition($position, true);
+  });
+  run(() => {
     if ($history.length > 0 && $move >= 0) {
       playMoveTypeSound(getMoveType($history[$move].san));
       board?.setMarkers([
@@ -64,7 +68,7 @@
     } else {
       board?.setMarkers([]);
     }
-  }
+  });
 </script>
 
 <div class="w-full" bind:this={boardElement}></div>

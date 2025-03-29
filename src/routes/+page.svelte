@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { setContext } from 'svelte';
   import { browser, dev } from '$app/environment';
   import { Chess, DEFAULT_POSITION, type Move } from 'chess.js';
@@ -43,9 +45,11 @@
   setContext('settings', settings);
   const settingsEngine = derived(settings, ($settings) => $settings.engine);
 
-  $: if (browser) {
-    init($settingsEngine).then((worker) => engine.set(worker));
-  }
+  run(() => {
+    if (browser) {
+      init($settingsEngine).then((worker) => engine.set(worker));
+    }
+  });
 </script>
 
 <div class="flex flex-wrap justify-center my-6 md:my-16 gap-6">

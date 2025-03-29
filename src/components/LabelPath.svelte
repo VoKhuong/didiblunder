@@ -1,7 +1,11 @@
 <script lang="ts">
   import Label from '$models/Label';
 
-  export let label: Label;
+  interface Props {
+    label: Label;
+  }
+
+  let { label }: Props = $props();
 </script>
 
 {#if label === Label.BRILLIANT}

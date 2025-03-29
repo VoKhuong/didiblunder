@@ -16,6 +16,11 @@
     PUBLIC_SENTRY_ORG,
     PUBLIC_SENTRY_PROJECT_ID
   } from '$env/static/public';
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
 
   initializeStores();
 
@@ -50,7 +55,7 @@
   });
 </script>
 
-<slot />
+{@render children?.()}
 <Modal components={registry} />
 <footer class="flex justify-center">
   <a href="https://github.com/VoKhuong/didiblunder">

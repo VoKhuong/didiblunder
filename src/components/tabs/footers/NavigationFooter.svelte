@@ -34,7 +34,7 @@
   <button
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
-    on:click={clickBackward}
+    onclick={clickBackward}
     disabled={$move < 0}
   >
     <svg
@@ -56,7 +56,7 @@
   <button
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
-    on:click={clickPrevious}
+    onclick={clickPrevious}
     disabled={$move < 0}
   >
     <svg
@@ -80,7 +80,7 @@
   <button
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
-    on:click={clickNext}
+    onclick={clickNext}
     disabled={$move >= nbMoves - 1}
   >
     <svg
@@ -104,7 +104,7 @@
   <button
     type="button"
     class="btn-icon btn-icon-lg variant-filled rounded-md grow"
-    on:click={clickForward}
+    onclick={clickForward}
     disabled={$move >= nbMoves - 1}
   >
     <svg
