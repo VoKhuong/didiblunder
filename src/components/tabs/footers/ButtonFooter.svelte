@@ -2,12 +2,12 @@
   import { ProgressRadial } from '@skeletonlabs/skeleton';
 
   interface Props {
-    onClick?: (event: MouseEvent) => void;
-    isLoading?: boolean;
-    progress?: number;
+    onClick: (event: MouseEvent) => void;
+    isLoading: boolean;
+    progress: number;
   }
 
-  let { onClick = () => console.log('onClick event fired'), isLoading = false, progress = 0 }: Props = $props();
+  let { onClick, isLoading, progress }: Props = $props();
 </script>
 
 <button

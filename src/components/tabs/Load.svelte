@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { loadRecentGames } from '$lib/api';
   import type { Settings } from '$models/Settings';
   import { FileButton, type ModalSettings } from '@skeletonlabs/skeleton';
@@ -9,12 +7,12 @@
   import type { Writable } from 'svelte/store';
 
   interface Props {
-    onChange?: (pgn: string) => void;
+    onChange: (pgn: string) => void;
     analyze: () => void;
-    isLoading: any;
+    isLoading: boolean;
   }
 
-  let { onChange = (pgn) => console.log('pgn => ', pgn), analyze, isLoading }: Props = $props();
+  let { onChange, analyze, isLoading }: Props = $props();
 
   const settings: Writable<Settings> = getContext('settings');
 
@@ -25,7 +23,7 @@
   // PGN fields
   let disabledImportPgn: boolean = $state(false);
   let filename: string = $state('');
-  let filesPgn: FileList = $state();
+  let filesPgn: FileList | undefined = $state();
 
   // chess.com fields
   let disabledSearchUsername = $state(false);
@@ -70,7 +68,7 @@
 
   const setDisabledSearchUsername = (disabled: boolean) => (disabledSearchUsername = disabled);
 
-  run(() => {
+  $effect(() => {
     if (filesPgn && filesPgn.length > 0) {
       filesPgn
         .item(0)
@@ -78,12 +76,12 @@
         .then((txt) => {
           disabledImportPgn = true;
           strPgn = txt;
-          filename = filesPgn.item(0)?.name ?? '';
+          filename = filesPgn!.item(0)!.name;
         });
     }
   });
 
-  run(() => {
+  $effect(() => {
     onChange(strPgn);
   });
 </script>

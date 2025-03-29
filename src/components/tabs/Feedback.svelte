@@ -7,8 +7,8 @@
     san: string;
     label: Label;
     score: string;
-    opening: string | undefined;
-    best: string | undefined;
+    opening?: string;
+    best?: string;
   }
 
   let {

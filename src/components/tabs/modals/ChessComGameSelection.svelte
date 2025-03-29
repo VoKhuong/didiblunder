@@ -4,6 +4,12 @@
   import { isDraw, userWon } from '$lib/api';
   import { getRelativeTimeFromNowString } from '$lib/date';
 
+  interface Props {
+    parent: SvelteComponent;
+  }
+
+  let { parent }: Props = $props();
+
   const modalStore = getModalStore();
 
   const games = $modalStore[0].meta.games.reverse();
@@ -30,12 +36,6 @@
       onClick(game);
     }
   };
-
-  interface Props {
-    parent: SvelteComponent;
-  }
-
-  let { parent }: Props = $props();
 </script>
 
 <div class="card mt-8 mb-4 p-4 w-modal relative shadow-xl space-y-4">

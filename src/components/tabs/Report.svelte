@@ -3,26 +3,24 @@
   import { Table, type TableSource } from '@skeletonlabs/skeleton';
   import type { Move } from 'chess.js';
   import { getContext } from 'svelte';
-  import type { Writable } from 'svelte/store';
+  import type { Readable, Writable } from 'svelte/store';
   import Feedback from './Feedback.svelte';
   import type { Evaluation } from '$models/Evaluation';
   import { formatScore } from '$lib/evaluation';
 
-  const history: Writable<Move[]> = getContext('history');
+  const history: Readable<Move[]> = getContext('history');
   const move: Writable<number> = getContext('move');
   const position: Writable<string> = getContext('position');
-  const evaluation: Writable<Evaluation> = getContext('evaluation');
-
-  let data: TableSource = toTableSource($history);
-  let score: string = $derived(formatScore($evaluation));
+  const evaluation: Readable<Evaluation> = getContext('evaluation');
 
   const onSelected = (meta: CustomEvent) => {
     move.set(getMoveNumber(meta.detail[0]));
     position.set($history[$move].after);
   };
 
+  let data: TableSource = $derived(toTableSource($history));
+  let score = $derived(formatScore($evaluation));
   let san = $derived($history[$move]?.san);
-  
 </script>
 
 <div class="h-28 md:h-32 lg:h-56 mb-2 overflow-y-auto">

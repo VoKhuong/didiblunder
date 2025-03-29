@@ -4,7 +4,7 @@ import type { Marker } from '$models/Marker';
 import { getLabelHexColor } from '$lib/label';
 import { Extension, EXTENSION_POINT } from 'cm-chessboard/src/model/Extension';
 import LabelPath from '../components/LabelPath.svelte';
-import { mount } from "svelte";
+import { hydrate } from "svelte";
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
@@ -59,7 +59,7 @@ export class EvaluationMarkerExtension extends Extension {
         svg.setAttribute('y', point.y - 12);
         svg.setAttribute('viewbox', '0 0 24 24');
 
-        mount(LabelPath, { props: { label: marker.label }, target: svg });
+        hydrate(LabelPath, { props: { label: marker.label }, target: svg });
 
         icons.push(circle);
         icons.push(svg);

@@ -16,11 +16,8 @@
     PUBLIC_SENTRY_ORG,
     PUBLIC_SENTRY_PROJECT_ID
   } from '$env/static/public';
-  interface Props {
-    children?: import('svelte').Snippet;
-  }
 
-  let { children }: Props = $props();
+  let { children } = $props();
 
   initializeStores();
 
@@ -55,10 +52,10 @@
   });
 </script>
 
-{@render children?.()}
+{@render children()}
 <Modal components={registry} />
 <footer class="flex justify-center">
-  <a href="https://github.com/VoKhuong/didiblunder">
+  <a href="https://github.com/VoKhuong/didiblunder" aria-label="GitHub repo">
     <svg
       class="h-8 opacity-40 hover:opacity-60"
       viewBox="0 0 256 250"
