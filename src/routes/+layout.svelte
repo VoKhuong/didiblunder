@@ -25,22 +25,26 @@
   };
 
   onMount(() => {
-    posthog.init(PUBLIC_POSTHOG_TOKEN, {
-      api_host: PUBLIC_POSTHOG_URL,
-      person_profiles: 'identified_only'
-    });
+    if (PUBLIC_POSTHOG_URL && PUBLIC_POSTHOG_TOKEN) {
+      posthog.init(PUBLIC_POSTHOG_TOKEN, {
+        api_host: PUBLIC_POSTHOG_URL,
+        person_profiles: 'identified_only'
+      });
+    }
 
-    Sentry.init({
-      dsn: PUBLIC_SENTRY_DSN,
-      tracesSampleRate: 1.0,
-      integrations: [
-        posthog.sentryIntegration({
-          organization: PUBLIC_SENTRY_ORG,
-          projectId: parseInt(PUBLIC_SENTRY_PROJECT_ID),
-          severityAllowList: ['error', 'info']
-        })
-      ]
-    });
+    if (PUBLIC_SENTRY_DSN && PUBLIC_SENTRY_ORG && PUBLIC_SENTRY_PROJECT_ID) {
+      Sentry.init({
+        dsn: PUBLIC_SENTRY_DSN,
+        tracesSampleRate: 1.0,
+        integrations: [
+          posthog.sentryIntegration({
+            organization: PUBLIC_SENTRY_ORG,
+            projectId: parseInt(PUBLIC_SENTRY_PROJECT_ID),
+            severityAllowList: ['error', 'info']
+          })
+        ]
+      });
+    }
 
     preloadAudio('sfx-move', '/media/move.webm');
     preloadAudio('sfx-capture', '/media/capture.webm');
