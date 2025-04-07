@@ -20,6 +20,8 @@ npm install
 npm run dev
 ```
 
+**NOTE**: You'll need to have a few environment variables defined in order to run and build the app
+
 ## Building
 
 To create a production version of your app:
@@ -32,6 +34,14 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 **NOTE**: Currently, Did I Blunder is heavily coupled with the Cloudflare adapter and is targeted for deployment on Cloudflare Pages.
+
+## Environment Variables
+
+Create a `.env` file in the root of your project by copying the `.env.example` file:
+
+```bash
+cp .env.example .env
+```
 
 ## Acknowledgements
 
