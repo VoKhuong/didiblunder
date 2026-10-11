@@ -62,7 +62,7 @@
   const settings: Writable<SettingsType> = getContext('settings');
 </script>
 
-<div class="card p-4 h-full flex flex-col">
+<div class="card bg-surface-100-900 p-4 h-full flex flex-col">
   <section class="mb-4 grow">
     <Tabs value={currentTab} onValueChange={(details) => (currentTab = details.value ?? 'load')}>
       <Tabs.List class="justify-center">
