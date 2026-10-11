@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
-  import { isDraw, userWon, type ChessComGame } from '$lib/api';
+
+  import { isDraw, isUsername, userWon, type ChessComGame } from '$lib/api';
   import { getRelativeTimeFromNowString } from '$lib/date';
 
   let {
@@ -20,16 +21,10 @@
   const sortedGames = $derived([...games].reverse());
 
   const onClick = (game: ChessComGame) => {
-    const orientation = game.white.username === username ? 'w' : 'b';
+    const orientation = isUsername(username, game.white.username) ? 'w' : 'b';
     onGameSelected(game, orientation);
     analyze();
     onClose();
-  };
-
-  const onKeyDown = (e: KeyboardEvent, game: ChessComGame) => {
-    if (e.key === 'Enter') {
-      onClick(game);
-    }
   };
 </script>
 
@@ -38,45 +33,41 @@
     <Dialog.Backdrop class="fixed inset-0 z-50 bg-surface-50-950/50" />
     <Dialog.Positioner class="fixed inset-0 z-50 flex justify-center items-center p-4">
       <Dialog.Content
-        class="card bg-surface-100-900 mt-8 mb-4 p-4 w-full max-w-xl relative shadow-xl flex flex-col max-h-[85vh] gap-4"
+        class="card bg-surface-100-900 p-4 w-full max-w-xl shadow-xl flex flex-col max-h-[85vh] gap-4"
       >
-        <header class="text-2xl font-bold">Recent games</header>
-        <main class="space-y-2 grow overflow-y-auto min-h-0 pr-1">
-          {#each sortedGames as game, index (index)}
-            <div
+        <header class="flex justify-between items-center">
+          <Dialog.Title class="text-2xl font-bold">Recent games</Dialog.Title>
+          <Dialog.CloseTrigger class="btn-icon hover:preset-tonal" aria-label="Close">
+            ✕
+          </Dialog.CloseTrigger>
+        </header>
+        <main class="space-y-2 grow overflow-y-auto min-h-0">
+          {#each sortedGames as game}
+            <button
+              type="button"
               onclick={() => onClick(game)}
-              onkeydown={(e) => onKeyDown(e, game)}
-              role="link"
-              class="card p-4 hover:font-bold hover:cursor-pointer {isDraw(game)
+              class="card p-4 w-full text-left {isDraw(game)
                 ? 'preset-tonal-warning'
                 : userWon(username, game)
                   ? 'preset-tonal-primary'
                   : 'preset-tonal-error'}"
-              tabindex={index}
             >
               <p>
-                <span class={game.white.username === username ? 'font-bold' : ''}>
+                <span class={isUsername(username, game.white.username) ? 'font-bold' : ''}>
                   ⚪ <span class="italic">({game.white.rating})</span>
                   {game.white.username}
                 </span>
                 vs
-                <span class={game.black.username === username ? 'font-bold' : ''}>
+                <span class={isUsername(username, game.black.username) ? 'font-bold' : ''}>
                   {game.black.username} <span class="italic">({game.black.rating})</span> ⚫
                 </span>
               </p>
               <p class="text-sm italic">
                 {getRelativeTimeFromNowString(new Date(game.end_time * 1000))}
               </p>
-            </div>
+            </button>
           {/each}
         </main>
-        <footer class="flex justify-center">
-          <Dialog.CloseTrigger
-            class="btn-icon preset-filled rounded-full md:absolute md:-top-5 md:-right-5 font-bold shadow-xl"
-          >
-            ✕
-          </Dialog.CloseTrigger>
-        </footer>
       </Dialog.Content>
     </Dialog.Positioner>
   </Portal>

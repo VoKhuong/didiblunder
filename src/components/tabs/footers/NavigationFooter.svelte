@@ -1,41 +1,39 @@
 <script lang="ts">
-  import type { Move } from 'chess.js';
   import { getContext } from 'svelte';
-  import type { Writable } from 'svelte/store';
 
-  const move: Writable<number> = getContext('move');
-  const position: Writable<string> = getContext('position');
+  import type { Game } from '$lib/game.svelte';
 
-  const history: Writable<Move[]> = getContext('history');
-  const nbMoves = $history.length;
+  const game = getContext<Game>('game');
+
+  const nbMoves = $derived(game.history.length);
 
   const clickBackward = () => {
-    position.set($history[0].before);
-    move.set(-1);
+    game.position = game.history[0].before;
+    game.move = -1;
   };
 
   const clickPrevious = () => {
-    position.set($history[$move].before);
-    move.set($move - 1);
+    game.position = game.history[game.move].before;
+    game.move -= 1;
   };
 
   const clickNext = () => {
-    move.set($move + 1);
-    position.set($history[$move].after);
+    game.move += 1;
+    game.position = game.history[game.move].after;
   };
 
   const clickForward = () => {
-    move.set(nbMoves - 1);
-    position.set($history[$move].after);
+    game.move = nbMoves - 1;
+    game.position = game.history[game.move].after;
   };
 </script>
 
 <div class="flex gap-2">
   <button
     type="button"
-    class="btn-icon btn-icon-lg preset-filled rounded-md grow"
+    class="btn-icon btn-icon-lg preset-filled grow"
     onclick={clickBackward}
-    disabled={$move < 0}
+    disabled={game.move < 0}
     aria-label="First move"
   >
     <svg
@@ -56,9 +54,9 @@
   </button>
   <button
     type="button"
-    class="btn-icon btn-icon-lg preset-filled rounded-md grow"
+    class="btn-icon btn-icon-lg preset-filled grow"
     onclick={clickPrevious}
-    disabled={$move < 0}
+    disabled={game.move < 0}
     aria-label="Previous move"
   >
     <svg
@@ -81,9 +79,9 @@
   </button>
   <button
     type="button"
-    class="btn-icon btn-icon-lg preset-filled rounded-md grow"
+    class="btn-icon btn-icon-lg preset-filled grow"
     onclick={clickNext}
-    disabled={$move >= nbMoves - 1}
+    disabled={game.move >= nbMoves - 1}
     aria-label="Next move"
   >
     <svg
@@ -106,9 +104,9 @@
   </button>
   <button
     type="button"
-    class="btn-icon btn-icon-lg preset-filled rounded-md grow"
+    class="btn-icon btn-icon-lg preset-filled grow"
     onclick={clickForward}
-    disabled={$move >= nbMoves - 1}
+    disabled={game.move >= nbMoves - 1}
     aria-label="Last move"
   >
     <svg

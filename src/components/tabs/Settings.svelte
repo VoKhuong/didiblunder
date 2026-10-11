@@ -1,46 +1,44 @@
 <script lang="ts">
-  import type { Settings } from '$models/Settings';
   import { SegmentedControl, Slider } from '@skeletonlabs/skeleton-svelte';
   import { getContext } from 'svelte';
-  import type { Writable } from 'svelte/store';
-  import EngineHelp from './modals/EngineHelp.svelte';
 
-  const settings: Writable<Settings> = getContext('settings');
+  import EngineHelp from './modals/EngineHelp.svelte';
+  import type { Game } from '$lib/game.svelte';
+
+  const game = getContext<Game>('game');
 </script>
 
 <div class="w-full space-y-4">
-  <div class="flex justify-between items-center">
-    <label class="font-bold text-left" for="orientation">Orientation</label>
-    <SegmentedControl
-      name="orientation"
-      value={$settings.orientation}
-      onValueChange={(details) =>
-        settings.update((s) => ({ ...s, orientation: details.value as 'w' | 'b' }))}
-    >
-      <SegmentedControl.Control>
-        <SegmentedControl.Indicator />
-        <SegmentedControl.Item value="w">
-          <SegmentedControl.ItemText>White</SegmentedControl.ItemText>
-          <SegmentedControl.ItemHiddenInput />
-        </SegmentedControl.Item>
-        <SegmentedControl.Item value="b">
-          <SegmentedControl.ItemText>Black</SegmentedControl.ItemText>
-          <SegmentedControl.ItemHiddenInput />
-        </SegmentedControl.Item>
-      </SegmentedControl.Control>
-    </SegmentedControl>
-  </div>
+  <SegmentedControl
+    name="orientation"
+    class="flex flex-row items-center justify-between"
+    value={game.settings.orientation}
+    onValueChange={(details) => (game.settings.orientation = details.value as 'w' | 'b')}
+  >
+    <SegmentedControl.Label class="font-bold">Orientation</SegmentedControl.Label>
+    <SegmentedControl.Control>
+      <SegmentedControl.Indicator />
+      <SegmentedControl.Item value="w">
+        <SegmentedControl.ItemText>White</SegmentedControl.ItemText>
+        <SegmentedControl.ItemHiddenInput />
+      </SegmentedControl.Item>
+      <SegmentedControl.Item value="b">
+        <SegmentedControl.ItemText>Black</SegmentedControl.ItemText>
+        <SegmentedControl.ItemHiddenInput />
+      </SegmentedControl.Item>
+    </SegmentedControl.Control>
+  </SegmentedControl>
   <Slider
     name="depth"
-    value={[$settings.depth]}
-    onValueChange={(details) => settings.update((s) => ({ ...s, depth: details.value[0] }))}
+    value={[game.settings.depth]}
+    onValueChange={(details) => (game.settings.depth = details.value[0])}
     min={15}
     max={20}
     step={1}
   >
     <div class="flex justify-between items-center">
       <Slider.Label class="font-bold">Depth</Slider.Label>
-      <p class="text-sm">{$settings.depth} / 20</p>
+      <p class="text-sm">{game.settings.depth} / 20</p>
     </div>
     <Slider.Control>
       <Slider.Track>
@@ -56,7 +54,7 @@
       Engine
       <EngineHelp />
     </span>
-    <select name="engine" class="select" bind:value={$settings.engine}>
+    <select name="engine" class="select" bind:value={game.settings.engine}>
       <option value="lite-single">Lite single-thread ⚡</option>
       <option value="lite-multi">Lite multi-thread 🚀</option>
       <!-- option value="large-multi">Large multi-thread 🚄</option -->

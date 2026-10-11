@@ -1,25 +1,21 @@
 <script lang="ts">
-  import { toTableRows } from '$lib/table';
-  import type { Move } from 'chess.js';
   import { getContext } from 'svelte';
-  import type { Writable } from 'svelte/store';
+
   import Feedback from './Feedback.svelte';
-  import type { Evaluation } from '$models/Evaluation';
   import { formatScore } from '$lib/evaluation';
+  import type { Game } from '$lib/game.svelte';
+  import { toTableRows } from '$lib/table';
 
-  const history: Writable<Move[]> = getContext('history');
-  const move: Writable<number> = getContext('move');
-  const position: Writable<string> = getContext('position');
-  const evaluation: Writable<Evaluation> = getContext('evaluation');
+  const game = getContext<Game>('game');
 
-  const rows = $derived(toTableRows($history));
-  const san = $derived($history[$move]?.san);
-  const score = $derived(formatScore($evaluation));
+  const rows = $derived(toTableRows(game.history));
+  const san = $derived(game.history[game.move]?.san);
+  const score = $derived(formatScore(game.evaluation));
 
   const selectMove = (index: number) => {
-    if (index < 0 || index >= $history.length) return;
-    move.set(index);
-    position.set($history[index].after);
+    if (index < 0 || index >= game.history.length) return;
+    game.move = index;
+    game.position = game.history[index].after;
   };
 </script>
 
@@ -61,7 +57,7 @@
 <Feedback
   {san}
   {score}
-  label={$evaluation.label}
-  opening={$evaluation.opening}
-  best={$evaluation.best}
+  label={game.evaluation.label}
+  opening={game.evaluation.opening}
+  best={game.evaluation.best}
 />

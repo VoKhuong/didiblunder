@@ -1,32 +1,25 @@
 <script lang="ts">
   import { Tabs } from '@skeletonlabs/skeleton-svelte';
+  import { getContext } from 'svelte';
+
   import Load from './tabs/Load.svelte';
   import ButtonFooter from './tabs/footers/ButtonFooter.svelte';
   import NavigationFooter from './tabs/footers/NavigationFooter.svelte';
   import Report from './tabs/Report.svelte';
   import Settings from './tabs/Settings.svelte';
-  import { getContext } from 'svelte';
-  import type { Chess, Move } from 'chess.js';
-  import type { Readable, Writable } from 'svelte/store';
   import { analyze_game } from '$lib/engine';
-  import type { Evaluation } from '$models/Evaluation';
-  import type { Settings as SettingsType } from '$models/Settings';
+  import type { Game } from '$lib/game.svelte';
   import { log } from '$lib/log';
 
-  let currentTab: string = $state('load');
+  const game = getContext<Game>('game');
 
-  // Load
+  let currentTab: string = $state('load');
   let strPgn: string = $state('');
   let isLoading: boolean = $state(false);
   let progress = $state(0);
 
-  const setProgress = (n: number) => {
-    progress = n;
-  };
-
-  const onChangeStrPgn = (newPgn: string) => {
-    strPgn = newPgn;
-  };
+  const setProgress = (n: number) => (progress = n);
+  const onChangeStrPgn = (newPgn: string) => (strPgn = newPgn);
 
   const analyze = async () => {
     isLoading = true;
@@ -36,13 +29,19 @@
 
     log(strPgn);
     try {
-      chess.loadPgn(strPgn);
-      history.set(chess.history({ verbose: true }));
-      move.set(-1);
-      position.set($history[0].before);
-      const report = await analyze_game($engine, $history, chess, $settings.depth, setProgress);
+      game.chess.loadPgn(strPgn);
+      game.history = game.chess.history({ verbose: true });
+      game.move = -1;
+      game.position = game.history[0].before;
+      const report = await analyze_game(
+        game.engine!,
+        game.history,
+        game.chess,
+        game.settings.depth,
+        setProgress
+      );
       log(report);
-      evaluations.set(report);
+      game.evaluations = report;
       currentTab = 'report';
     } catch (e) {
       alert('An error occured, please try again.');
@@ -52,14 +51,6 @@
       progress = 0;
     }
   };
-
-  const chess: Chess = getContext('chess');
-  const position: Writable<string> = getContext('position');
-  const move: Writable<number> = getContext('move');
-  const history: Writable<Move[]> = getContext('history');
-  const engine: Readable<Worker> = getContext('engine');
-  const evaluations: Writable<Evaluation[]> = getContext('evaluations');
-  const settings: Writable<SettingsType> = getContext('settings');
 </script>
 
 <div class="card bg-surface-100-900 p-4 h-full flex flex-col">

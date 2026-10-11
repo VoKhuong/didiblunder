@@ -23,7 +23,7 @@
   <strong class="h3 font-semibold ml-2 mr-8">{san}</strong>
   <span class="chip preset-filled cursor-default">{score}</span>
 </div>
-<div class="mt-4 text-center card preset-tonal border border-surface-500 p-2">
+<div class="mt-4 text-center card preset-tonal p-2">
   <p class="text-lg">{opening ?? label}</p>
   <p class="text-sm text-primary-400">
     {best && shouldShowBest(label) ? `best was ${best}` : '...'}

@@ -3,14 +3,17 @@
 </script>
 
 <Dialog>
-  <Dialog.Trigger class="ml-1 badge-icon preset-filled-surface-500 inline-flex">?</Dialog.Trigger>
+  <Dialog.Trigger class="ml-1 badge-icon preset-filled-surface-500">?</Dialog.Trigger>
   <Portal>
     <Dialog.Backdrop class="fixed inset-0 z-50 bg-surface-50-950/50" />
     <Dialog.Positioner class="fixed inset-0 z-50 flex justify-center items-center p-4">
-      <Dialog.Content
-        class="card bg-surface-100-900 p-4 w-full max-w-md relative shadow-xl space-y-4"
-      >
-        <header class="text-2xl font-bold">Engine</header>
+      <Dialog.Content class="card bg-surface-100-900 p-4 w-full max-w-md shadow-xl space-y-4">
+        <header class="flex justify-between items-center">
+          <Dialog.Title class="text-2xl font-bold">Engine</Dialog.Title>
+          <Dialog.CloseTrigger class="btn-icon hover:preset-tonal" aria-label="Close">
+            ✕
+          </Dialog.CloseTrigger>
+        </header>
         <article>
           <ul class="space-y-4">
             <li>
@@ -35,13 +38,6 @@
             </li>
           </ul>
         </article>
-        <footer class="flex justify-center">
-          <Dialog.CloseTrigger
-            class="btn-icon preset-filled rounded-full md:absolute md:-top-5 md:-right-5 font-bold shadow-xl"
-          >
-            ✕
-          </Dialog.CloseTrigger>
-        </footer>
       </Dialog.Content>
     </Dialog.Positioner>
   </Portal>
