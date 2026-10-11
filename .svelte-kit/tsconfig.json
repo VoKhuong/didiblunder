@@ -18,6 +18,9 @@
 			],
 			"$lib/*": [
 				"../src/lib/*"
+			],
+			"$app/types": [
+				"./types/index.d.ts"
 			]
 		},
 		"rootDirs": [
@@ -38,6 +41,7 @@
 	},
 	"include": [
 		"ambient.d.ts",
+		"env.d.ts",
 		"non-ambient.d.ts",
 		"./types/**/$types.d.ts",
 		"../vite.config.js",
@@ -45,6 +49,9 @@
 		"../src/**/*.js",
 		"../src/**/*.ts",
 		"../src/**/*.svelte",
+		"../test/**/*.js",
+		"../test/**/*.ts",
+		"../test/**/*.svelte",
 		"../tests/**/*.js",
 		"../tests/**/*.ts",
 		"../tests/**/*.svelte"
