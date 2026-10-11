@@ -38,10 +38,10 @@
     <Dialog.Backdrop class="fixed inset-0 z-50 bg-surface-50-950/50" />
     <Dialog.Positioner class="fixed inset-0 z-50 flex justify-center items-center p-4">
       <Dialog.Content
-        class="card bg-surface-100-900 mt-8 mb-4 p-4 w-full max-w-xl relative shadow-xl space-y-4"
+        class="card bg-surface-100-900 mt-8 mb-4 p-4 w-full max-w-xl relative shadow-xl flex flex-col max-h-[85vh] gap-4"
       >
         <header class="text-2xl font-bold">Recent games</header>
-        <main class="space-y-2">
+        <main class="space-y-2 grow overflow-y-auto min-h-0 pr-1">
           {#each sortedGames as game, index (index)}
             <div
               onclick={() => onClick(game)}
@@ -72,7 +72,7 @@
         </main>
         <footer class="flex justify-center">
           <Dialog.CloseTrigger
-            class="btn-icon preset-filled md:absolute md:-top-5 md:-right-5 font-bold shadow-xl"
+            class="btn-icon preset-filled rounded-full md:absolute md:-top-5 md:-right-5 font-bold shadow-xl"
           >
             ✕
           </Dialog.CloseTrigger>

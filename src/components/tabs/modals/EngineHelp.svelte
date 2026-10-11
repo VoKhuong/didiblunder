@@ -37,7 +37,7 @@
         </article>
         <footer class="flex justify-center">
           <Dialog.CloseTrigger
-            class="btn-icon preset-filled md:absolute md:-top-5 md:-right-5 font-bold shadow-xl"
+            class="btn-icon preset-filled rounded-full md:absolute md:-top-5 md:-right-5 font-bold shadow-xl"
           >
             ✕
           </Dialog.CloseTrigger>
