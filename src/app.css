@@ -4,6 +4,6 @@
 
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton-svelte';
-@import '@skeletonlabs/skeleton/themes/legacy';
+@import '@skeletonlabs/skeleton/themes/mona';
 
 @custom-variant dark (&:where(.dark, .dark *));
