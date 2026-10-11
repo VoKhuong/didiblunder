@@ -10,7 +10,7 @@ const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 export class EvaluationMarkerExtension extends Extension {
   markers: Marker[];
 
-  constructor(chessboard: any) {
+  constructor(chessboard: unknown) {
     super(chessboard);
     this.markers = [];
 

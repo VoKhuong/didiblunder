@@ -1,25 +1,30 @@
 <script lang="ts">
-  import { ProgressRadial } from '@skeletonlabs/skeleton';
+  import { Progress } from '@skeletonlabs/skeleton-svelte';
 
-  export let onClick: (event: MouseEvent) => void = () => console.log('onClick event fired');
-  export let isLoading: boolean = false;
-  export let progress: number = 0;
+  let {
+    onClick = () => console.log('onClick event fired'),
+    isLoading = false,
+    progress = 0
+  }: {
+    onClick?: (event: MouseEvent) => void;
+    isLoading?: boolean;
+    progress?: number;
+  } = $props();
 </script>
 
 <button
   type="button"
-  class="btn btn-lg variant-filled w-full"
-  on:click={onClick}
+  class="btn btn-lg preset-filled w-full"
+  onclick={onClick}
   disabled={isLoading}
 >
   {#if isLoading}
-    <ProgressRadial
-      width="w-7"
-      stroke={75}
-      meter="stroke-primary-500"
-      track="stroke-primary-300"
-      value={progress}
-    />
+    <Progress value={progress} class="w-fit">
+      <Progress.Circle class="[--size:--spacing(7)]">
+        <Progress.CircleTrack class="stroke-primary-300" />
+        <Progress.CircleRange class="stroke-primary-500" />
+      </Progress.Circle>
+    </Progress>
     <span class="w-8 text-right text-primary-700">{progress}%</span>
   {:else}
     🚀 Analyze

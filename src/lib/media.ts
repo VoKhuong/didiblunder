@@ -10,7 +10,7 @@ export function preloadAudio(id: string, src: string) {
 
 function playMedia(id: string) {
   const audio = audioMap.get(id);
-  audio.currentTime=0;
+  audio.currentTime = 0;
   audio.play();
 }
 

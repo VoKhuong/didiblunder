@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton-svelte';
+@import '@skeletonlabs/skeleton/themes/legacy';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Windows bugfix: ensure form elements respect the active color scheme. */
+.select,
+.input,
+.textarea,
+.input-group {
+  background-color: var(--color-surface-50-950);
+  color: var(--color-surface-950-50);
+}

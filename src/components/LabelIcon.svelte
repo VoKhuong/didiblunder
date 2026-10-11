@@ -2,9 +2,7 @@
   import Label from '$models/Label';
   import LabelPath from './LabelPath.svelte';
 
-  export let label: Label;
-  let className: string = 'w-6 h-6';
-  export { className as class };
+  let { label, class: className = 'w-6 h-6' }: { label: Label; class?: string } = $props();
 </script>
 
 <svg
