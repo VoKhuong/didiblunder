@@ -9,13 +9,7 @@
   import { preloadAudio } from '$lib/media';
   import posthog from 'posthog-js';
   import * as Sentry from '@sentry/browser';
-  import {
-    PUBLIC_POSTHOG_TOKEN,
-    PUBLIC_POSTHOG_URL,
-    PUBLIC_SENTRY_DSN,
-    PUBLIC_SENTRY_ORG,
-    PUBLIC_SENTRY_PROJECT_ID
-  } from '$env/static/public';
+  import { env } from '$env/dynamic/public';
 
   initializeStores();
 
@@ -25,21 +19,21 @@
   };
 
   onMount(() => {
-    if (PUBLIC_POSTHOG_URL && PUBLIC_POSTHOG_TOKEN) {
-      posthog.init(PUBLIC_POSTHOG_TOKEN, {
-        api_host: PUBLIC_POSTHOG_URL,
+    if (env.PUBLIC_POSTHOG_URL && env.PUBLIC_POSTHOG_TOKEN) {
+      posthog.init(env.PUBLIC_POSTHOG_TOKEN, {
+        api_host: env.PUBLIC_POSTHOG_URL,
         person_profiles: 'identified_only'
       });
     }
 
-    if (PUBLIC_SENTRY_DSN && PUBLIC_SENTRY_ORG && PUBLIC_SENTRY_PROJECT_ID) {
+    if (env.PUBLIC_SENTRY_DSN && env.PUBLIC_SENTRY_ORG && env.PUBLIC_SENTRY_PROJECT_ID) {
       Sentry.init({
-        dsn: PUBLIC_SENTRY_DSN,
+        dsn: env.PUBLIC_SENTRY_DSN,
         tracesSampleRate: 1.0,
         integrations: [
           posthog.sentryIntegration({
-            organization: PUBLIC_SENTRY_ORG,
-            projectId: parseInt(PUBLIC_SENTRY_PROJECT_ID),
+            organization: env.PUBLIC_SENTRY_ORG,
+            projectId: parseInt(env.PUBLIC_SENTRY_PROJECT_ID),
             severityAllowList: ['error', 'info']
           })
         ]
