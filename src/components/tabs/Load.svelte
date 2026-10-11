@@ -117,16 +117,16 @@
   {:else if loader === 'chesscom'}
     <label class="label">
       <span class="label-text">Username</span>
-      <div class="input-group grid-cols-[1fr_auto]">
+      <div class="field-group grid-cols-[1fr_auto]">
         <input
           bind:value={username}
           type="text"
-          class="ig-input"
+          class="input"
           placeholder="magnuscarlsen"
           onkeydown={onKeyDown}
         />
         <button
-          class="ig-btn preset-filled"
+          class="btn preset-filled"
           onclick={onClick}
           disabled={disabledSearchUsername || isLoading}
         >

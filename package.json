@@ -19,8 +19,8 @@
     "stockfish": "github:nmrugg/stockfish.js#v16.1.0"
   },
   "devDependencies": {
-    "@skeletonlabs/skeleton": "4.15.2",
-    "@skeletonlabs/skeleton-svelte": "4.15.2",
+    "@skeletonlabs/skeleton": "5.0.1",
+    "@skeletonlabs/skeleton-svelte": "5.0.1",
     "@sveltejs/adapter-cloudflare": "^7.2.9",
     "@sveltejs/kit": "^2.70.3",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
