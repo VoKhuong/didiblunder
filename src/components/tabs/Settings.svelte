@@ -1,15 +1,9 @@
 <script lang="ts">
   import type { Settings } from '$models/Settings';
-  import { RadioGroup, RadioItem, RangeSlider, type ModalSettings } from '@skeletonlabs/skeleton';
+  import { SegmentedControl, Slider } from '@skeletonlabs/skeleton-svelte';
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
-  import { getModalStore } from '@skeletonlabs/skeleton';
-
-  const modalStore = getModalStore();
-  const modalSettings: ModalSettings = {
-    type: 'component',
-    component: 'engineHelp'
-  };
+  import EngineHelp from './modals/EngineHelp.svelte';
 
   const settings: Writable<Settings> = getContext('settings');
 </script>
@@ -17,24 +11,50 @@
 <div class="w-full space-y-4">
   <div class="flex justify-between items-center">
     <label class="font-bold text-left" for="orientation">Orientation</label>
-    <RadioGroup>
-      <RadioItem bind:group={$settings.orientation} name="orientation" value="w">White</RadioItem>
-      <RadioItem bind:group={$settings.orientation} name="orientation" value="b">Black</RadioItem>
-    </RadioGroup>
+    <SegmentedControl
+      name="orientation"
+      value={$settings.orientation}
+      onValueChange={(details) =>
+        settings.update((s) => ({ ...s, orientation: details.value as 'w' | 'b' }))}
+    >
+      <SegmentedControl.Control>
+        <SegmentedControl.Indicator />
+        <SegmentedControl.Item value="w">
+          <SegmentedControl.ItemText>White</SegmentedControl.ItemText>
+          <SegmentedControl.ItemHiddenInput />
+        </SegmentedControl.Item>
+        <SegmentedControl.Item value="b">
+          <SegmentedControl.ItemText>Black</SegmentedControl.ItemText>
+          <SegmentedControl.ItemHiddenInput />
+        </SegmentedControl.Item>
+      </SegmentedControl.Control>
+    </SegmentedControl>
   </div>
-  <RangeSlider name="depth" bind:value={$settings.depth} min={15} max={20} step={1} ticked>
+  <Slider
+    name="depth"
+    value={[$settings.depth]}
+    onValueChange={(details) => settings.update((s) => ({ ...s, depth: details.value[0] }))}
+    min={15}
+    max={20}
+    step={1}
+  >
     <div class="flex justify-between items-center">
-      <label class="font-bold" for="depth">Depth</label>
+      <Slider.Label class="font-bold">Depth</Slider.Label>
       <p class="text-sm">{$settings.depth} / 20</p>
     </div>
-  </RangeSlider>
+    <Slider.Control>
+      <Slider.Track>
+        <Slider.Range />
+      </Slider.Track>
+      <Slider.Thumb index={0}>
+        <Slider.HiddenInput />
+      </Slider.Thumb>
+    </Slider.Control>
+  </Slider>
   <label class="label" for="engine">
-    <span class="font-bold flex justify-between">
+    <span class="label-text font-bold flex justify-between items-center">
       Engine
-      <button
-        class="ml-1 badge-icon variant-filled-surface inline-flex"
-        on:click={() => modalStore.trigger(modalSettings)}>?</button
-      >
+      <EngineHelp />
     </span>
     <select name="engine" class="select" bind:value={$settings.engine}>
       <option value="lite-single">Lite single-thread ⚡</option>

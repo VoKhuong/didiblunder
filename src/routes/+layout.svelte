@@ -1,22 +1,14 @@
 <script lang="ts">
-  import '../app.postcss';
+  import '../app.css';
   import 'cm-chessboard/assets/chessboard.css';
 
-  import { initializeStores, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
-  import EngineHelp from '../components/tabs/modals/EngineHelp.svelte';
-  import ChessComGameSelection from '../components/tabs/modals/ChessComGameSelection.svelte';
   import { onMount } from 'svelte';
   import { preloadAudio } from '$lib/media';
   import posthog from 'posthog-js';
   import * as Sentry from '@sentry/browser';
   import { env } from '$env/dynamic/public';
 
-  initializeStores();
-
-  const registry: Record<string, ModalComponent> = {
-    engineHelp: { ref: EngineHelp },
-    chessComGameSelection: { ref: ChessComGameSelection }
-  };
+  let { children }: { children: import('svelte').Snippet } = $props();
 
   onMount(() => {
     if (env.PUBLIC_POSTHOG_URL && env.PUBLIC_POSTHOG_TOKEN) {
@@ -48,10 +40,9 @@
   });
 </script>
 
-<slot />
-<Modal components={registry} />
+{@render children()}
 <footer class="flex justify-center">
-  <a href="https://github.com/VoKhuong/didiblunder">
+  <a href="https://github.com/VoKhuong/didiblunder" aria-label="GitHub repository">
     <svg
       class="h-8 opacity-40 hover:opacity-60"
       viewBox="0 0 256 250"

@@ -4,7 +4,7 @@
   import { DEFAULT_POSITION, type Move } from 'chess.js';
 
   import { getContext, onMount } from 'svelte';
-  import { derived, type Writable } from 'svelte/store';
+  import type { Writable } from 'svelte/store';
   import type { Evaluation } from '$models/Evaluation';
   import { EvaluationMarkerExtension } from '$lib/extension';
   import type { Settings } from '$models/Settings';
@@ -20,7 +20,6 @@
   const move: Writable<number> = getContext('move');
   const history: Writable<Move[]> = getContext('history');
   const settings: Writable<Settings> = getContext('settings');
-  const orientation = derived(settings, ($settings) => $settings.orientation);
 
   onMount(async () => {
     board = new Chessboard(boardElement, {
@@ -40,13 +39,17 @@
     });
   });
 
-  orientation.subscribe((value) => {
-    board?.setOrientation(value);
+  $effect(() => {
+    board?.setOrientation($settings.orientation);
     // TODO: quick fix
     board?.setMarkers([]);
   });
-  $: board?.setPosition($position, true);
-  $: {
+
+  $effect(() => {
+    board?.setPosition($position, true);
+  });
+
+  $effect(() => {
     if ($history.length > 0 && $move >= 0) {
       playMoveTypeSound(getMoveType($history[$move].san));
       board?.setMarkers([
@@ -64,7 +67,7 @@
     } else {
       board?.setMarkers([]);
     }
-  }
+  });
 </script>
 
 <div class="w-full" bind:this={boardElement}></div>

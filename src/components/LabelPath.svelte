@@ -1,7 +1,7 @@
 <script lang="ts">
   import Label from '$models/Label';
 
-  export let label: Label;
+  let { label }: { label: Label } = $props();
 </script>
 
 {#if label === Label.BRILLIANT}

@@ -33,9 +33,10 @@
 <div class="flex gap-2">
   <button
     type="button"
-    class="btn-icon btn-icon-lg variant-filled rounded-md grow"
-    on:click={clickBackward}
+    class="btn-icon btn-icon-lg preset-filled rounded-md grow"
+    onclick={clickBackward}
     disabled={$move < 0}
+    aria-label="First move"
   >
     <svg
       class="w-6 h-6"
@@ -55,9 +56,10 @@
   </button>
   <button
     type="button"
-    class="btn-icon btn-icon-lg variant-filled rounded-md grow"
-    on:click={clickPrevious}
+    class="btn-icon btn-icon-lg preset-filled rounded-md grow"
+    onclick={clickPrevious}
     disabled={$move < 0}
+    aria-label="Previous move"
   >
     <svg
       class="w-6 h-6"
@@ -79,9 +81,10 @@
   </button>
   <button
     type="button"
-    class="btn-icon btn-icon-lg variant-filled rounded-md grow"
-    on:click={clickNext}
+    class="btn-icon btn-icon-lg preset-filled rounded-md grow"
+    onclick={clickNext}
     disabled={$move >= nbMoves - 1}
+    aria-label="Next move"
   >
     <svg
       class="w-6 h-6"
@@ -103,9 +106,10 @@
   </button>
   <button
     type="button"
-    class="btn-icon btn-icon-lg variant-filled rounded-md grow"
-    on:click={clickForward}
+    class="btn-icon btn-icon-lg preset-filled rounded-md grow"
+    onclick={clickForward}
     disabled={$move >= nbMoves - 1}
+    aria-label="Last move"
   >
     <svg
       class="w-6 h-6"

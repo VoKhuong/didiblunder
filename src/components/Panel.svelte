@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TabGroup, Tab } from '@skeletonlabs/skeleton';
+  import { Tabs } from '@skeletonlabs/skeleton-svelte';
   import Load from './tabs/Load.svelte';
   import ButtonFooter from './tabs/footers/ButtonFooter.svelte';
   import NavigationFooter from './tabs/footers/NavigationFooter.svelte';
@@ -13,12 +13,12 @@
   import type { Settings as SettingsType } from '$models/Settings';
   import { log } from '$lib/log';
 
-  let currentTab: string = 'load';
+  let currentTab: string = $state('load');
 
   // Load
-  let strPgn: string = '';
-  let isLoading: boolean = false;
-  let progress = 0;
+  let strPgn: string = $state('');
+  let isLoading: boolean = $state(false);
+  let progress = $state(0);
 
   const setProgress = (n: number) => {
     progress = n;
@@ -64,22 +64,25 @@
 
 <div class="card p-4 h-full flex flex-col">
   <section class="mb-4 grow">
-    <TabGroup justify="justify-center">
-      <Tab bind:group={currentTab} name="load" value="load">💾 Load</Tab>
-      <Tab bind:group={currentTab} name="report" value="report">📊 Report</Tab>
-      <Tab bind:group={currentTab} name="settings" value="settings">🛠️ Settings</Tab>
-      <svelte:fragment slot="panel">
-        {#if currentTab === 'load'}
-          <Load onChange={onChangeStrPgn} {analyze} {isLoading} />
-        {:else if currentTab === 'report'}
-          <Report />
-        {:else if currentTab === 'settings'}
-          <Settings />
-        {/if}
-      </svelte:fragment>
-    </TabGroup>
+    <Tabs value={currentTab} onValueChange={(details) => (currentTab = details.value ?? 'load')}>
+      <Tabs.List class="justify-center">
+        <Tabs.Trigger value="load">💾 Load</Tabs.Trigger>
+        <Tabs.Trigger value="report">📊 Report</Tabs.Trigger>
+        <Tabs.Trigger value="settings">🛠️ Settings</Tabs.Trigger>
+        <Tabs.Indicator />
+      </Tabs.List>
+      <Tabs.Content value="load">
+        <Load onChange={onChangeStrPgn} {analyze} {isLoading} />
+      </Tabs.Content>
+      <Tabs.Content value="report">
+        <Report />
+      </Tabs.Content>
+      <Tabs.Content value="settings">
+        <Settings />
+      </Tabs.Content>
+    </Tabs>
   </section>
-  <footer class="card-footer">
+  <footer class="pt-4">
     {#if currentTab === 'load' || currentTab === 'settings'}
       <ButtonFooter onClick={analyze} {isLoading} {progress} />
     {:else if currentTab === 'report'}

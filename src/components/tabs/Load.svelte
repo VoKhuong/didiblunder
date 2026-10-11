@@ -1,29 +1,34 @@
 <script lang="ts">
-  import { loadRecentGames } from '$lib/api';
+  import { loadRecentGames, type ChessComGame } from '$lib/api';
   import type { Settings } from '$models/Settings';
-  import { FileButton, type ModalSettings } from '@skeletonlabs/skeleton';
-  import { getModalStore } from '@skeletonlabs/skeleton';
+  import { FileUpload } from '@skeletonlabs/skeleton-svelte';
   import { getContext } from 'svelte';
   import type { Writable } from 'svelte/store';
+  import ChessComGameSelection from './modals/ChessComGameSelection.svelte';
 
-  export let onChange: (pgn: string) => void = (pgn) => console.log('pgn => ', pgn);
-  export let analyze: () => void;
-  export let isLoading;
+  let {
+    onChange = (pgn: string) => console.log('pgn => ', pgn),
+    analyze,
+    isLoading
+  }: {
+    onChange?: (pgn: string) => void;
+    analyze: () => void;
+    isLoading: boolean;
+  } = $props();
 
   const settings: Writable<Settings> = getContext('settings');
 
-  const modalStore = getModalStore();
-  let loader: string = 'chesscom';
-  let strPgn: string = '';
+  let loader: string = $state('chesscom');
+  let strPgn: string = $state('');
 
   // PGN fields
-  let disabledImportPgn: boolean = false;
-  let filename: string = '';
-  let filesPgn: FileList;
+  let disabledImportPgn: boolean = $state(false);
+  let filename: string = $state('');
 
   // chess.com fields
-  let disabledSearchUsername = false;
-  let username = '';
+  let disabledSearchUsername = $state(false);
+  let username = $state('');
+  let gameSelection: { games: ChessComGame[]; username: string } | null = $state(null);
 
   const onClick = async () => {
     // trim trailing spaces
@@ -35,12 +40,7 @@
       const games = await loadRecentGames(username);
 
       if (games?.length) {
-        const modal: ModalSettings = {
-          type: 'component',
-          component: 'chessComGameSelection',
-          meta: { games, username, onGameSelected, setDisabledSearchUsername, analyze }
-        };
-        modalStore.trigger(modal);
+        gameSelection = { games, username };
       } else {
         alert('No game found or username is invalid.');
         disabledSearchUsername = false;
@@ -56,28 +56,30 @@
     }
   };
 
-  const onGameSelected = (game: any, orientation: 'w' | 'b') => {
+  const onGameSelected = (game: ChessComGame, orientation: 'w' | 'b') => {
     strPgn = game.pgn;
     onChange(strPgn);
-    $settings.orientation = orientation;
+    settings.update((s) => ({ ...s, orientation }));
   };
 
-  const setDisabledSearchUsername = (disabled: boolean) => (disabledSearchUsername = disabled);
+  const closeGameSelection = () => {
+    gameSelection = null;
+    disabledSearchUsername = false;
+  };
 
-  $: {
-    if (filesPgn && filesPgn.length > 0) {
-      filesPgn
-        .item(0)
-        ?.text()
-        .then((txt) => {
-          disabledImportPgn = true;
-          strPgn = txt;
-          filename = filesPgn.item(0)?.name ?? '';
-        });
-    }
-  }
+  const onFileAccept = (details: { files: File[] }) => {
+    const file = details.files[0];
+    if (!file) return;
+    disabledImportPgn = true;
+    filename = file.name;
+    file.text().then((txt) => {
+      strPgn = txt;
+    });
+  };
 
-  $: onChange(strPgn);
+  $effect(() => {
+    onChange(strPgn);
+  });
 </script>
 
 <div class="flex items-center">
@@ -93,38 +95,39 @@
   {#if loader === 'pgn'}
     <textarea
       bind:value={strPgn}
-      class="textarea p-2"
+      class="textarea"
       rows="4"
       placeholder="1. e4 Nc6 2. Bc4 Nf6 3. Nc3 e6 4. Nf3 d5 5. e5 Nd7..."
       disabled={disabledImportPgn || isLoading}
-    />
+    ></textarea>
     <hr class="my-4" />
     <div class="flex items-center gap-2">
-      <FileButton
-        bind:files={filesPgn}
-        accept=".pgn, .txt"
+      <FileUpload
+        class="w-fit"
         name="pgnfile"
-        button="btn variant-ghost"
+        accept={{ 'text/plain': ['.pgn', '.txt'] }}
         disabled={isLoading}
+        {onFileAccept}
       >
-        Import PGN file
-      </FileButton>
+        <FileUpload.Trigger class="btn preset-tonal">Import PGN file</FileUpload.Trigger>
+        <FileUpload.HiddenInput />
+      </FileUpload>
       <p class="truncate">{filename}</p>
     </div>
   {:else if loader === 'chesscom'}
     <label class="label">
-      <span>Username</span>
-      <div class="input-group input-group-divider flex">
+      <span class="label-text">Username</span>
+      <div class="input-group grid-cols-[1fr_auto]">
         <input
           bind:value={username}
           type="text"
-          class="pl-4 grow"
+          class="ig-input"
           placeholder="magnuscarlsen"
-          on:keydown={onKeyDown}
+          onkeydown={onKeyDown}
         />
         <button
-          class="py-2 variant-filled"
-          on:click={onClick}
+          class="ig-btn preset-filled"
+          onclick={onClick}
           disabled={disabledSearchUsername || isLoading}
         >
           {disabledSearchUsername ? '🚥' : '🔎'}
@@ -135,3 +138,13 @@
     <h3 class="h3 text-center">🚧 Sorry, WIP 🚧</h3>
   {/if}
 </div>
+
+{#if gameSelection}
+  <ChessComGameSelection
+    games={gameSelection.games}
+    username={gameSelection.username}
+    {onGameSelected}
+    {analyze}
+    onClose={closeGameSelection}
+  />
+{/if}

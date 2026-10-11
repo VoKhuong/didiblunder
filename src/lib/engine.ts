@@ -36,8 +36,8 @@ export async function init(engine: string) {
 
   const worker = new workerModule.default();
 
-  worker.onmessage = ({ data }: any) => log(`page got message: ${data}`);
-  worker.onerror = (ev: any) => log(`page got error: ${ev.message}`);
+  worker.onmessage = ({ data }: MessageEvent<string>) => log(`page got message: ${data}`);
+  worker.onerror = (ev: ErrorEvent) => log(`page got error: ${ev.message}`);
 
   if (engine.includes('multi')) {
     worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
@@ -179,7 +179,7 @@ const REGEX_MATCH =
 export function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
   return new Promise((resolve) => {
     const regexInfo = new RegExp(`^info depth ${depth} seldepth \\d+ multipv`);
-    let result: any = {};
+    let result = {} as RawEval;
 
     worker.onmessage = ({ data }: { data: string }) => {
       if (regexInfo.test(data)) {
@@ -191,17 +191,17 @@ export function evaluate(worker: Worker, fen: string, depth: number): Promise<Ra
         if (match.at(1) === '1') {
           result = {
             ...result,
-            type: match.at(2),
+            type: match.at(2) as RawEval['type'],
             score: parseInt(match.at(3)!),
-            pv: match.at(4),
+            pv: match.at(4)!,
             data
           };
         } else {
           // Alt line
           result.altLine = {
-            type: match.at(2),
+            type: match.at(2) as RawEval['type'],
             score: parseInt(match.at(3)!),
-            pv: match.at(4)
+            pv: match.at(4)!
           };
         }
       }
