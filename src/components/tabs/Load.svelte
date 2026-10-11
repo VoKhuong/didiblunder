@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { loadRecentGames, type ChessComGame } from '$lib/api';
-  import type { Settings } from '$models/Settings';
   import { FileUpload } from '@skeletonlabs/skeleton-svelte';
   import { getContext } from 'svelte';
-  import type { Writable } from 'svelte/store';
+
   import ChessComGameSelection from './modals/ChessComGameSelection.svelte';
+  import { loadRecentGames, type ChessComGame } from '$lib/api';
+  import type { Game } from '$lib/game.svelte';
 
   let {
     onChange = (pgn: string) => console.log('pgn => ', pgn),
@@ -16,7 +16,7 @@
     isLoading: boolean;
   } = $props();
 
-  const settings: Writable<Settings> = getContext('settings');
+  const game = getContext<Game>('game');
 
   let loader: string = $state('chesscom');
   let strPgn: string = $state('');
@@ -56,10 +56,10 @@
     }
   };
 
-  const onGameSelected = (game: ChessComGame, orientation: 'w' | 'b') => {
-    strPgn = game.pgn;
+  const onGameSelected = (selected: ChessComGame, orientation: 'w' | 'b') => {
+    strPgn = selected.pgn;
     onChange(strPgn);
-    settings.update((s) => ({ ...s, orientation }));
+    game.settings.orientation = orientation;
   };
 
   const closeGameSelection = () => {

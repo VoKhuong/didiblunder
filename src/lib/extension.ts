@@ -57,7 +57,7 @@ export class EvaluationMarkerExtension extends Extension {
 
         svg.setAttribute('x', point.x + width - 12);
         svg.setAttribute('y', point.y - 12);
-        svg.setAttribute('viewbox', '0 0 24 24');
+        svg.setAttribute('viewBox', '0 0 24 24');
 
         mount(LabelPath, { props: { label: marker.label }, target: svg });
 

@@ -21,11 +21,11 @@
   {#if isLoading}
     <Progress value={progress} class="w-fit">
       <Progress.Circle class="[--size:--spacing(7)]">
-        <Progress.CircleTrack class="stroke-primary-300" />
-        <Progress.CircleRange class="stroke-primary-500" />
+        <Progress.CircleTrack />
+        <Progress.CircleRange />
       </Progress.Circle>
     </Progress>
-    <span class="w-8 text-right text-primary-700">{progress}%</span>
+    <span class="w-8 text-right">{progress}%</span>
   {:else}
     🚀 Analyze
   {/if}

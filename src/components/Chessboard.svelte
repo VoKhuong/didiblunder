@@ -1,28 +1,21 @@
 <script lang="ts">
   // @ts-expect-error: no declaration file as it was written in JS
   import { Chessboard } from 'cm-chessboard/src/Chessboard';
-  import { DEFAULT_POSITION, type Move } from 'chess.js';
+  import { DEFAULT_POSITION } from 'chess.js';
 
   import { getContext, onMount } from 'svelte';
-  import type { Writable } from 'svelte/store';
-  import type { Evaluation } from '$models/Evaluation';
   import { EvaluationMarkerExtension } from '$lib/extension';
-  import type { Settings } from '$models/Settings';
+  import type { Game } from '$lib/game.svelte';
   import { playMoveTypeSound } from '$lib/media';
   import { getMoveType } from '$lib/chess';
 
-  let boardElement: HTMLDivElement;
+  const game = getContext<Game>('game');
 
-  let board: Chessboard;
+  let boardElement: HTMLDivElement | undefined = $state();
+  let board: Chessboard | undefined = $state.raw();
 
-  const position: Writable<string> = getContext('position');
-  const evaluation: Writable<Evaluation> = getContext('evaluation');
-  const move: Writable<number> = getContext('move');
-  const history: Writable<Move[]> = getContext('history');
-  const settings: Writable<Settings> = getContext('settings');
-
-  onMount(async () => {
-    board = new Chessboard(boardElement, {
+  onMount(() => {
+    board = new Chessboard(boardElement!, {
       position: DEFAULT_POSITION,
       assetsUrl: '/',
       animationDuration: 50,
@@ -40,28 +33,28 @@
   });
 
   $effect(() => {
-    board?.setOrientation($settings.orientation);
+    board?.setOrientation(game.settings.orientation);
     // TODO: quick fix
     board?.setMarkers([]);
   });
 
   $effect(() => {
-    board?.setPosition($position, true);
+    board?.setPosition(game.position, true);
   });
 
   $effect(() => {
-    if ($history.length > 0 && $move >= 0) {
-      playMoveTypeSound(getMoveType($history[$move].san));
+    if (game.history.length > 0 && game.move >= 0) {
+      playMoveTypeSound(getMoveType(game.history[game.move].san));
       board?.setMarkers([
         {
-          square: $history[$move].from,
+          square: game.history[game.move].from,
           showIcon: false,
-          label: $evaluation.label
+          label: game.evaluation.label
         },
         {
-          square: $history[$move].to,
+          square: game.history[game.move].to,
           showIcon: true,
-          label: $evaluation.label
+          label: game.evaluation.label
         }
       ]);
     } else {
