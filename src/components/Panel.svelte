@@ -21,7 +21,14 @@
   const setProgress = (n: number) => (progress = n);
   const onChangeStrPgn = (newPgn: string) => (strPgn = newPgn);
 
+  const isAbortError = (error: unknown) =>
+    typeof error === 'object' && error !== null && 'name' in error && error.name === 'AbortError';
+
   const analyze = async () => {
+    const run = game.beginAnalysis();
+    if (!run) return;
+
+    const { signal, generation } = run;
     isLoading = true;
 
     // add a line break after last comment for chess.com mobile PGN export
@@ -29,26 +36,38 @@
 
     log(strPgn);
     try {
+      const engine = game.engine;
+      if (!engine) throw new Error('Engine is not ready');
+
       game.chess.loadPgn(strPgn);
       game.history = game.chess.history({ verbose: true });
       game.move = -1;
       game.position = game.history[0].before;
       const report = await analyze_game(
-        game.engine!,
+        engine,
         game.history,
         game.chess,
         game.settings.depth,
-        setProgress
+        setProgress,
+        signal
       );
+
+      if (signal.aborted || !game.isCurrentAnalysis(generation)) return;
+
       log(report);
       game.evaluations = report;
       currentTab = 'report';
     } catch (e) {
-      alert('An error occured, please try again.');
-      throw e;
+      if (!signal.aborted && !isAbortError(e)) {
+        alert('An error occured, please try again.');
+        log(e);
+      }
     } finally {
-      isLoading = false;
-      progress = 0;
+      game.endAnalysis(generation);
+      if (game.isCurrentAnalysis(generation)) {
+        isLoading = false;
+        progress = 0;
+      }
     }
   };
 </script>
