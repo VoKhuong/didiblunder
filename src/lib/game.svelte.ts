@@ -25,7 +25,8 @@ export class Game {
   settings = $state<Settings>({
     orientation: 'w',
     depth: 15,
-    engine: 'lite-single'
+    engine: 'lite-single',
+    theme: 'dark'
   });
 
   /** The evaluation of the currently selected move. */

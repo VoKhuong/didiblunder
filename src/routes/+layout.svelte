@@ -46,7 +46,7 @@
     <svg
       class="h-8 opacity-40 hover:opacity-60"
       viewBox="0 0 256 250"
-      fill="#fff"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMidYMid"
     >

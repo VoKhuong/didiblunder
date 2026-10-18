@@ -10,6 +10,25 @@
 
 <div class="w-full space-y-4">
   <SegmentedControl
+    name="theme"
+    class="flex flex-row items-center justify-between"
+    value={game.settings.theme}
+    onValueChange={(details) => (game.settings.theme = details.value as 'light' | 'dark')}
+  >
+    <SegmentedControl.Label class="font-bold">Theme</SegmentedControl.Label>
+    <SegmentedControl.Control>
+      <SegmentedControl.Indicator />
+      <SegmentedControl.Item value="light">
+        <SegmentedControl.ItemText aria-label="Light mode">☀️</SegmentedControl.ItemText>
+        <SegmentedControl.ItemHiddenInput />
+      </SegmentedControl.Item>
+      <SegmentedControl.Item value="dark">
+        <SegmentedControl.ItemText aria-label="Dark mode">🌙</SegmentedControl.ItemText>
+        <SegmentedControl.ItemHiddenInput />
+      </SegmentedControl.Item>
+    </SegmentedControl.Control>
+  </SegmentedControl>
+  <SegmentedControl
     name="orientation"
     class="flex flex-row items-center justify-between"
     value={game.settings.orientation}

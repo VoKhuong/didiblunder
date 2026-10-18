@@ -7,3 +7,7 @@
 @import '@skeletonlabs/skeleton/themes/mona';
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+[data-theme='mona'] {
+  --color-root-bg-light: var(--color-surface-200);
+}
