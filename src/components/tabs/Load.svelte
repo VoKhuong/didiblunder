@@ -145,6 +145,7 @@
     username={gameSelection.username}
     {onGameSelected}
     {analyze}
+    isAnalyzing={game.isAnalyzing}
     onClose={closeGameSelection}
   />
 {/if}
