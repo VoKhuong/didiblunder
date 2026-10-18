@@ -25,6 +25,8 @@
     typeof error === 'object' && error !== null && 'name' in error && error.name === 'AbortError';
 
   const analyze = async () => {
+    if (game.isAnalyzing) return;
+
     const run = game.beginAnalysis();
     if (!run) return;
 
