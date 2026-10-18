@@ -13,6 +13,7 @@
     name="theme"
     class="flex flex-row items-center justify-between"
     value={game.settings.theme}
+    disabled={game.isAnalyzing}
     onValueChange={(details) => (game.settings.theme = details.value as 'light' | 'dark')}
   >
     <SegmentedControl.Label class="font-bold">Theme</SegmentedControl.Label>
@@ -32,6 +33,7 @@
     name="orientation"
     class="flex flex-row items-center justify-between"
     value={game.settings.orientation}
+    disabled={game.isAnalyzing}
     onValueChange={(details) => (game.settings.orientation = details.value as 'w' | 'b')}
   >
     <SegmentedControl.Label class="font-bold">Orientation</SegmentedControl.Label>
@@ -50,6 +52,7 @@
   <Slider
     name="depth"
     value={[game.settings.depth]}
+    disabled={game.isAnalyzing}
     onValueChange={(details) => (game.settings.depth = details.value[0])}
     min={15}
     max={20}
@@ -73,7 +76,12 @@
       Engine
       <EngineHelp />
     </span>
-    <select name="engine" class="select" bind:value={game.settings.engine}>
+    <select
+      name="engine"
+      class="select"
+      bind:value={game.settings.engine}
+      disabled={game.isAnalyzing}
+    >
       <option value="lite-single">Lite single-thread ⚡</option>
       <option value="lite-multi">Lite multi-thread 🚀</option>
       <!-- option value="large-multi">Large multi-thread 🚄</option -->
