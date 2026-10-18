@@ -12,9 +12,11 @@ const rawEval = (score: number): RawEval => ({
 });
 
 describe('analyze_move', () => {
-  it('uses a neutral evaluation for an off-book first move', () => {
-    const chess = new Chess('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1');
-    const move = chess.move('a3');
+  it('uses a neutral evaluation when the first analyzed move is off-book', () => {
+    const chess = new Chess();
+    chess.move('a3');
+    chess.move('a6');
+    const move = chess.move('b3');
 
     const result = analyze_move(move, rawEval(20), chess, undefined, false);
 
