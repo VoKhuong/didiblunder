@@ -19,13 +19,13 @@
 </script>
 
 <div class="flex flex-wrap justify-center my-6 md:my-16 gap-6">
-  <div class="size-4/5 md:size-3/5 lg:size-5/12 flex gap-x-4">
+  <div class="size-[90%] md:size-3/5 lg:size-5/12 flex gap-x-4">
     <EvaluationBar evaluation={game.evaluation} />
     <div class="grow">
       <Chessboard />
     </div>
   </div>
-  <div class="w-4/5 md:w-1/4">
+  <div class="w-[90%] md:w-1/4">
     <Panel />
   </div>
 </div>
