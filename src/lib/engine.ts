@@ -15,6 +15,13 @@ import {
 import OPENINGS from '$lib/openings.json';
 import { log } from '$lib/log';
 
+const NEUTRAL_EVAL: Evaluation = {
+  score: 0,
+  type: 'cp',
+  pv: '',
+  label: Label.UNDEFINED
+};
+
 export async function init(engine: string) {
   let workerModule;
   switch (engine) {
@@ -97,7 +104,8 @@ export function analyze_move(
 ): Evaluation {
   chess.load(move.after);
   const turn = chess.turn();
-  const best = getBestMove(previousEval);
+  const previous = previousEval ?? NEUTRAL_EVAL;
+  const best = getBestMove(previous);
 
   if (chess.isCheckmate()) {
     return turn === 'b' ? EVAL_CHECKMATE_WHITE : EVAL_CHECKMATE_BLACK;
@@ -132,8 +140,8 @@ export function analyze_move(
 
   const winChanceLost =
     turn === 'b'
-      ? computeWinChanceLost(previousEval!, rawEval)
-      : -computeWinChanceLost(previousEval!, rawEval);
+      ? computeWinChanceLost(previous, rawEval)
+      : -computeWinChanceLost(previous, rawEval);
 
   // Check for EXCELLENT, GOOD, INACCURACY, MISTAKE or BLUNDER
   if (label === undefined) {
@@ -152,7 +160,7 @@ export function analyze_move(
 
   // Check for FORCED, GREAT or BRILLIANT
   if (label === Label.BEST) {
-    if (isForced(previousEval!)) {
+    if (isForced(previous)) {
       label = Label.FORCED;
     } else if (isSacrifice(chess, move)) {
       label = Label.BRILLIANT;
