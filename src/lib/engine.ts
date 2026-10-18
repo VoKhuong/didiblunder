@@ -186,12 +186,19 @@ export async function init(engine: string): Promise<EngineClient> {
   return client;
 }
 
+function throwIfAborted(signal?: AbortSignal) {
+  if (signal?.aborted) {
+    throw new DOMException('Analysis aborted', 'AbortError');
+  }
+}
+
 export async function analyze_game(
   client: EngineClient,
   history: Move[],
   chess: Chess,
   depth: number,
-  setProgress: (n: number) => void
+  setProgress: (n: number) => void,
+  signal?: AbortSignal
 ): Promise<Evaluation[]> {
   const evaluations: Evaluation[] = [];
   const rawEvals: RawEval[] = [];
@@ -200,13 +207,21 @@ export async function analyze_game(
   const length = history.length;
 
   for (let i = 0; i < history.length; i++) {
+    throwIfAborted(signal);
     setProgress(Math.min(Math.floor((i / length) * 100), 98));
-    rawEvals.push(await client.evaluate(history[i].after, depth));
+    try {
+      rawEvals.push(await client.evaluate(history[i].after, depth));
+    } catch (error) {
+      throwIfAborted(signal);
+      throw error;
+    }
   }
 
+  throwIfAborted(signal);
   const mid = performance.now();
 
   for (let i = 0; i < history.length; i++) {
+    throwIfAborted(signal);
     mayBeGreat =
       isNextMoveCrucial(history[i].color, evaluations.at(-2), evaluations.at(-1)) ||
       haveOnlyOneGoodMove(history[i].color, evaluations.at(-1));
