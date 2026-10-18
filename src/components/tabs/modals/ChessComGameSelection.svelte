@@ -47,10 +47,10 @@
               type="button"
               onclick={() => onClick(game)}
               class="card p-4 w-full text-left {isDraw(game)
-                ? 'preset-tonal-warning'
+                ? 'bg-warning-500/35 text-warning-950-50'
                 : userWon(username, game)
-                  ? 'preset-tonal-primary'
-                  : 'preset-tonal-error'}"
+                  ? 'bg-secondary-500/35 text-secondary-950-50'
+                  : 'bg-error-500/35 text-error-950-50'}"
             >
               <p>
                 <span class={isUsername(username, game.white.username) ? 'font-bold' : ''}>
