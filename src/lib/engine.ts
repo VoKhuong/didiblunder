@@ -15,6 +15,11 @@ import {
 import OPENINGS from '$lib/openings.json';
 import { log } from '$lib/log';
 
+const POSITION_TIMEOUT_MS = 60_000;
+
+const REGEX_MATCH =
+  /multipv (\d+) score (\w+) (-?\d+) nodes \d+ nps \d+(?: hashfull \d+)? time \d+ pv (.*)/;
+
 const NEUTRAL_EVAL: Evaluation = {
   score: 0,
   type: 'cp',
@@ -22,7 +27,131 @@ const NEUTRAL_EVAL: Evaluation = {
   label: Label.UNDEFINED
 };
 
-export async function init(engine: string) {
+type EngineRequest = {
+  fen: string;
+  depth: number;
+  result: RawEval;
+  resolve: (result: RawEval) => void;
+  reject: (error: Error) => void;
+  timer?: ReturnType<typeof setTimeout>;
+};
+
+export class EngineClient {
+  private readonly worker: Worker;
+  private readonly queue: EngineRequest[] = [];
+  private active: EngineRequest | undefined;
+  private terminated = false;
+
+  constructor(worker: Worker) {
+    this.worker = worker;
+    this.worker.onmessage = ({ data }: MessageEvent<string>) => {
+      log(`page got message: ${data}`);
+      this.handleMessage(data);
+    };
+    this.worker.onerror = (ev: ErrorEvent) => {
+      log(`page got error: ${ev.message}`);
+      this.fail(new Error(ev.message || 'Engine error'));
+    };
+  }
+
+  evaluate(fen: string, depth: number): Promise<RawEval> {
+    if (this.terminated) {
+      return Promise.reject(new Error('Engine has been terminated'));
+    }
+
+    return new Promise((resolve, reject) => {
+      this.queue.push({ fen, depth, result: {} as RawEval, resolve, reject });
+      this.pump();
+    });
+  }
+
+  terminate(reason: Error = new Error('Engine has been terminated')) {
+    if (this.terminated) return;
+    this.terminated = true;
+    this.worker.onmessage = null;
+    this.worker.onerror = null;
+    this.worker.terminate();
+    this.rejectAll(reason);
+  }
+
+  private pump() {
+    if (this.terminated || this.active) return;
+
+    const request = this.queue.shift();
+    if (!request) return;
+
+    this.active = request;
+    request.timer = setTimeout(() => {
+      log(`page engine timed out after ${POSITION_TIMEOUT_MS} ms`);
+      this.fail(new Error('Engine position timed out'));
+    }, POSITION_TIMEOUT_MS);
+
+    this.worker.postMessage(`position fen ${request.fen}`);
+    this.worker.postMessage(`go depth ${request.depth}`);
+  }
+
+  private handleMessage(data: string) {
+    const request = this.active;
+    if (!request) return;
+
+    const regexInfo = new RegExp(`^info depth ${request.depth} seldepth \\d+ multipv`);
+    if (regexInfo.test(data)) {
+      const match = data.match(REGEX_MATCH);
+      if (!match) {
+        this.fail(new Error(`REGEX_MATCH failed: ${data}`));
+        return;
+      }
+      // Info best line
+      if (match.at(1) === '1') {
+        request.result = {
+          ...request.result,
+          type: match.at(2) as RawEval['type'],
+          score: parseInt(match.at(3)!),
+          pv: match.at(4)!,
+          data
+        };
+      } else {
+        // Alt line
+        request.result.altLine = {
+          type: match.at(2) as RawEval['type'],
+          score: parseInt(match.at(3)!),
+          pv: match.at(4)!
+        };
+      }
+    }
+    // Last message
+    else if (data.startsWith('bestmove')) {
+      clearTimeout(request.timer);
+      this.active = undefined;
+      request.resolve(request.result);
+      this.pump();
+    }
+  }
+
+  private fail(reason: Error) {
+    if (this.terminated) return;
+    this.terminated = true;
+    this.worker.onmessage = null;
+    this.worker.onerror = null;
+    this.worker.terminate();
+    this.rejectAll(reason);
+  }
+
+  private rejectAll(reason: Error) {
+    if (this.active) {
+      clearTimeout(this.active.timer);
+      this.active.reject(reason);
+      this.active = undefined;
+    }
+
+    for (const request of this.queue.splice(0)) {
+      clearTimeout(request.timer);
+      request.reject(reason);
+    }
+  }
+}
+
+export async function init(engine: string): Promise<EngineClient> {
   let workerModule;
   switch (engine) {
     case 'lite-multi':
@@ -42,9 +171,7 @@ export async function init(engine: string) {
   }
 
   const worker = new workerModule.default();
-
-  worker.onmessage = ({ data }: MessageEvent<string>) => log(`page got message: ${data}`);
-  worker.onerror = (ev: ErrorEvent) => log(`page got error: ${ev.message}`);
+  const client = new EngineClient(worker);
 
   if (engine.includes('multi')) {
     worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
@@ -56,11 +183,11 @@ export async function init(engine: string) {
   worker.postMessage('uci');
   worker.postMessage('ucinewgame');
 
-  return worker;
+  return client;
 }
 
 export async function analyze_game(
-  worker: Worker,
+  client: EngineClient,
   history: Move[],
   chess: Chess,
   depth: number,
@@ -71,12 +198,10 @@ export async function analyze_game(
   let mayBeGreat = false;
   const start = performance.now();
   const length = history.length;
-  let rawPromise;
 
   for (let i = 0; i < history.length; i++) {
-    rawPromise = evaluate(worker, history[i].after, depth);
     setProgress(Math.min(Math.floor((i / length) * 100), 98));
-    rawEvals.push(await rawPromise);
+    rawEvals.push(await client.evaluate(history[i].after, depth));
   }
 
   const mid = performance.now();
@@ -179,47 +304,4 @@ export function analyze_move(
     label,
     best
   };
-}
-
-const REGEX_MATCH =
-  /multipv (\d+) score (\w+) (-?\d+) nodes \d+ nps \d+(?: hashfull \d+)? time \d+ pv (.*)/;
-
-export function evaluate(worker: Worker, fen: string, depth: number): Promise<RawEval> {
-  return new Promise((resolve) => {
-    const regexInfo = new RegExp(`^info depth ${depth} seldepth \\d+ multipv`);
-    let result = {} as RawEval;
-
-    worker.onmessage = ({ data }: { data: string }) => {
-      if (regexInfo.test(data)) {
-        const match = data.match(REGEX_MATCH);
-        if (!match) {
-          throw new Error(`REGEX_MATCH failed: ${data}`);
-        }
-        // Info best line
-        if (match.at(1) === '1') {
-          result = {
-            ...result,
-            type: match.at(2) as RawEval['type'],
-            score: parseInt(match.at(3)!),
-            pv: match.at(4)!,
-            data
-          };
-        } else {
-          // Alt line
-          result.altLine = {
-            type: match.at(2) as RawEval['type'],
-            score: parseInt(match.at(3)!),
-            pv: match.at(4)!
-          };
-        }
-      }
-      // Last message
-      else if (data.startsWith('bestmove')) {
-        resolve(result);
-      }
-    };
-
-    worker.postMessage(`position fen ${fen}`);
-    worker.postMessage(`go depth ${depth}`);
-  });
 }
