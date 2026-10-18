@@ -47,18 +47,20 @@ export class EvaluationMarkerExtension extends Extension {
 
       // Icon
       if (marker.showIcon) {
+        const radius = width / 4;
+        const iconSize = radius * 1.5;
         const svg = document.createElementNS(SVG_NAMESPACE, 'svg');
         svg.setAttribute('fill', 'white');
         const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
-        circle.setAttribute('r', width / 4);
+        circle.setAttribute('r', radius);
         circle.setAttribute('cx', point.x + width);
         circle.setAttribute('cy', point.y);
         circle.setAttribute('fill', getLabelHexColor(marker.label));
 
-        svg.setAttribute('x', point.x + width - 12);
-        svg.setAttribute('y', point.y - 12);
-        svg.setAttribute('width', '24');
-        svg.setAttribute('height', '24');
+        svg.setAttribute('x', point.x + width - iconSize / 2);
+        svg.setAttribute('y', point.y - iconSize / 2);
+        svg.setAttribute('width', iconSize);
+        svg.setAttribute('height', iconSize);
         svg.setAttribute('viewBox', '0 0 24 24');
 
         mount(LabelPath, { props: { label: marker.label }, target: svg });
