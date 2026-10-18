@@ -15,8 +15,6 @@ import {
 import OPENINGS from '$lib/openings.json';
 import { log } from '$lib/log';
 
-const POSITION_TIMEOUT_MS = 60_000;
-
 const REGEX_MATCH =
   /multipv (\d+) score (\w+) (-?\d+) nodes \d+ nps \d+(?: hashfull \d+)? time \d+ pv (.*)/;
 
@@ -33,7 +31,6 @@ type EngineRequest = {
   result: RawEval;
   resolve: (result: RawEval) => void;
   reject: (error: Error) => void;
-  timer?: ReturnType<typeof setTimeout>;
 };
 
 export class EngineClient {
@@ -81,10 +78,6 @@ export class EngineClient {
     if (!request) return;
 
     this.active = request;
-    request.timer = setTimeout(() => {
-      log(`page engine timed out after ${POSITION_TIMEOUT_MS} ms`);
-      this.fail(new Error('Engine position timed out'));
-    }, POSITION_TIMEOUT_MS);
 
     this.worker.postMessage(`position fen ${request.fen}`);
     this.worker.postMessage(`go depth ${request.depth}`);
@@ -121,7 +114,6 @@ export class EngineClient {
     }
     // Last message
     else if (data.startsWith('bestmove')) {
-      clearTimeout(request.timer);
       this.active = undefined;
       request.resolve(request.result);
       this.pump();
@@ -139,13 +131,11 @@ export class EngineClient {
 
   private rejectAll(reason: Error) {
     if (this.active) {
-      clearTimeout(this.active.timer);
       this.active.reject(reason);
       this.active = undefined;
     }
 
     for (const request of this.queue.splice(0)) {
-      clearTimeout(request.timer);
       request.reject(reason);
     }
   }
