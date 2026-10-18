@@ -2,6 +2,12 @@
 <html lang="en" class="dark" data-theme="mona">
   <head>
     <meta charset="utf-8" />
+    <script>
+      document.documentElement.classList.toggle(
+        'dark',
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+      );
+    </script>
     <link rel="icon" type="image/png" href="%sveltekit.assets%/favicon-96x96.png" sizes="96x96" />
 
     <link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />

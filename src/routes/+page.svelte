@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext, untrack } from 'svelte';
+  import { onMount, setContext, untrack } from 'svelte';
   import { browser, dev } from '$app/environment';
 
   import Chessboard from '../components/Chessboard.svelte';
@@ -10,10 +10,25 @@
   const game = new Game();
   setContext('game', game);
 
+  let themeInitialized = $state(false);
+
+  onMount(() => {
+    game.settings.theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+    themeInitialized = true;
+  });
+
   $effect(() => {
     const engine = game.settings.engine;
     if (browser) {
       untrack(() => game.initEngine(engine));
+    }
+  });
+
+  $effect(() => {
+    if (browser && themeInitialized) {
+      document.documentElement.classList.toggle('dark', game.settings.theme === 'dark');
     }
   });
 </script>
