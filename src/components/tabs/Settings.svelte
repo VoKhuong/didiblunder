@@ -14,7 +14,8 @@
 <div class="w-full space-y-4">
   <SegmentedControl
     name="theme"
-    class="flex flex-row items-center justify-between"
+    class="flex flex-row items-center justify-between {game.isAnalyzing ? 'disabled' : ''}"
+    disabled={game.isAnalyzing}
     value={game.settings.theme}
     onValueChange={(details) => (game.settings.theme = details.value as 'light' | 'dark')}
   >
@@ -33,7 +34,8 @@
   </SegmentedControl>
   <SegmentedControl
     name="orientation"
-    class="flex flex-row items-center justify-between"
+    class="flex flex-row items-center justify-between {game.isAnalyzing ? 'disabled' : ''}"
+    disabled={game.isAnalyzing}
     value={game.settings.orientation}
     onValueChange={(details) => (game.settings.orientation = details.value as 'w' | 'b')}
   >
@@ -52,6 +54,8 @@
   </SegmentedControl>
   <Slider
     name="depth"
+    class={game.isAnalyzing ? 'disabled' : ''}
+    disabled={game.isAnalyzing}
     value={[game.settings.depth]}
     onValueChange={(details) => (game.settings.depth = details.value[0])}
     min={15}
@@ -76,7 +80,12 @@
       Engine
       <EngineHelp />
     </span>
-    <select name="engine" class="select" bind:value={game.settings.engine}>
+    <select
+      name="engine"
+      class="select"
+      bind:value={game.settings.engine}
+      disabled={game.isAnalyzing}
+    >
       {#each engines as engine}
         <option value={engine.id}>{engine.label}</option>
       {/each}

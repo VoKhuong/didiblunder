@@ -24,6 +24,8 @@
   const onChangeStrPgn = (newPgn: string) => (strPgn = newPgn);
 
   const analyze = async () => {
+    if (game.isAnalyzing) return;
+
     const { signal, generation } = game.beginAnalysis();
 
     try {
