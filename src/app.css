@@ -11,3 +11,19 @@
 [data-theme='mona'] {
   --color-root-bg-light: var(--color-surface-200);
 }
+
+@layer base {
+  button:not(:disabled),
+  select:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  [data-scope='radio-group'][data-part='item'],
+  [data-scope='tabs'][data-part='trigger'],
+  [data-scope='slider'][data-part='thumb'] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+}
