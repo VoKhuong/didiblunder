@@ -9,18 +9,22 @@
     username,
     onGameSelected,
     analyze,
+    isAnalyzing = false,
     onClose
   }: {
     games: ChessComGame[];
     username: string;
     onGameSelected: (game: ChessComGame, orientation: 'w' | 'b') => void;
     analyze: () => void;
+    isAnalyzing?: boolean;
     onClose: () => void;
   } = $props();
 
   const sortedGames = $derived([...games].reverse());
 
   const onClick = (game: ChessComGame) => {
+    if (isAnalyzing) return;
+
     const orientation = isUsername(username, game.white.username) ? 'w' : 'b';
     onGameSelected(game, orientation);
     analyze();
@@ -46,6 +50,7 @@
             <button
               type="button"
               onclick={() => onClick(game)}
+              disabled={isAnalyzing}
               class="card p-4 w-full text-left {isDraw(game)
                 ? 'bg-warning-500/35 text-warning-950-50'
                 : userWon(username, game)

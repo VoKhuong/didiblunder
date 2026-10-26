@@ -29,6 +29,8 @@
   let gameSelection: { games: ChessComGame[]; username: string } | null = $state(null);
 
   const onClick = async () => {
+    if (isLoading) return;
+
     // trim trailing spaces
     username = username.trim();
     // validate username
@@ -122,6 +124,7 @@
           class="input"
           placeholder="magnuscarlsen"
           onkeydown={onKeyDown}
+          disabled={isLoading}
         />
         <button
           class="btn preset-filled"
@@ -143,6 +146,7 @@
     username={gameSelection.username}
     {onGameSelected}
     {analyze}
+    isAnalyzing={isLoading}
     onClose={closeGameSelection}
   />
 {/if}
