@@ -23,6 +23,12 @@ const NEUTRAL_EVAL: Evaluation = {
   label: Label.UNDEFINED
 };
 
+function throwIfAborted(signal?: AbortSignal): void {
+  if (signal?.aborted) {
+    throw new DOMException('Analysis aborted', 'AbortError');
+  }
+}
+
 export async function init(engine: string): Promise<EngineClient> {
   let workerModule;
   switch (engine) {
@@ -63,8 +69,11 @@ export async function analyze_game(
   history: Move[],
   chess: Chess,
   depth: number,
-  setProgress: (n: number) => void
+  setProgress: (n: number) => void,
+  signal?: AbortSignal
 ): Promise<Evaluation[]> {
+  throwIfAborted(signal);
+
   const evaluations: Evaluation[] = [];
   const rawEvals: RawEval[] = [];
   let mayBeGreat = false;
@@ -73,19 +82,24 @@ export async function analyze_game(
   let rawPromise;
 
   for (let i = 0; i < history.length; i++) {
-    rawPromise = evaluate(client, history[i].after, depth);
+    throwIfAborted(signal);
+    rawPromise = evaluate(client, history[i].after, depth, signal);
     setProgress(Math.min(Math.floor((i / length) * 100), 98));
     rawEvals.push(await rawPromise);
   }
 
+  throwIfAborted(signal);
+
   const mid = performance.now();
 
   for (let i = 0; i < history.length; i++) {
+    throwIfAborted(signal);
     mayBeGreat =
       isNextMoveCrucial(history[i].color, evaluations.at(-2), evaluations.at(-1)) ||
       haveOnlyOneGoodMove(history[i].color, evaluations.at(-1));
     evaluations.push(analyze_move(history[i], rawEvals[i], chess, evaluations.at(-1), mayBeGreat));
   }
+  throwIfAborted(signal);
   setProgress(100);
   const end = performance.now();
   log(`Execution engine time: ${mid - start} ms`);

@@ -1,7 +1,8 @@
 import { Chess } from 'chess.js';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { analyze_move } from '$lib/engine';
+import { analyze_game, analyze_move } from '$lib/engine';
+import type { EngineClient } from '$lib/engine/client';
 import Label from '$models/Label';
 import type { RawEval } from '$models/Engine';
 
@@ -32,5 +33,42 @@ describe('analyze_move', () => {
 
     expect(result.label).toBe(Label.BOOK);
     expect(result.opening).toBe("Anderssen's Opening");
+  });
+});
+
+describe('analyze_game', () => {
+  it('aborts before evaluating when the signal is already aborted', async () => {
+    const chess = new Chess();
+    chess.move('e4');
+    const move = chess.move('e5');
+    const controller = new AbortController();
+    controller.abort();
+    const evaluate = vi.fn();
+    const client = { evaluate } as unknown as EngineClient;
+    const setProgress = vi.fn();
+
+    await expect(
+      analyze_game(client, [move], chess, 10, setProgress, controller.signal)
+    ).rejects.toMatchObject({ name: 'AbortError' });
+
+    expect(evaluate).not.toHaveBeenCalled();
+    expect(setProgress).not.toHaveBeenCalled();
+  });
+
+  it('stops before labeling when the signal aborts during evaluation', async () => {
+    const chess = new Chess();
+    chess.move('e4');
+    const move = chess.move('e5');
+    const controller = new AbortController();
+    const client = {
+      evaluate: vi.fn(async () => {
+        controller.abort();
+        return rawEval(20);
+      })
+    } as unknown as EngineClient;
+
+    await expect(
+      analyze_game(client, [move], chess, 10, () => {}, controller.signal)
+    ).rejects.toMatchObject({ name: 'AbortError' });
   });
 });
