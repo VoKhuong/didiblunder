@@ -15,20 +15,22 @@
 
   let currentTab: TabName = $state('load');
   let strPgn: string = $state('');
-  let isLoading: boolean = $state(false);
+  const isLoading = $derived(game.isAnalyzing);
   let progress = $state(0);
+
+  const isAbortError = (error: unknown) => error instanceof Error && error.name === 'AbortError';
 
   const setProgress = (n: number) => (progress = n);
   const onChangeStrPgn = (newPgn: string) => (strPgn = newPgn);
 
   const analyze = async () => {
-    isLoading = true;
+    const { signal, generation } = game.beginAnalysis();
 
-    // add a line break after last comment for chess.com mobile PGN export
-    strPgn = strPgn.replace(/](?![\s\S]*\])(?!\n\n)/, ']\n');
-
-    log(strPgn);
     try {
+      // add a line break after last comment for chess.com mobile PGN export
+      strPgn = strPgn.replace(/](?![\s\S]*\])(?!\n\n)/, ']\n');
+
+      log(strPgn);
       game.chess.loadPgn(strPgn);
       game.history = game.chess.history({ verbose: true });
       game.startFen = game.history[0]?.before ?? game.chess.fen();
@@ -38,17 +40,22 @@
         game.history,
         game.chess,
         game.settings.depth,
-        setProgress
+        setProgress,
+        signal
       );
+      if (!game.isAnalysisCurrent(generation)) return;
       log(report);
       game.evaluations = report;
       currentTab = 'report';
     } catch (e) {
-      alert('An error occured, please try again.');
-      throw e;
+      if (!isAbortError(e)) {
+        alert('An error occured, please try again.');
+        throw e;
+      }
     } finally {
-      isLoading = false;
-      progress = 0;
+      const current = game.isAnalysisCurrent(generation);
+      game.endAnalysis(generation);
+      if (current) progress = 0;
     }
   };
 </script>

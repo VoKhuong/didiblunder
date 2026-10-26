@@ -59,4 +59,43 @@ describe('Game', () => {
     game.last();
     expect(game.move).toBe(-1);
   });
+
+  it('tracks an analysis run from start to finish', () => {
+    const game = new Game();
+    expect(game.isAnalyzing).toBe(false);
+
+    const run = game.beginAnalysis();
+    expect(game.isAnalyzing).toBe(true);
+    expect(run.signal.aborted).toBe(false);
+    expect(game.isAnalysisCurrent(run.generation)).toBe(true);
+
+    game.endAnalysis(run.generation);
+    expect(game.isAnalyzing).toBe(false);
+  });
+
+  it('ignores stale generations and aborts the previous run', () => {
+    const game = new Game();
+    const first = game.beginAnalysis();
+    const second = game.beginAnalysis();
+
+    expect(first.signal.aborted).toBe(true);
+    expect(second.generation).toBeGreaterThan(first.generation);
+    expect(game.isAnalysisCurrent(first.generation)).toBe(false);
+
+    game.endAnalysis(first.generation);
+    expect(game.isAnalyzing).toBe(true);
+
+    game.endAnalysis(second.generation);
+    expect(game.isAnalyzing).toBe(false);
+  });
+
+  it('cancels the active run', () => {
+    const game = new Game();
+    const run = game.beginAnalysis();
+
+    game.cancelAnalysis();
+
+    expect(run.signal.aborted).toBe(true);
+    expect(game.isAnalyzing).toBe(false);
+  });
 });

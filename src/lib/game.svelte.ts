@@ -22,6 +22,10 @@ export class Game {
   move = $state(-1);
   evaluations = $state.raw<Evaluation[]>([]);
   engine = $state.raw<EngineClient>();
+  isAnalyzing = $state(false);
+
+  private analysisController: AbortController | null = null;
+  private analysisGeneration = 0;
 
   settings = $state<Settings>({
     orientation: 'w',
@@ -67,7 +71,36 @@ export class Game {
     this.goTo(this.history.length - 1);
   }
 
+  beginAnalysis() {
+    this.analysisController?.abort();
+
+    const controller = new AbortController();
+    this.analysisController = controller;
+    this.analysisGeneration += 1;
+    this.isAnalyzing = true;
+
+    return { signal: controller.signal, generation: this.analysisGeneration };
+  }
+
+  isAnalysisCurrent(generation: number): boolean {
+    return generation === this.analysisGeneration;
+  }
+
+  endAnalysis(generation: number) {
+    if (!this.isAnalysisCurrent(generation)) return;
+
+    this.analysisController = null;
+    this.isAnalyzing = false;
+  }
+
+  cancelAnalysis() {
+    this.analysisController?.abort();
+    this.analysisController = null;
+    this.isAnalyzing = false;
+  }
+
   async initEngine(engine: string) {
+    this.cancelAnalysis();
     this.engine?.terminate();
     this.engine = await init(engine);
   }

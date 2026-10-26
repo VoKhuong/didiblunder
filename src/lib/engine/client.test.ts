@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-import { parseInfoLine } from './client';
+import { EngineClient, parseInfoLine } from './client';
 
 describe('parseInfoLine', () => {
   it('parses a full multipv 1 info line', () => {
@@ -67,5 +67,45 @@ describe('parseInfoLine', () => {
     expect(parseInfoLine('info depth 12 multipv 1 score cp pv e2e4')).toBeNull();
     expect(parseInfoLine('info depth 12 multipv 1 score cp 20 pv')).toBeNull();
     expect(parseInfoLine('')).toBeNull();
+  });
+});
+
+const createWorker = () => ({
+  onmessage: null as ((event: MessageEvent<string>) => void) | null,
+  onerror: null as ((event: ErrorEvent) => void) | null,
+  postMessage: vi.fn(),
+  terminate: vi.fn()
+});
+
+const FEN = '8/8/8/8/8/8/8/K6k w - - 0 1';
+
+describe('EngineClient', () => {
+  it('rejects a pending bestmove wait when the worker is terminated', async () => {
+    const worker = createWorker();
+    const client = new EngineClient(worker as unknown as Worker);
+
+    const pending = client.evaluate(FEN, 10);
+    const rejection = expect(pending).rejects.toThrow('Engine client terminated');
+
+    client.terminate();
+
+    await rejection;
+    expect(worker.terminate).toHaveBeenCalledOnce();
+  });
+
+  it('rejects with an AbortError when the signal aborts', async () => {
+    const worker = createWorker();
+    const client = new EngineClient(worker as unknown as Worker);
+    const controller = new AbortController();
+
+    const pending = client.evaluate(FEN, 10, controller.signal);
+    const rejection = expect(pending).rejects.toMatchObject({ name: 'AbortError' });
+
+    controller.abort();
+
+    await rejection;
+    expect(worker.postMessage).toHaveBeenCalledWith('stop');
+
+    client.terminate();
   });
 });
