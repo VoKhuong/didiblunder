@@ -17,7 +17,7 @@ export class Game {
   readonly chess = new Chess();
 
   history = $state.raw<Move[]>([]);
-  position = $state(DEFAULT_POSITION);
+  startFen = $state(DEFAULT_POSITION);
   move = $state(-1);
   evaluations = $state.raw<Evaluation[]>([]);
   engine = $state.raw<Worker>();
@@ -28,6 +28,9 @@ export class Game {
     engine: 'lite-single',
     theme: 'dark'
   });
+
+  /** The position after the currently selected move, derived from the start FEN. */
+  position = $derived(this.history[this.move]?.after ?? this.startFen);
 
   /** The evaluation of the currently selected move. */
   evaluation = $derived.by((): Evaluation => {
@@ -41,6 +44,27 @@ export class Game {
       label: Label.UNDEFINED
     };
   });
+
+  /** Select a move by index, clamping to the valid range (-1 means the start position). */
+  goTo(index: number) {
+    this.move = Math.max(-1, Math.min(index, this.history.length - 1));
+  }
+
+  first() {
+    this.goTo(-1);
+  }
+
+  prev() {
+    this.goTo(this.move - 1);
+  }
+
+  next() {
+    this.goTo(this.move + 1);
+  }
+
+  last() {
+    this.goTo(this.history.length - 1);
+  }
 
   async initEngine(engine: string) {
     this.engine?.terminate();

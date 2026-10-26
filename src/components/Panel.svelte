@@ -31,8 +31,8 @@
     try {
       game.chess.loadPgn(strPgn);
       game.history = game.chess.history({ verbose: true });
-      game.move = -1;
-      game.position = game.history[0].before;
+      game.startFen = game.history[0]?.before ?? game.chess.fen();
+      game.first();
       const report = await analyze_game(
         game.engine!,
         game.history,
