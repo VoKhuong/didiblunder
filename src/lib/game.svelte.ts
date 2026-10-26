@@ -1,6 +1,7 @@
 import { Chess, DEFAULT_POSITION, type Move } from 'chess.js';
 
 import { init } from '$lib/engine';
+import type { EngineClient } from '$lib/engine/client';
 import type { Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Settings } from '$models/Settings';
@@ -20,7 +21,7 @@ export class Game {
   startFen = $state(DEFAULT_POSITION);
   move = $state(-1);
   evaluations = $state.raw<Evaluation[]>([]);
-  engine = $state.raw<Worker>();
+  engine = $state.raw<EngineClient>();
 
   settings = $state<Settings>({
     orientation: 'w',
