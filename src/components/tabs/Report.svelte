@@ -20,24 +20,26 @@
         {#each rows as row, r (r)}
           <tr>
             <td class="opacity-60">{row[0]}</td>
-            <td
-              class="cursor-pointer"
-              role="button"
-              tabindex="0"
-              onclick={() => selectMove(r * 2)}
-              onkeydown={(e) => e.key === 'Enter' && selectMove(r * 2)}
-            >
-              {row[1]}
+            <td class="cursor-pointer">
+              <button
+                type="button"
+                class="w-full text-left"
+                onclick={() => selectMove(r * 2)}
+                aria-current={game.move === r * 2 ? 'true' : undefined}
+              >
+                {row[1]}
+              </button>
             </td>
             {#if row[2]}
-              <td
-                class="cursor-pointer"
-                role="button"
-                tabindex="0"
-                onclick={() => selectMove(r * 2 + 1)}
-                onkeydown={(e) => e.key === 'Enter' && selectMove(r * 2 + 1)}
-              >
-                {row[2]}
+              <td class="cursor-pointer">
+                <button
+                  type="button"
+                  class="w-full text-left"
+                  onclick={() => selectMove(r * 2 + 1)}
+                  aria-current={game.move === r * 2 + 1 ? 'true' : undefined}
+                >
+                  {row[2]}
+                </button>
               </td>
             {:else}
               <td>&nbsp;</td>

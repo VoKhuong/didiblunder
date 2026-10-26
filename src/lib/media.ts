@@ -10,9 +10,11 @@ export function preloadAudio(id: AudioId, src: string) {
 }
 
 function playMedia(id: AudioId) {
-  const audio = audioMap.get(id)!;
+  const audio = audioMap.get(id);
+  if (!audio) return;
+
   audio.currentTime = 0;
-  audio.play();
+  void audio.play().catch(() => undefined);
 }
 
 export function playMoveTypeSound(mt: MoveType) {
