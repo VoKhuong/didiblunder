@@ -12,11 +12,7 @@
   const san = $derived(game.history[game.move]?.san);
   const score = $derived(formatScore(game.evaluation));
 
-  const selectMove = (index: number) => {
-    if (index < 0 || index >= game.history.length) return;
-    game.move = index;
-    game.position = game.history[index].after;
-  };
+  const selectMove = (index: number) => game.goTo(index);
 </script>
 
 <div class="h-28 md:h-32 lg:h-56 mb-2 overflow-y-auto">

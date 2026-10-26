@@ -7,25 +7,13 @@
 
   const nbMoves = $derived(game.history.length);
 
-  const clickBackward = () => {
-    game.position = game.history[0].before;
-    game.move = -1;
-  };
+  const clickBackward = () => game.first();
 
-  const clickPrevious = () => {
-    game.position = game.history[game.move].before;
-    game.move -= 1;
-  };
+  const clickPrevious = () => game.prev();
 
-  const clickNext = () => {
-    game.move += 1;
-    game.position = game.history[game.move].after;
-  };
+  const clickNext = () => game.next();
 
-  const clickForward = () => {
-    game.move = nbMoves - 1;
-    game.position = game.history[game.move].after;
-  };
+  const clickForward = () => game.last();
 </script>
 
 <div class="flex gap-2">
