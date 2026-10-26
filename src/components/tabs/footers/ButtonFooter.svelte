@@ -2,11 +2,11 @@
   import { Progress } from '@skeletonlabs/skeleton-svelte';
 
   let {
-    onClick = () => console.log('onClick event fired'),
+    onClick,
     isLoading = false,
     progress = 0
   }: {
-    onClick?: (event: MouseEvent) => void;
+    onClick: (event: MouseEvent) => void;
     isLoading?: boolean;
     progress?: number;
   } = $props();

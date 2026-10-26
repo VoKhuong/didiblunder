@@ -1,22 +1,20 @@
 <script lang="ts">
   import { FileUpload } from '@skeletonlabs/skeleton-svelte';
-  import { getContext } from 'svelte';
-
   import ChessComGameSelection from './modals/ChessComGameSelection.svelte';
   import { loadRecentGames, type ChessComGame } from '$lib/api';
-  import type { Game } from '$lib/game.svelte';
+  import { getGame } from '$lib/game-context';
 
   let {
-    onChange = (pgn: string) => console.log('pgn => ', pgn),
+    onChange,
     analyze,
     isLoading
   }: {
-    onChange?: (pgn: string) => void;
+    onChange: (pgn: string) => void;
     analyze: () => void;
     isLoading: boolean;
   } = $props();
 
-  const game = getContext<Game>('game');
+  const game = getGame();
 
   let loader: string = $state('chesscom');
   let strPgn: string = $state('');

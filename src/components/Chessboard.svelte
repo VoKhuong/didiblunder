@@ -3,13 +3,13 @@
   import { Chessboard } from 'cm-chessboard/src/Chessboard';
   import { DEFAULT_POSITION } from 'chess.js';
 
-  import { getContext, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { EvaluationMarkerExtension } from '$lib/extension';
-  import type { Game } from '$lib/game.svelte';
   import { playMoveTypeSound } from '$lib/media';
   import { getMoveType } from '$lib/chess';
+  import { getGame } from '$lib/game-context';
 
-  const game = getContext<Game>('game');
+  const game = getGame();
 
   let boardElement: HTMLDivElement | undefined = $state();
   let board: Chessboard | undefined = $state.raw();

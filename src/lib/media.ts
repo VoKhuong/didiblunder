@@ -1,15 +1,16 @@
 import MoveType from '$models/MoveType';
+import { AUDIO_IDS, type AudioId } from '$lib/constants';
 
-const audioMap = new Map();
+const audioMap = new Map<AudioId, HTMLAudioElement>();
 
-export function preloadAudio(id: string, src: string) {
+export function preloadAudio(id: AudioId, src: string) {
   const audio = new Audio(src);
   audio.preload = 'auto';
   audioMap.set(id, audio);
 }
 
-function playMedia(id: string) {
-  const audio = audioMap.get(id);
+function playMedia(id: AudioId) {
+  const audio = audioMap.get(id)!;
   audio.currentTime = 0;
   audio.play();
 }
@@ -17,19 +18,19 @@ function playMedia(id: string) {
 export function playMoveTypeSound(mt: MoveType) {
   switch (mt) {
     case MoveType.CHECKMATE:
-      playMedia('sfx-checkmate');
+      playMedia(AUDIO_IDS.CHECKMATE);
       break;
     case MoveType.CHECK:
-      playMedia('sfx-check');
+      playMedia(AUDIO_IDS.CHECK);
       break;
     case MoveType.PROMOTION:
-      playMedia('sfx-promotion');
+      playMedia(AUDIO_IDS.PROMOTION);
       break;
     case MoveType.CAPTURE:
-      playMedia('sfx-capture');
+      playMedia(AUDIO_IDS.CAPTURE);
       break;
     default:
-      playMedia('sfx-move');
+      playMedia(AUDIO_IDS.MOVE);
       break;
   }
 }

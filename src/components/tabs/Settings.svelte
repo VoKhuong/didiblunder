@@ -1,11 +1,9 @@
 <script lang="ts">
   import { SegmentedControl, Slider } from '@skeletonlabs/skeleton-svelte';
-  import { getContext } from 'svelte';
-
   import EngineHelp from './modals/EngineHelp.svelte';
-  import type { Game } from '$lib/game.svelte';
+  import { getGame } from '$lib/game-context';
 
-  const game = getContext<Game>('game');
+  const game = getGame();
 </script>
 
 <div class="w-full space-y-4">
