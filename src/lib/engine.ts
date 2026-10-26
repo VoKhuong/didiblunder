@@ -14,6 +14,7 @@ import {
 
 import OPENINGS from '$lib/openings.json';
 import { log } from '$lib/log';
+import { resolveLabel } from './analysis/labels';
 import { EngineClient } from './engine/client';
 import { ENGINES, type EngineId } from './engines';
 
@@ -113,73 +114,41 @@ export function analyze_move(
     return turn === 'b' ? EVAL_CHECKMATE_WHITE : EVAL_CHECKMATE_BLACK;
   }
 
-  // Reverse when black
-  rawEval.score = turn === 'w' ? rawEval.score : -rawEval.score;
-
-  if (rawEval.altLine && turn === 'b') {
-    rawEval.altLine.score = -rawEval.altLine.score;
-  }
-
-  let label;
-
-  // Compute label
-  // Check for BOOK
-  if (!previousEval || previousEval.label === Label.BOOK) {
-    const openingName: string | undefined = OPENINGS[chess.fen() as keyof typeof OPENINGS];
-    if (openingName) {
-      return {
-        ...rawEval,
-        label: Label.BOOK,
-        opening: openingName
-      };
-    }
-  }
-
-  // Check for BEST
-  if (move.lan === best) {
-    label = Label.BEST;
-  }
+  const normalized: RawEval = {
+    ...rawEval,
+    score: turn === 'w' ? rawEval.score : -rawEval.score,
+    ...(rawEval.altLine
+      ? {
+          altLine: {
+            ...rawEval.altLine,
+            score: turn === 'w' ? rawEval.altLine.score : -rawEval.altLine.score
+          }
+        }
+      : {})
+  };
 
   const winChanceLost =
     turn === 'b'
-      ? computeWinChanceLost(previous, rawEval)
-      : -computeWinChanceLost(previous, rawEval);
+      ? computeWinChanceLost(previous, normalized)
+      : -computeWinChanceLost(previous, normalized);
 
-  // Check for EXCELLENT, GOOD, INACCURACY, MISTAKE or BLUNDER
-  if (label === undefined) {
-    if (winChanceLost <= 2) {
-      label = Label.EXCELLENT;
-    } else if (winChanceLost <= 5) {
-      label = Label.GOOD;
-    } else if (winChanceLost <= 10) {
-      label = Label.INACCURACY;
-    } else if (winChanceLost <= 20) {
-      label = Label.MISTAKE;
-    } else {
-      label = Label.BLUNDER;
-    }
-  }
+  const opening: string | undefined = OPENINGS[chess.fen() as keyof typeof OPENINGS];
 
-  // Check for FORCED, GREAT or BRILLIANT
-  if (label === Label.BEST) {
-    if (isForced(previous)) {
-      label = Label.FORCED;
-    } else if (isSacrifice(chess, move)) {
-      label = Label.BRILLIANT;
-    } else if (mayBeGreat) {
-      label = Label.GREAT;
-    }
-  }
-
-  // Check for MISSED
-  if (opponentDidABadPlay(previousEval) && winChanceLost >= 5) {
-    label = Label.MISSED;
-  }
+  const decision = resolveLabel({
+    best,
+    winChanceLost,
+    moveLan: move.lan,
+    isForced: isForced(previous),
+    isSacrifice: isSacrifice(chess, move),
+    mayBeGreat,
+    previousLabel: previousEval?.label,
+    opponentBadPlay: opponentDidABadPlay(previousEval),
+    opening
+  });
 
   return {
-    ...rawEval,
-    label,
-    best
+    ...normalized,
+    ...decision
   };
 }
 
