@@ -1,6 +1,8 @@
+import type { EngineId } from '$lib/engines';
+
 export type Settings = {
   orientation: 'w' | 'b';
   depth: number;
-  engine: string;
+  engine: EngineId;
   theme: 'light' | 'dark';
 };
