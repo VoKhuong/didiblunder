@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
+  import { getGame } from '$lib/game-context';
 
-  import type { Game } from '$lib/game.svelte';
-
-  const game = getContext<Game>('game');
+  const game = getGame();
 
   const nbMoves = $derived(game.history.length);
 

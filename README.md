@@ -7,7 +7,7 @@
 
 **Did I Blunder** is an open-source chess analysis web app available at [didiblunder.com](https://didiblunder.com/).
 
-Enter your game as a PGN or import it directly from [chess.com](https://www.chess.com/home) or [lichess.org](https://lichess.org/) and it will generate a report of your game and classify all your moves.
+Enter your game as a PGN or import it directly from [chess.com](https://www.chess.com/home). Support for [lichess.org](https://lichess.org/) is coming soon. It will generate a report of your game and classify all your moves.
 
 ## Developing
 

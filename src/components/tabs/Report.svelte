@@ -1,12 +1,10 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
-
   import Feedback from './Feedback.svelte';
   import { formatScore } from '$lib/evaluation';
-  import type { Game } from '$lib/game.svelte';
   import { toTableRows } from '$lib/table';
+  import { getGame } from '$lib/game-context';
 
-  const game = getContext<Game>('game');
+  const game = getGame();
 
   const rows = $derived(toTableRows(game.history));
   const san = $derived(game.history[game.move]?.san);

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Tabs } from '@skeletonlabs/skeleton-svelte';
-  import { getContext } from 'svelte';
 
   import Load from './tabs/Load.svelte';
   import ButtonFooter from './tabs/footers/ButtonFooter.svelte';
@@ -8,12 +7,13 @@
   import Report from './tabs/Report.svelte';
   import Settings from './tabs/Settings.svelte';
   import { analyze_game } from '$lib/engine';
-  import type { Game } from '$lib/game.svelte';
+  import { TABS, type TabName } from '$lib/constants';
+  import { getGame } from '$lib/game-context';
   import { log } from '$lib/log';
 
-  const game = getContext<Game>('game');
+  const game = getGame();
 
-  let currentTab: string = $state('load');
+  let currentTab: TabName = $state('load');
   let strPgn: string = $state('');
   let isLoading: boolean = $state(false);
   let progress = $state(0);
@@ -57,11 +57,14 @@
   class="card preset-filled-surface-100-900 max-md:bg-transparent! p-0 md:p-4 h-full flex flex-col"
 >
   <section class="mb-4 grow">
-    <Tabs value={currentTab} onValueChange={(details) => (currentTab = details.value ?? 'load')}>
+    <Tabs
+      value={currentTab}
+      onValueChange={(details) => (currentTab = (details.value as TabName | undefined) ?? 'load')}
+    >
       <Tabs.List class="justify-center">
-        <Tabs.Trigger value="load">💾 Load</Tabs.Trigger>
-        <Tabs.Trigger value="report">📊 Report</Tabs.Trigger>
-        <Tabs.Trigger value="settings">🛠️ Settings</Tabs.Trigger>
+        {#each TABS as tab (tab.value)}
+          <Tabs.Trigger value={tab.value}>{tab.label}</Tabs.Trigger>
+        {/each}
         <Tabs.Indicator />
       </Tabs.List>
       <Tabs.Content value="load">

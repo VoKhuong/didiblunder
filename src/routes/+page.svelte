@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { onMount, setContext, untrack } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { browser, dev } from '$app/environment';
 
   import Chessboard from '../components/Chessboard.svelte';
   import EvaluationBar from '../components/EvaluationBar.svelte';
   import Panel from '../components/Panel.svelte';
   import { Game } from '$lib/game.svelte';
+  import { setGame } from '$lib/game-context';
 
   const game = new Game();
-  setContext('game', game);
+  setGame(game);
 
   let themeInitialized = $state(false);
 

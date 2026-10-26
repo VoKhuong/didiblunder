@@ -4,6 +4,7 @@
 
   import { onMount } from 'svelte';
   import { preloadAudio } from '$lib/media';
+  import { AUDIO_IDS } from '$lib/constants';
   import posthog from 'posthog-js';
   import * as Sentry from '@sentry/browser';
   import { env } from '$env/dynamic/public';
@@ -32,11 +33,11 @@
       });
     }
 
-    preloadAudio('sfx-move', '/media/move.webm');
-    preloadAudio('sfx-capture', '/media/capture.webm');
-    preloadAudio('sfx-check', '/media/check.webm');
-    preloadAudio('sfx-promotion', '/media/promotion.webm');
-    preloadAudio('sfx-checkmate', '/media/checkmate.webm');
+    preloadAudio(AUDIO_IDS.MOVE, '/media/move.webm');
+    preloadAudio(AUDIO_IDS.CAPTURE, '/media/capture.webm');
+    preloadAudio(AUDIO_IDS.CHECK, '/media/check.webm');
+    preloadAudio(AUDIO_IDS.PROMOTION, '/media/promotion.webm');
+    preloadAudio(AUDIO_IDS.CHECKMATE, '/media/checkmate.webm');
   });
 </script>
 
