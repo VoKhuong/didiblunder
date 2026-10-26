@@ -1,17 +1,19 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import type { Marker } from '$models/Marker';
 import { getLabelHexColor } from '$lib/label';
 import { mount } from 'svelte';
-import { Extension, EXTENSION_POINT } from 'cm-chessboard/src/model/Extension';
+import {
+  Extension,
+  EXTENSION_POINT,
+  type ChessboardWithMarkers
+} from 'cm-chessboard/src/model/Extension';
 import LabelPath from '../components/LabelPath.svelte';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
-export class EvaluationMarkerExtension extends Extension {
+export class EvaluationMarkerExtension extends Extension<Marker> {
   markers: Marker[];
 
-  constructor(chessboard: unknown) {
+  constructor(chessboard: ChessboardWithMarkers<Marker>) {
     super(chessboard);
     this.markers = [];
 
@@ -26,23 +28,22 @@ export class EvaluationMarkerExtension extends Extension {
   }
 
   drawMarkers() {
-    const beforePieceLayer: Document = this?.chessboard?.view?.markersLayer;
-    const afterPieceLayer: Document = this?.chessboard?.view?.markersTopLayer;
-    const width = this?.chessboard?.view?.squareWidth;
-    const height = this?.chessboard?.view?.squareHeight;
-    let point;
-    const overlays = [];
-    const icons = [];
-    this?.markers?.forEach((marker) => {
+    const beforePieceLayer = this.chessboard.view.markersLayer;
+    const afterPieceLayer = this.chessboard.view.markersTopLayer;
+    const width = this.chessboard.view.squareWidth;
+    const height = this.chessboard.view.squareHeight;
+    const overlays: SVGRectElement[] = [];
+    const icons: (SVGCircleElement | SVGSVGElement)[] = [];
+    this.markers.forEach((marker) => {
       // Overlay
-      point = this.chessboard.view.squareToPoint(marker.square);
+      const point = this.chessboard.view.squareToPoint(marker.square);
       const rect = document.createElementNS(SVG_NAMESPACE, 'rect');
-      rect.setAttribute('x', point.x);
-      rect.setAttribute('y', point.y);
+      rect.setAttribute('x', String(point.x));
+      rect.setAttribute('y', String(point.y));
       rect.setAttribute('fill', getLabelHexColor(marker.label));
       rect.setAttribute('fill-opacity', '50%');
-      rect.setAttribute('width', width);
-      rect.setAttribute('height', height);
+      rect.setAttribute('width', String(width));
+      rect.setAttribute('height', String(height));
       overlays.push(rect);
 
       // Icon
@@ -52,15 +53,15 @@ export class EvaluationMarkerExtension extends Extension {
         const svg = document.createElementNS(SVG_NAMESPACE, 'svg');
         svg.setAttribute('fill', 'white');
         const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
-        circle.setAttribute('r', radius);
-        circle.setAttribute('cx', point.x + width);
-        circle.setAttribute('cy', point.y);
+        circle.setAttribute('r', String(radius));
+        circle.setAttribute('cx', String(point.x + width));
+        circle.setAttribute('cy', String(point.y));
         circle.setAttribute('fill', getLabelHexColor(marker.label));
 
-        svg.setAttribute('x', point.x + width - iconSize / 2);
-        svg.setAttribute('y', point.y - iconSize / 2);
-        svg.setAttribute('width', iconSize);
-        svg.setAttribute('height', iconSize);
+        svg.setAttribute('x', String(point.x + width - iconSize / 2));
+        svg.setAttribute('y', String(point.y - iconSize / 2));
+        svg.setAttribute('width', String(iconSize));
+        svg.setAttribute('height', String(iconSize));
         svg.setAttribute('viewBox', '0 0 24 24');
 
         mount(LabelPath, { props: { label: marker.label }, target: svg });
