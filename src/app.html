@@ -3,10 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <script>
-      document.documentElement.classList.toggle(
-        'dark',
-        window.matchMedia('(prefers-color-scheme: dark)').matches
-      );
+      (() => {
+        try {
+          const stored = localStorage.getItem('didiblunder-theme');
+          const theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+        } catch {
+          // Storage can be unavailable; keep the default `dark` class.
+        }
+      })();
     </script>
     <link rel="icon" type="image/png" href="%sveltekit.assets%/favicon-96x96.png" sizes="96x96" />
 

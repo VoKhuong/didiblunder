@@ -7,16 +7,17 @@
   import Panel from '../components/Panel.svelte';
   import { Game } from '$lib/game.svelte';
   import { setGame } from '$lib/game-context';
+  import { applyTheme, resolveInitialTheme, type Theme } from '$lib/theme';
 
   const game = new Game();
   setGame(game);
 
   let themeInitialized = $state(false);
+  let lastAppliedTheme: Theme = resolveInitialTheme();
 
   onMount(() => {
-    game.settings.theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
+    game.settings.theme = resolveInitialTheme();
+    lastAppliedTheme = game.settings.theme;
     themeInitialized = true;
   });
 
@@ -28,8 +29,14 @@
   });
 
   $effect(() => {
-    if (browser && themeInitialized) {
-      document.documentElement.classList.toggle('dark', game.settings.theme === 'dark');
+    if (!browser || !themeInitialized) return;
+
+    const theme = game.settings.theme;
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+
+    if (theme !== lastAppliedTheme) {
+      applyTheme(theme);
+      lastAppliedTheme = theme;
     }
   });
 </script>
