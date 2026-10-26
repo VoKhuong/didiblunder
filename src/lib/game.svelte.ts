@@ -18,6 +18,8 @@ export class Game {
   /** Scratch board shared by the panel, board and engine. Not reactive. */
   readonly chess = new Chess();
 
+  /** Raw PGN text shared by every loader and the analysis action. */
+  pgn = $state('');
   history = $state.raw<Move[]>([]);
   startFen = $state(DEFAULT_POSITION);
   move = $state(-1);

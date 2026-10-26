@@ -4,20 +4,11 @@
   import { loadRecentGames, type ChessComGame } from '$lib/api';
   import { getGame } from '$lib/game-context';
 
-  let {
-    onChange,
-    analyze,
-    isLoading
-  }: {
-    onChange: (pgn: string) => void;
-    analyze: () => void;
-    isLoading: boolean;
-  } = $props();
+  let { analyze, isLoading }: { analyze: () => void; isLoading: boolean } = $props();
 
   const game = getGame();
 
   let loader: string = $state('chesscom');
-  let strPgn: string = $state('');
 
   // PGN fields
   let disabledImportPgn: boolean = $state(false);
@@ -57,8 +48,7 @@
   };
 
   const onGameSelected = (selected: ChessComGame, orientation: 'w' | 'b') => {
-    strPgn = selected.pgn;
-    onChange(strPgn);
+    game.pgn = selected.pgn;
     game.settings.orientation = orientation;
   };
 
@@ -73,13 +63,9 @@
     disabledImportPgn = true;
     filename = file.name;
     file.text().then((txt) => {
-      strPgn = txt;
+      game.pgn = txt;
     });
   };
-
-  $effect(() => {
-    onChange(strPgn);
-  });
 </script>
 
 <div class="flex items-center">
@@ -94,7 +80,7 @@
 <div class="my-8">
   {#if loader === 'pgn'}
     <textarea
-      bind:value={strPgn}
+      bind:value={game.pgn}
       class="textarea"
       rows="4"
       placeholder="1. e4 Nc6 2. Bc4 Nf6 3. Nc3 e6 4. Nf3 d5 5. e5 Nd7..."

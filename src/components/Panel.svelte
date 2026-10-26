@@ -14,14 +14,12 @@
   const game = getGame();
 
   let currentTab: TabName = $state('load');
-  let strPgn: string = $state('');
   const isLoading = $derived(game.isAnalyzing);
   let progress = $state(0);
 
   const isAbortError = (error: unknown) => error instanceof Error && error.name === 'AbortError';
 
   const setProgress = (n: number) => (progress = n);
-  const onChangeStrPgn = (newPgn: string) => (strPgn = newPgn);
 
   const analyze = async () => {
     if (game.isAnalyzing) return;
@@ -30,10 +28,10 @@
 
     try {
       // add a line break after last comment for chess.com mobile PGN export
-      strPgn = strPgn.replace(/](?![\s\S]*\])(?!\n\n)/, ']\n');
+      game.pgn = game.pgn.replace(/](?![\s\S]*\])(?!\n\n)/, ']\n');
 
-      log(strPgn);
-      game.chess.loadPgn(strPgn);
+      log(game.pgn);
+      game.chess.loadPgn(game.pgn);
       game.history = game.chess.history({ verbose: true });
       game.startFen = game.history[0]?.before ?? game.chess.fen();
       game.first();
@@ -77,7 +75,7 @@
         <Tabs.Indicator />
       </Tabs.List>
       <Tabs.Content value="load">
-        <Load onChange={onChangeStrPgn} {analyze} {isLoading} />
+        <Load {analyze} {isLoading} />
       </Tabs.Content>
       <Tabs.Content value="report">
         <Report />

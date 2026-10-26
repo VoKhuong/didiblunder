@@ -60,6 +60,14 @@ describe('Game', () => {
     expect(game.move).toBe(-1);
   });
 
+  it('owns the PGN as shared session state', () => {
+    const game = new Game();
+    expect(game.pgn).toBe('');
+
+    game.pgn = '1. e4 e5';
+    expect(game.pgn).toBe('1. e4 e5');
+  });
+
   it('tracks an analysis run from start to finish', () => {
     const game = new Game();
     expect(game.isAnalyzing).toBe(false);
