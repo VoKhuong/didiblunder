@@ -1,82 +1,45 @@
 import Label from '$models/Label';
 
+interface LabelPresentation {
+  className: string;
+  hex: string;
+  showBest: boolean;
+}
+
+const DEFAULT_LABEL_CONFIG: LabelPresentation = {
+  className: '',
+  hex: 'none',
+  showBest: true
+};
+
+export const LABEL_CONFIG: Record<Label, LabelPresentation> = {
+  [Label.BRILLIANT]: { className: 'text-teal-400', hex: '#2dd4bf', showBest: false },
+  [Label.GREAT]: { className: 'text-sky-500', hex: '#0ea5e9', showBest: false },
+  [Label.BEST]: { className: 'text-emerald-500', hex: '#10b981', showBest: false },
+  [Label.EXCELLENT]: { className: 'text-lime-500', hex: '#84cc16', showBest: true },
+  [Label.GOOD]: { className: 'text-success-700', hex: '#639911', showBest: true },
+  [Label.BOOK]: { className: 'text-stone-500', hex: '#78716c', showBest: false },
+  [Label.INACCURACY]: { className: 'text-warning-400', hex: '#f0ca52', showBest: true },
+  [Label.MISTAKE]: { className: 'text-orange-400', hex: '#fb923c', showBest: true },
+  [Label.MISSED]: { className: 'text-error-500', hex: '#d41976', showBest: true },
+  [Label.BLUNDER]: { className: 'text-red-600', hex: '#dc2626', showBest: true },
+  [Label.FORCED]: { className: 'text-neutral-500', hex: '#737373', showBest: false },
+  [Label.CHECKMATE]: { className: 'text-white', hex: '#000000', showBest: false },
+  [Label.UNDEFINED]: DEFAULT_LABEL_CONFIG
+};
+
+function getLabelConfig(label: Label): LabelPresentation {
+  return LABEL_CONFIG[label] ?? DEFAULT_LABEL_CONFIG;
+}
+
 export function getLabelClassColor(label: Label): string {
-  switch (label) {
-    case Label.BRILLIANT:
-      return 'text-teal-400';
-    case Label.GREAT:
-      return 'text-sky-500';
-    case Label.BEST:
-      return 'text-emerald-500';
-    case Label.EXCELLENT:
-      return 'text-lime-500';
-    case Label.GOOD:
-      return 'text-success-700';
-    case Label.BOOK:
-      return 'text-stone-500';
-    case Label.INACCURACY:
-      return 'text-warning-400';
-    case Label.MISTAKE:
-      return 'text-orange-400';
-    case Label.MISSED:
-      return 'text-error-500';
-    case Label.BLUNDER:
-      return 'text-red-600';
-    case Label.FORCED:
-      return 'text-neutral-500';
-    case Label.CHECKMATE:
-      return 'text-white';
-    default:
-      return '';
-  }
+  return getLabelConfig(label).className;
 }
 
 export function getLabelHexColor(label: Label): string {
-  switch (label) {
-    case Label.BRILLIANT:
-      return '#2dd4bf';
-    case Label.GREAT:
-      return '#0ea5e9';
-    case Label.BEST:
-      return '#10b981';
-    case Label.EXCELLENT:
-      return '#84cc16';
-    case Label.GOOD:
-      return '#639911';
-    case Label.BOOK:
-      return '#78716c';
-    case Label.INACCURACY:
-      return '#f0ca52';
-    case Label.MISTAKE:
-      return '#fb923c';
-    case Label.MISSED:
-      return '#d41976';
-    case Label.BLUNDER:
-      return '#dc2626';
-    case Label.FORCED:
-      return '#737373';
-    case Label.CHECKMATE:
-      return '#000000';
-    default:
-      return 'none';
-  }
+  return getLabelConfig(label).hex;
 }
 
 export function shouldShowBest(label: Label): boolean {
-  switch (label) {
-    case Label.BRILLIANT:
-      return false;
-    case Label.GREAT:
-      return false;
-    case Label.BEST:
-      return false;
-    case Label.BOOK:
-      return false;
-    case Label.FORCED:
-      return false;
-    case Label.CHECKMATE:
-      return false;
-    default:
-      return true;
-  }
+  return getLabelConfig(label).showBest;
 }
