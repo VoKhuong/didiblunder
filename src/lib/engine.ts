@@ -15,6 +15,7 @@ import {
 import OPENINGS from '$lib/openings.json';
 import { log } from '$lib/log';
 import { EngineClient } from './engine/client';
+import { ENGINES, type EngineId } from './engines';
 
 const NEUTRAL_EVAL: Evaluation = {
   score: 0,
@@ -29,29 +30,17 @@ function throwIfAborted(signal?: AbortSignal): void {
   }
 }
 
-export async function init(engine: string): Promise<EngineClient> {
-  let workerModule;
-  switch (engine) {
-    case 'lite-multi':
-      workerModule = await import('stockfish/src/stockfish-16.1-lite.js?worker');
-      break;
-    case 'lite-single':
-      workerModule = await import('stockfish/src/stockfish-16.1-lite-single.js?worker');
-      break;
-    case 'large-multi':
-      workerModule = await import('stockfish/src/stockfish-16.1.js?worker');
-      break;
-    case 'large-single':
-      workerModule = await import('stockfish/src/stockfish-16.1-single.js?worker');
-      break;
-    default:
-      throw new Error('Invalid engine');
+export async function init(engine: EngineId): Promise<EngineClient> {
+  const config = ENGINES[engine];
+  if (!config) {
+    throw new Error('Invalid engine');
   }
 
+  const workerModule = await config.load();
   const worker = new workerModule.default();
   const client = new EngineClient(worker);
 
-  if (engine.includes('multi')) {
+  if (config.threads) {
     worker.postMessage(`setoption name Threads value ${window.navigator.hardwareConcurrency}`);
   }
   worker.postMessage(`setoption name MultiPV value 2`);

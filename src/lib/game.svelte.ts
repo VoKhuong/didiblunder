@@ -2,6 +2,7 @@ import { Chess, DEFAULT_POSITION, type Move } from 'chess.js';
 
 import { init } from '$lib/engine';
 import type { EngineClient } from '$lib/engine/client';
+import type { EngineId } from '$lib/engines';
 import type { Evaluation } from '$models/Evaluation';
 import Label from '$models/Label';
 import type { Settings } from '$models/Settings';
@@ -99,7 +100,7 @@ export class Game {
     this.isAnalyzing = false;
   }
 
-  async initEngine(engine: string) {
+  async initEngine(engine: EngineId) {
     this.cancelAnalysis();
     this.engine?.terminate();
     this.engine = await init(engine);

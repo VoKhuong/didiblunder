@@ -2,8 +2,13 @@
   import { SegmentedControl, Slider } from '@skeletonlabs/skeleton-svelte';
   import EngineHelp from './modals/EngineHelp.svelte';
   import { getGame } from '$lib/game-context';
+  import { ENGINES, type EngineId } from '$lib/engines';
 
   const game = getGame();
+
+  const engines = Object.entries(ENGINES)
+    .filter(([, engine]) => engine.selectable)
+    .map(([id, engine]) => ({ id: id as EngineId, label: engine.label }));
 </script>
 
 <div class="w-full space-y-4">
@@ -72,10 +77,9 @@
       <EngineHelp />
     </span>
     <select name="engine" class="select" bind:value={game.settings.engine}>
-      <option value="lite-single">Lite single-thread ⚡</option>
-      <option value="lite-multi">Lite multi-thread 🚀</option>
-      <!-- option value="large-multi">Large multi-thread 🚄</option -->
-      <!-- option value="large-single">Large single-thread 🚂</option -->
+      {#each engines as engine}
+        <option value={engine.id}>{engine.label}</option>
+      {/each}
     </select>
   </label>
 </div>
