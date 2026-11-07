@@ -7,18 +7,24 @@
   let {
     games,
     username,
+    hasMore,
+    isLoadingMore,
+    loadError,
+    onLoadMore,
     onGameSelected,
     analyze,
     onClose
   }: {
     games: ChessComGame[];
     username: string;
+    hasMore: boolean;
+    isLoadingMore: boolean;
+    loadError: string | null;
+    onLoadMore: () => void;
     onGameSelected: (game: ChessComGame, orientation: 'w' | 'b') => void;
     analyze: () => void;
     onClose: () => void;
   } = $props();
-
-  const sortedGames = $derived([...games].reverse());
 
   const onClick = (game: ChessComGame) => {
     const orientation = isUsername(username, game.white.username) ? 'w' : 'b';
@@ -42,7 +48,7 @@
           </Dialog.CloseTrigger>
         </header>
         <main class="space-y-2 grow overflow-y-auto min-h-0">
-          {#each sortedGames as game}
+          {#each games as game}
             <button
               type="button"
               onclick={() => onClick(game)}
@@ -68,6 +74,23 @@
             </button>
           {/each}
         </main>
+        <footer class="flex flex-col gap-2">
+          {#if loadError}
+            <p class="text-sm text-error-500">{loadError}</p>
+          {/if}
+          {#if hasMore}
+            <button
+              type="button"
+              class="btn preset-filled w-full"
+              disabled={isLoadingMore}
+              onclick={onLoadMore}
+            >
+              {isLoadingMore ? 'Loading…' : loadError ? 'Try again' : 'Load more'}
+            </button>
+          {:else}
+            <p class="text-sm text-center opacity-60">No more games in the last 12 months.</p>
+          {/if}
+        </footer>
       </Dialog.Content>
     </Dialog.Positioner>
   </Portal>

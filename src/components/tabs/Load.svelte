@@ -3,7 +3,14 @@
   import { getContext } from 'svelte';
 
   import ChessComGameSelection from './modals/ChessComGameSelection.svelte';
-  import { loadRecentGames, type ChessComGame } from '$lib/api';
+  import {
+    CHESSCOM_PAGE_SIZE,
+    ChessComApiError,
+    chessComGameKey,
+    fetchGamesPage,
+    type ChessComCursor,
+    type ChessComGame
+  } from '$lib/api';
   import type { Game } from '$lib/game.svelte';
 
   let {
@@ -28,25 +35,51 @@
   // chess.com fields
   let disabledSearchUsername = $state(false);
   let username = $state('');
-  let gameSelection: { games: ChessComGame[]; username: string } | null = $state(null);
+  let gameSelection: {
+    username: string;
+    games: ChessComGame[];
+    nextCursor: ChessComCursor | null;
+    isLoadingMore: boolean;
+    loadError: string | null;
+  } | null = $state(null);
+
+  const describeLoadError = (error: unknown) => {
+    if (error instanceof ChessComApiError && error.status === 429) {
+      return 'chess.com is rate limiting requests. Please wait a moment and try again.';
+    }
+    return 'Could not load games from chess.com. Please try again.';
+  };
 
   const onClick = async () => {
+    if (disabledSearchUsername) return;
     // trim trailing spaces
     username = username.trim();
     // validate username
     const regex = /^[A-Za-z0-9_]{3,}$/;
-    if (regex.test(username)) {
-      disabledSearchUsername = true;
-      const games = await loadRecentGames(username);
+    if (!regex.test(username)) {
+      alert('Username is invalid.');
+      return;
+    }
 
-      if (games?.length) {
-        gameSelection = { games, username };
+    disabledSearchUsername = true;
+    try {
+      const page = await fetchGamesPage(username, null, CHESSCOM_PAGE_SIZE);
+
+      if (page.games.length) {
+        gameSelection = {
+          username,
+          games: page.games,
+          nextCursor: page.nextCursor,
+          isLoadingMore: false,
+          loadError: null
+        };
       } else {
-        alert('No game found or username is invalid.');
+        alert('No games found in the last 12 months for this username.');
         disabledSearchUsername = false;
       }
-    } else {
-      alert('Username is invalid.');
+    } catch (error) {
+      alert(describeLoadError(error));
+      disabledSearchUsername = false;
     }
   };
 
@@ -60,6 +93,48 @@
     strPgn = selected.pgn;
     onChange(strPgn);
     game.settings.orientation = orientation;
+  };
+
+  const loadMore = async () => {
+    const selection = gameSelection;
+    if (!selection || selection.isLoadingMore || !selection.nextCursor) return;
+
+    // The button reads "Try again" while an error is shown; clicking it retries.
+    selection.loadError = null;
+    selection.isLoadingMore = true;
+
+    try {
+      const page = await fetchGamesPage(
+        selection.username,
+        selection.nextCursor,
+        CHESSCOM_PAGE_SIZE
+      );
+      if (gameSelection !== selection) return;
+
+      const seen = new Set(selection.games.map(chessComGameKey));
+      const games = [...selection.games];
+      for (const game of page.games) {
+        const key = chessComGameKey(game);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        games.push(game);
+      }
+
+      gameSelection = {
+        ...selection,
+        games,
+        nextCursor: page.nextCursor,
+        isLoadingMore: false,
+        loadError: null
+      };
+    } catch (error) {
+      if (gameSelection !== selection) return;
+      gameSelection = {
+        ...selection,
+        isLoadingMore: false,
+        loadError: describeLoadError(error)
+      };
+    }
   };
 
   const closeGameSelection = () => {
@@ -143,6 +218,10 @@
   <ChessComGameSelection
     games={gameSelection.games}
     username={gameSelection.username}
+    hasMore={gameSelection.nextCursor !== null}
+    isLoadingMore={gameSelection.isLoadingMore}
+    loadError={gameSelection.loadError}
+    onLoadMore={loadMore}
     {onGameSelected}
     {analyze}
     onClose={closeGameSelection}
